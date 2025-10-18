@@ -1,0 +1,15 @@
+{
+  "dataProviders": [
+    "Entitas.CodeGeneration.Plugins.ContextDataProvider",
+    "Entitas.CodeGeneration.Plugins.ComponentDataProvider",
+    "Entitas.CodeGeneration.Plugins.EntityIndexDataProvider"
+  ],
+  "codeGenerators": [
+    "Entitas.CodeGeneration.Plugins.ContextGenerator",
+    "Entitas.CodeGeneration.Plugins.ComponentGenerator",
+    "Entitas.CodeGeneration.Plugins.SystemsGenerator",
+    "Entitas.CodeGeneration.Plugins.FeatureClassGenerator",
+    "Entitas.CodeGeneration.Plugins.CodeGeneratorDebugGenerator"
+  ],
+  "targetDirectory": "./Scripts/Generated"
+}

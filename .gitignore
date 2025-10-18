@@ -76,9 +76,8 @@ Thumbs.db
 *.swp
 *.swo
 *~
-.idea/
 
-# Rider
+# IDE
 .idea/
 *.sln.iml
 
@@ -86,3 +85,16 @@ Thumbs.db
 *.dylib
 *.so
 *.dll.meta
+
+# Entitas generated code
+/Inscryption-src/src/Assets/Scripts/Generated/
+
+# Jenny codegen
+/Jenny/Jenny/
+/Jenny/Plugins/
+Jenny-Auto-Import
+Jenny-Auto-Import.bat
+JennyRoslyn.properties.bak
+
+# CustomGenerators build
+/Inscryption-src/CustomGenerators/bin/
