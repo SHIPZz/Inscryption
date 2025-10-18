@@ -1,4 +1,5 @@
 {
+  "contexts": ["Game"],
   "dataProviders": [
     "Entitas.CodeGeneration.Plugins.ContextDataProvider",
     "Entitas.CodeGeneration.Plugins.ComponentDataProvider",
@@ -9,7 +10,19 @@
     "Entitas.CodeGeneration.Plugins.ComponentGenerator",
     "Entitas.CodeGeneration.Plugins.SystemsGenerator",
     "Entitas.CodeGeneration.Plugins.FeatureClassGenerator",
-    "Entitas.CodeGeneration.Plugins.CodeGeneratorDebugGenerator"
+    "Entitas.CodeGeneration.Plugins.ComponentLookupGenerator",
+    "Entitas.CodeGeneration.Plugins.ComponentMatcherApiGenerator",
+    "Entitas.CodeGeneration.Plugins.ContextMatcherGenerator",
+    "Entitas.CodeGeneration.Plugins.ContextsGenerator",
+    "Entitas.CodeGeneration.Plugins.EntityGenerator",
+    "Entitas.CodeGeneration.Plugins.EntityIndexGenerator",
+    "Entitas.CodeGeneration.Plugins.EventEntityApiGenerator",
+    "Entitas.CodeGeneration.Plugins.EventListenerComponentGenerator",
+    "Entitas.CodeGeneration.Plugins.EventListenerInterfaceGenerator",
+    "Entitas.CodeGeneration.Plugins.EventSystemGenerator",
+    "Entitas.CodeGeneration.Plugins.EventSystemsGenerator",
+    "Entitas.VisualDebugging.CodeGeneration.Plugins.ContextObserverGenerator",
+    "Entitas.VisualDebugging.CodeGeneration.Plugins.FeatureClassGenerator"
   ],
-  "targetDirectory": "./Scripts/Generated"
+  "targetDirectory": "./Assets/Code/Generated"
 }
