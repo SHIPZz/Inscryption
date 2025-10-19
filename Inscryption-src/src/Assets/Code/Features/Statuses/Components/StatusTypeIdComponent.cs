@@ -31,4 +31,10 @@ namespace Code.Features.Statuses.Components
     {
         
     }
+
+    [Game]
+    public class StatusValue : IComponent
+    {
+        public int Value;
+    }
 }

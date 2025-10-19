@@ -9,23 +9,47 @@
 public static class GameComponentsLookup {
 
     public const int Active = 0;
-    public const int Destructed = 1;
-    public const int Hp = 2;
-    public const int Id = 3;
-    public const int LayerMask = 4;
-    public const int MaxHp = 5;
-    public const int SelfDestructTimer = 6;
-    public const int ViewPath = 7;
-    public const int DamageStatus = 8;
-    public const int Status = 9;
-    public const int StatusOwner = 10;
-    public const int StatusTarget = 11;
-    public const int StatusTypeId = 12;
+    public const int Damage = 1;
+    public const int Destructed = 2;
+    public const int Hp = 3;
+    public const int Id = 4;
+    public const int LayerMask = 5;
+    public const int MaxHp = 6;
+    public const int SelfDestructTimer = 7;
+    public const int ViewPath = 8;
+    public const int BoardSlot = 9;
+    public const int OccupiedBy = 10;
+    public const int SlotLane = 11;
+    public const int SlotOwner = 12;
+    public const int Card = 13;
+    public const int CardOwner = 14;
+    public const int InHand = 15;
+    public const int Lane = 16;
+    public const int OnBoard = 17;
+    public const int Enemy = 18;
+    public const int EnemyTurn = 19;
+    public const int CardsInHand = 20;
+    public const int Hero = 21;
+    public const int HeroTurn = 22;
+    public const int DamageStatus = 23;
+    public const int Status = 24;
+    public const int StatusOwner = 25;
+    public const int StatusTarget = 26;
+    public const int StatusTypeId = 27;
+    public const int StatusValue = 28;
+    public const int AttackPhase = 29;
+    public const int AttackRequest = 30;
+    public const int CardsPlacedThisTurn = 31;
+    public const int DrawCardRequest = 32;
+    public const int EndTurnRequest = 33;
+    public const int PlaceCardRequest = 34;
+    public const int SwitchTurnRequest = 35;
 
-    public const int TotalComponents = 13;
+    public const int TotalComponents = 36;
 
     public static readonly string[] componentNames = {
         "Active",
+        "Damage",
         "Destructed",
         "Hp",
         "Id",
@@ -33,15 +57,38 @@ public static class GameComponentsLookup {
         "MaxHp",
         "SelfDestructTimer",
         "ViewPath",
+        "BoardSlot",
+        "OccupiedBy",
+        "SlotLane",
+        "SlotOwner",
+        "Card",
+        "CardOwner",
+        "InHand",
+        "Lane",
+        "OnBoard",
+        "Enemy",
+        "EnemyTurn",
+        "CardsInHand",
+        "Hero",
+        "HeroTurn",
         "DamageStatus",
         "Status",
         "StatusOwner",
         "StatusTarget",
-        "StatusTypeId"
+        "StatusTypeId",
+        "StatusValue",
+        "AttackPhase",
+        "AttackRequest",
+        "CardsPlacedThisTurn",
+        "DrawCardRequest",
+        "EndTurnRequest",
+        "PlaceCardRequest",
+        "SwitchTurnRequest"
     };
 
     public static readonly System.Type[] componentTypes = {
         typeof(Code.Common.Active),
+        typeof(Code.Common.Damage),
         typeof(Code.Common.Destructed),
         typeof(Code.Common.Hp),
         typeof(Code.Common.Id),
@@ -49,10 +96,32 @@ public static class GameComponentsLookup {
         typeof(Code.Common.MaxHp),
         typeof(Code.Common.SelfDestructTimer),
         typeof(Code.Common.ViewPath),
+        typeof(Code.Features.Board.BoardSlot),
+        typeof(Code.Features.Board.OccupiedBy),
+        typeof(Code.Features.Board.SlotLane),
+        typeof(Code.Features.Board.SlotOwner),
+        typeof(Code.Features.Cards.Card),
+        typeof(Code.Features.Cards.CardOwner),
+        typeof(Code.Features.Cards.InHand),
+        typeof(Code.Features.Cards.Lane),
+        typeof(Code.Features.Cards.OnBoard),
+        typeof(Code.Features.Enemy.Enemy),
+        typeof(Code.Features.Enemy.EnemyTurn),
+        typeof(Code.Features.Hero.CardsInHand),
+        typeof(Code.Features.Hero.Hero),
+        typeof(Code.Features.Hero.HeroTurn),
         typeof(Code.Features.Statuses.Components.DamageStatus),
         typeof(Code.Features.Statuses.Components.StatusComponent),
         typeof(Code.Features.Statuses.Components.StatusOwner),
         typeof(Code.Features.Statuses.Components.StatusTarget),
-        typeof(Code.Features.Statuses.Components.StatusTypeIdComponent)
+        typeof(Code.Features.Statuses.Components.StatusTypeIdComponent),
+        typeof(Code.Features.Statuses.Components.StatusValue),
+        typeof(Code.Features.Turn.AttackPhase),
+        typeof(Code.Features.Turn.AttackRequest),
+        typeof(Code.Features.Turn.CardsPlacedThisTurn),
+        typeof(Code.Features.Turn.DrawCardRequest),
+        typeof(Code.Features.Turn.EndTurnRequest),
+        typeof(Code.Features.Turn.PlaceCardRequest),
+        typeof(Code.Features.Turn.SwitchTurnRequest)
     };
 }

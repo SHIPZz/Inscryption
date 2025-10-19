@@ -1,6 +1,6 @@
 using System;
 
-namespace Code.Gameplay.Common.Time
+namespace Code.Common.Time
 {
   public interface ITimeService
   {

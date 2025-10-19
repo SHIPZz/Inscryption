@@ -1,6 +1,6 @@
 using Entitas;
 
-namespace Code.Gameplay.Common.Collisions
+namespace Code.Common.Collisions
 {
   public interface ICollisionRegistry
   {

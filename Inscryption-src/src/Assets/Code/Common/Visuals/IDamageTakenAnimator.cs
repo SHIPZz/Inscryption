@@ -1,4 +1,4 @@
-﻿namespace Code.Gameplay.Common.Visuals
+﻿namespace Code.Common.Visuals
 {
     public interface IDamageTakenAnimator
     {

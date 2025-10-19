@@ -1,7 +1,6 @@
-﻿using Code.Common.Systems.Destruct;
-using Code.Infrastructure.Systems;
+﻿using Code.Infrastructure.Systems;
 
-namespace Code.Common
+namespace Code.Common.Destruct
 {
     public sealed class ProcessDestructedFeature : Feature
     {
@@ -9,11 +8,11 @@ namespace Code.Common
         {
             Add(system.Create<SelfDestructTimerSystem>());
             
-            //
-            // Add(system.Create<CleanupGameDestructedViewSystem>());
-            // Add(system.Create<CleanupMetaDestructedSystem>());
-            //
-            // Add(system.Create<CleanupGameDestructedSystem>());
+            
+           // Add(system.Create<CleanupGameDestructedViewSystem>());
+            Add(system.Create<CleanupMetaDestructedSystem>());
+            
+            Add(system.Create<CleanupGameDestructedSystem>());
         }
     }
 }

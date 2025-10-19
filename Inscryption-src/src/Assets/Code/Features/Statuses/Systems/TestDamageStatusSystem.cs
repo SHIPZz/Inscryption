@@ -23,35 +23,36 @@ namespace Code.Features.Statuses.Systems
 
         public void Initialize()
         {
-            Debug.Log("[TestDamageStatusSystem] Starting test initialization...");
+            Debug.Log("[TestDamageStatusSystem] Creating test entities...");
             
-            GameEntity testEntity = CreateTestEntity();
-            Debug.Log($"[TestDamageStatusSystem] Test entity created with ID: {testEntity.Id}, HP: {testEntity.Hp}, MaxHP: {testEntity.MaxHp}");
+            GameEntity testEntity1 = CreateTestEntity(10);
+            CreateDamageStatus(testEntity1.Id, 2);
             
-            GameEntity damageStatus = CreateDamageStatus(testEntity.Id);
-            Debug.Log($"[TestDamageStatusSystem] Damage status created with ID: {damageStatus.Id}, Target: {damageStatus.StatusTarget}, TypeId: {damageStatus.StatusTypeId}");
+            GameEntity testEntity2 = CreateTestEntity(5);
+            CreateDamageStatus(testEntity2.Id, 3);
             
-            Debug.Log("[TestDamageStatusSystem] Test initialization complete. Waiting for ApplyDamageStatusSystem to process...");
+            GameEntity testEntity3 = CreateTestEntity(7);
+            CreateDamageStatus(testEntity3.Id, 5);
+            
+            Debug.Log("[TestDamageStatusSystem] Test setup complete.");
         }
 
-        private GameEntity CreateTestEntity()
+        private GameEntity CreateTestEntity(int hp)
         {
-            Debug.Log("[TestDamageStatusSystem] Creating test entity...");
-            
             GameEntity entity = _game.CreateEntity()
                 .AddId(_idService.Next())
-                .With(x => x.AddHp(5))
-                .With(x => x.AddMaxHp(5));
+                .With(x => x.AddHp(hp))
+                .With(x => x.AddMaxHp(hp));
             
+            Debug.Log($"[TestDamageStatusSystem] Entity created: ID={entity.Id}, HP={hp}");
             return entity;
         }
 
-        private GameEntity CreateDamageStatus(int targetId)
+        private GameEntity CreateDamageStatus(int targetId, int damageValue)
         {
-            Debug.Log($"[TestDamageStatusSystem] Creating damage status for target ID: {targetId}");
+            GameEntity status = _statusFactory.CreateStatus(StatusTypeId.Damage, 0, targetId, damageValue);
             
-            GameEntity status = _statusFactory.CreateStatus(StatusTypeId.Damage, 0, targetId);
-            
+            Debug.Log($"[TestDamageStatusSystem] Status created: Target={targetId}, Damage={damageValue}");
             return status;
         }
     }

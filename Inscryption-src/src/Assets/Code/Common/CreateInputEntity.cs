@@ -1,4 +1,4 @@
-﻿namespace Code.Common.Entity
+﻿namespace Code.Common
 {
     public static class CreateInputEntity
     {

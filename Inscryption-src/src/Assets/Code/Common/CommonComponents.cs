@@ -17,4 +17,6 @@ namespace Code.Common
     [Game] public class Hp : IComponent { public int Value; }
     
     [Game] public class MaxHp : IComponent { public int Value; }
+    
+    [Game] public class Damage : IComponent { public int Value; }
 }

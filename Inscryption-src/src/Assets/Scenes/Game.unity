@@ -288,9 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1ef7f4f049442588c9ff7b00c55de61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Infrastructure.Installers.GameInstaller
-  Initializables:
-  - {fileID: 1420492730}
---- !u!1 &1420492729
+  Initializables: []
+--- !u!1 &1109226417
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -298,37 +297,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1420492731}
-  - component: {fileID: 1420492730}
+  - component: {fileID: 1109226419}
+  - component: {fileID: 1109226418}
   m_Layer: 0
-  m_Name: GameStartup
+  m_Name: GameTestRunner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1420492730
+--- !u!114 &1109226418
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420492729}
+  m_GameObject: {fileID: 1109226417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54f09a8e42a748faa6f4c50f489ef970, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d020314d1d520a4a8851ab747ea4b0e, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.Infrastructure.GameStartup
---- !u!4 &1420492731
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Infrastructure.GameTestRunner
+--- !u!4 &1109226419
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1420492729}
+  m_GameObject: {fileID: 1109226417}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -467,5 +466,5 @@ SceneRoots:
   m_Roots:
   - {fileID: 469207284}
   - {fileID: 1980426078}
-  - {fileID: 1420492731}
   - {fileID: 1079878475}
+  - {fileID: 1109226419}

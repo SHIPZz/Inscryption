@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Code.Common
+namespace Code.Common.Destruct
 {
     public class SelfDestructor : MonoBehaviour
     {
@@ -8,7 +8,7 @@ namespace Code.Common
 
         private void Update()
         {
-            Countdown -= Time.deltaTime;
+            Countdown -= UnityEngine.Time.deltaTime;
             
             if (Countdown <= 0)
                 Destroy(gameObject);
