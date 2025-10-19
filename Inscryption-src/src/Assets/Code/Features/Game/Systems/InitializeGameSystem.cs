@@ -62,8 +62,8 @@ namespace Code.Features.Game.Systems
 
             for (int i = 0; i < DeckSize / 2; i++)
             {
-                deck.Add(_cardFactory.CreateRandomCard(heroId));
-                deck.Add(_cardFactory.CreateRandomCard(enemyId));
+                deck.Add(_cardFactory.CreateRandomCard(new CardCreateData(heroId,-1,-1,inHand: true)));
+                deck.Add(_cardFactory.CreateRandomCard(new CardCreateData(enemyId,-1,-1,inHand: true)));
             }
 
             return deck;
@@ -73,9 +73,11 @@ namespace Code.Features.Game.Systems
         {
             for (int i = 0; i < count; i++)
             {
-                if (deck.Count == 0) break;
+                if (deck.Count == 0) 
+                    break;
 
                 GameEntity card = FindCardInDeck(deck, player.Id);
+                
                 if (card != null)
                 {
                     player.CardsInHand.Add(card.Id);
@@ -93,6 +95,7 @@ namespace Code.Features.Game.Systems
                 if (card.CardOwner == ownerId)
                     return card;
             }
+            
             return null;
         }
     }
