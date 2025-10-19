@@ -96,9 +96,11 @@ return _game.CreateEntity()
 - `Lane` - линия (0-3)
 
 #### Системы
-- **DrawCardSystem** - обработка запросов на взятие карт
+- **ProcessDrawCardRequestSystem** - обработка запросов на взятие карт
+  - Обрабатывает `DrawCardRequest(playerId)`
   - Проверяет лимит руки (5 карт)
   - Перемещает карты из колоды в руку
+  - Удаляет обработанные Request'ы
 
 #### Фабрика (ICardFactory)
 ```csharp
@@ -135,10 +137,11 @@ GameEntity CreateHero(int baseHealth);
 
 #### Системы
 - **EnemyAISystem** - искусственный интеллект врага
+  - Проверяет отсутствие `EndTurnRequest` и `PlaceCardRequest`
   - Выбирает случайную карту из руки
-  - Выбирает случайный свободный слот
-  - Создает PlaceCardRequest
-  - Завершает ход
+  - Выбирает случайный свободный слот (используя `ListPool` для оптимизации)
+  - Создает `PlaceCardRequest`
+  - Создает `EndTurnRequest` при условиях завершения хода
 
 #### Фабрика (IEnemyFactory)
 ```csharp
@@ -156,10 +159,12 @@ GameEntity CreateEnemy(int baseHealth);
 - `OccupiedBy` - ID карты в слоте (-1 = пусто)
 
 #### Системы
-- **PlaceCardSystem** - размещение карт на поле
+- **ProcessPlaceCardRequestSystem** - размещение карт на поле
+  - Обрабатывает `PlaceCardRequest(cardId, slotId)`
   - Валидация (слот пустой, карта в руке, лимит 1/ход)
   - Перемещение карты из руки на поле
   - Обновление слота
+  - Удаляет обработанные Request'ы
 
 #### Фабрика (IBoardFactory)
 ```csharp
@@ -178,19 +183,24 @@ List<GameEntity> CreateSlots(int heroId, int enemyId, int lanes = 4);
 
 #### Системы
 
-**AttackPhaseSystem** - фаза атаки
-- Срабатывает при EndTurnRequest
+**ProcessAttackPhaseSystem** - фаза атаки
+- Обрабатывает маркер `AttackPhase`
+- Проверяет отсутствие `SwitchTurnRequest` перед обработкой
 - Находит все карты активного игрока на поле
 - Для каждой карты ищет цель:
   - Карта врага на той же линии → атакует её
   - Нет карты → атакует игрока напрямую
-- Создает AttackRequest
+- Создает `AttackRequest` для каждой атаки
+- Создает `SwitchTurnRequest` после всех атак
+- Удаляет ВСЕ маркеры `AttackPhase`
 
-**ProcessAttackSystem** - обработка атак
-- Применяет урон к цели
+**ProcessAttackRequestSystem** - обработка атак
+- Обрабатывает `AttackRequest(attackerId, targetId, damage)`
+- Применяет урон к цели: `target.Hp -= damage`
 - Уменьшает HP на Damage
 - Удаляет карты/игроков с HP ≤ 0
 - Освобождает слоты от уничтоженных карт
+- Удаляет обработанные Request'ы
 
 **CheckVictorySystem** - проверка победы
 - Проверяет HP героя и врага
@@ -208,17 +218,27 @@ List<GameEntity> CreateSlots(int heroId, int enemyId, int lanes = 4);
 - `AttackRequest` - запрос на атаку
 - `DrawCardRequest` - запрос на взятие карты
 - `EndTurnRequest` - запрос на завершение хода
+- `SwitchTurnRequest` - запрос на переключение хода
+- `AttackPhase` - маркер фазы атаки
 
 **Состояние:**
 - `CardsPlacedThisTurn` - счетчик размещенных карт за ход
 
 #### Системы
 
-**TurnSystem** - управление ходами
-- Обрабатывает EndTurnRequest
+**ProcessEndTurnRequestSystem** - обработка завершения хода
+- Обрабатывает `EndTurnRequest`
+- Проверяет отсутствие `AttackPhase` перед обработкой
+- Создает маркер `AttackPhase`
+- Удаляет ВСЕ `EndTurnRequest`
+
+**ProcessSwitchTurnRequestSystem** - переключение ходов
+- Обрабатывает `SwitchTurnRequest`
 - Переключает HeroTurn ↔ EnemyTurn
-- Сбрасывает CardsPlacedThisTurn
-- Создает DrawCardRequest для следующего игрока
+- Сбрасывает CardsPlacedThisTurn обоим игрокам
+- Создает `DrawCardRequest` для следующего игрока
+- Использует флаг `turnSwitched` для однократного переключения
+- Удаляет ВСЕ `SwitchTurnRequest`
 
 ---
 
@@ -273,18 +293,19 @@ GameplayRootFeature
 │   ├── InitializeGameSystem (Initialize)
 │   └── CheckVictorySystem (Execute)
 ├── CardFeature
-│   └── DrawCardSystem (Execute)
+│   └── ProcessDrawCardRequestSystem (Execute)
 ├── HeroFeature
 │   (пусто - для будущих систем)
 ├── EnemyFeature
 │   └── EnemyAISystem (Execute)
 ├── BoardFeature
-│   └── PlaceCardSystem (Execute)
+│   └── ProcessPlaceCardRequestSystem (Execute)
 ├── TurnFeature
-│   └── TurnSystem (Execute)
+│   ├── ProcessEndTurnRequestSystem (Execute)
+│   └── ProcessSwitchTurnRequestSystem (Execute)
 └── BattleFeature
-    ├── AttackPhaseSystem (Execute)
-    └── ProcessAttackSystem (Execute)
+    ├── ProcessAttackPhaseSystem (Execute)
+    └── ProcessAttackRequestSystem (Execute)
 ```
 
 **Порядок выполнения систем:**
@@ -382,26 +403,30 @@ GameTestRunner.Start()
       └─> Карта перемещается на поле
 
 [Игрок] Нажимает Space → EndTurnRequest
-  └─> AttackPhaseSystem.Execute()
+  └─> ProcessEndTurnRequestSystem.Execute()
+      └─> Создает AttackPhase
+  └─> ProcessAttackPhaseSystem.Execute()
       └─> Создает AttackRequest для каждой карты
-  └─> ProcessAttackSystem.Execute()
+      └─> Создает SwitchTurnRequest
+  └─> ProcessAttackRequestSystem.Execute()
       └─> Применяет урон
   └─> CheckVictorySystem.Execute()
       └─> Проверяет условия победы
-  └─> TurnSystem.Execute()
+  └─> ProcessSwitchTurnRequestSystem.Execute()
       └─> Переключает ход на врага
-      └─> DrawCardRequest для врага
-  └─> DrawCardSystem.Execute()
+      └─> Создает DrawCardRequest для врага
+  └─> ProcessDrawCardRequestSystem.Execute()
       └─> Враг берет карту
 ```
 
 **Ход врага (через 2 секунды):**
 ```
 EnemyAISystem.Execute()
-  ├─> Выбирает случайную карту и слот
-  ├─> PlaceCardRequest
-  └─> EndTurnRequest
-    └─> (Цикл повторяется)
+  ├─> IF нет EndTurnRequest И нет PlaceCardRequest:
+  │   ├─> Выбирает случайную карту и слот
+  │   └─> PlaceCardRequest
+  └─> При условиях → EndTurnRequest
+    └─> (Цикл повторяется как у героя)
 ```
 
 ### 3. Завершение (OnDestroy)
@@ -435,18 +460,44 @@ GameTestRunner.OnDestroy()
    _game.CreateEntity().AddPlaceCardRequest(cardId, slotId);
    ```
 
-4. **Destructed для удаления**
+4. **Проверять существование Request перед созданием**
+   ```csharp
+   if (_endTurnRequests.count > 0)
+       return; // Не создавать новый!
+   ```
+
+5. **Обрабатывать первый, удалять ВСЕ**
+   ```csharp
+   bool processed = false;
+   foreach (GameEntity request in _requests.GetEntities(_buffer))
+   {
+       if (!processed) {
+           // Обработка
+           processed = true;
+       }
+       request.isDestructed = true; // Удалить ВСЕ
+   }
+   ```
+
+6. **Destructed для удаления**
    ```csharp
    entity.isDestructed = true;
    ```
 
-5. **Feature-based организация**
+7. **Feature-based организация**
    ```
    Features/Cards/
      ├── CardComponents.cs
      ├── CardFeature.cs
      ├── Systems/
      └── Services/
+   ```
+
+8. **Использовать ListPool для временных списков**
+   ```csharp
+   List<GameEntity> slots = ListPool<GameEntity>.Get();
+   // ... использование ...
+   ListPool<GameEntity>.Release(slots);
    ```
 
 ### ❌ DON'T (Не делать)
@@ -623,6 +674,7 @@ List<GameEntity> slots = _boardFactory.CreateSlots(heroId, enemyId, lanes: 6);
 - **Entitas Wiki**: https://github.com/sschmid/Entitas/wiki
 - **Zenject**: https://github.com/modesttree/Zenject
 - **ECS Best Practices**: см. `Doc/LTC-ECS Draft-191025-120316.md`
+- **Логика игры и Request Flow**: см. `Doc/GAME_LOGIC.md`
 
 ---
 
