@@ -8,18 +8,51 @@
 //------------------------------------------------------------------------------
 public static class GameComponentsLookup {
 
-    public const int Status = 0;
-    public const int StatusTypeId = 1;
+    public const int Active = 0;
+    public const int Destructed = 1;
+    public const int Hp = 2;
+    public const int Id = 3;
+    public const int LayerMask = 4;
+    public const int MaxHp = 5;
+    public const int SelfDestructTimer = 6;
+    public const int ViewPath = 7;
+    public const int DamageStatus = 8;
+    public const int Status = 9;
+    public const int StatusOwner = 10;
+    public const int StatusTarget = 11;
+    public const int StatusTypeId = 12;
 
-    public const int TotalComponents = 2;
+    public const int TotalComponents = 13;
 
     public static readonly string[] componentNames = {
+        "Active",
+        "Destructed",
+        "Hp",
+        "Id",
+        "LayerMask",
+        "MaxHp",
+        "SelfDestructTimer",
+        "ViewPath",
+        "DamageStatus",
         "Status",
+        "StatusOwner",
+        "StatusTarget",
         "StatusTypeId"
     };
 
     public static readonly System.Type[] componentTypes = {
+        typeof(Code.Common.Active),
+        typeof(Code.Common.Destructed),
+        typeof(Code.Common.Hp),
+        typeof(Code.Common.Id),
+        typeof(Code.Common.LayerMaskComponent),
+        typeof(Code.Common.MaxHp),
+        typeof(Code.Common.SelfDestructTimer),
+        typeof(Code.Common.ViewPath),
+        typeof(Code.Features.Statuses.Components.DamageStatus),
         typeof(Code.Features.Statuses.Components.StatusComponent),
+        typeof(Code.Features.Statuses.Components.StatusOwner),
+        typeof(Code.Features.Statuses.Components.StatusTarget),
         typeof(Code.Features.Statuses.Components.StatusTypeIdComponent)
     };
 }

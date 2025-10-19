@@ -1,9 +1,14 @@
-﻿namespace Code.Features.Statuses
+﻿using Code.Features.Statuses.Systems;
+using Code.Infrastructure.Systems;
+
+namespace Code.Features.Statuses
 {
     public class StatusFeature : Feature
     {
-        public StatusFeature()
+        public StatusFeature(ISystemFactory systemFactory)
         {
+            Add(systemFactory.Create<TestDamageStatusSystem>());
+            Add(systemFactory.Create<ApplyDamageStatusSystem>());
         }
     }
 }

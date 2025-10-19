@@ -2,7 +2,7 @@
 {
     public enum StatusTypeId
     {
-        Unknown = 0,
+        None = 0,
         Damage = 1
     }
 }
