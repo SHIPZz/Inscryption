@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Features.Enemy.Services;
+using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -7,12 +9,16 @@ namespace Code.Features.Turn.Systems
     public class ProcessSwitchTurnRequestSystem : IExecuteSystem
     {
         private readonly GameContext _game;
+        private readonly IHeroProvider _heroProvider;
+        private readonly IEnemyProvider _enemyProvider;
         private readonly IGroup<GameEntity> _switchTurnRequests;
         private readonly List<GameEntity> _buffer = new(4);
 
-        public ProcessSwitchTurnRequestSystem(GameContext game)
+        public ProcessSwitchTurnRequestSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
         {
             _game = game;
+            _heroProvider = heroProvider;
+            _enemyProvider = enemyProvider;
 
             _switchTurnRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.SwitchTurnRequest));
@@ -29,8 +35,8 @@ namespace Code.Features.Turn.Systems
             {
                 if (!turnSwitched)
                 {
-                    GameEntity hero = GetHero();
-                    GameEntity enemy = GetEnemy();
+                    GameEntity hero = _heroProvider.GetHero();
+                    GameEntity enemy = _enemyProvider.GetEnemy();
 
                     if (hero == null || enemy == null)
                     {
@@ -59,15 +65,11 @@ namespace Code.Features.Turn.Systems
 
         private void SwitchTurn(GameEntity currentPlayer, GameEntity nextPlayer, string nextPlayerName)
         {
-            if (currentPlayer.isHero)
-                currentPlayer.isHeroTurn = false;
-            else if (currentPlayer.isEnemyTurn)
-                currentPlayer.isEnemyTurn = false;
-
-            if (nextPlayer.isHero)
-                nextPlayer.isHeroTurn = true;
-            else if (nextPlayer.isEnemy)
-                nextPlayer.isEnemyTurn = true;
+            currentPlayer.isHeroTurn = false;
+            currentPlayer.isEnemyTurn = false;
+            
+            nextPlayer.isHeroTurn = nextPlayer.isHero;
+            nextPlayer.isEnemyTurn = nextPlayer.isEnemy;
 
             if (currentPlayer.hasCardsPlacedThisTurn)
                 currentPlayer.ReplaceCardsPlacedThisTurn(0);
@@ -78,26 +80,6 @@ namespace Code.Features.Turn.Systems
             _game.CreateEntity().AddDrawCardRequest(nextPlayer.Id);
 
             Debug.Log($"[ProcessSwitchTurnRequestSystem] Turn switched to {nextPlayerName} (ID={nextPlayer.Id})");
-        }
-
-        private GameEntity GetHero()
-        {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Hero))
-            {
-                if (!entity.isDestructed)
-                    return entity;
-            }
-            return null;
-        }
-
-        private GameEntity GetEnemy()
-        {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Enemy))
-            {
-                if (!entity.isDestructed)
-                    return entity;
-            }
-            return null;
         }
     }
 }

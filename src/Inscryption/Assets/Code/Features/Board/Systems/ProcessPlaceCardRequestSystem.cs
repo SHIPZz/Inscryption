@@ -8,6 +8,7 @@ namespace Code.Features.Board.Systems
         private readonly InputContext _input;
         private readonly GameContext _game;
         private readonly IGroup<InputEntity> _requests;
+        private readonly System.Collections.Generic.List<InputEntity> _buffer = new System.Collections.Generic.List<InputEntity>();
 
         public ProcessPlaceCardRequestSystem(InputContext input, GameContext game)
         {
@@ -18,7 +19,7 @@ namespace Code.Features.Board.Systems
 
         public void Execute()
         {
-            foreach (InputEntity request in _requests.GetEntities())
+            foreach (InputEntity request in _requests.GetEntities(_buffer))
             {
                 int slotId = request.SlotClickRequest;
                 GameEntity slot = _game.GetEntityWithId(slotId);

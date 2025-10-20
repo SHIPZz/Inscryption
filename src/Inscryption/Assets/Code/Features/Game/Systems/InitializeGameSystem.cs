@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Code.Common.Extensions;
+using Code.Common.Random;
 using Code.Features.Board.Services;
 using Code.Features.Cards.Data;
 using Code.Features.Cards.Services;
@@ -20,6 +21,7 @@ namespace Code.Features.Game.Systems
         private readonly ICardFactory _cardFactory;
         private readonly IBoardFactory _boardFactory;
         private readonly IConfigService _configService;
+        private readonly IRandomService _randomService;
 
         private GameConfig _gameConfig;
         private BoardConfig _boardConfig;
@@ -30,7 +32,8 @@ namespace Code.Features.Game.Systems
             IEnemyFactory enemyFactory,
             ICardFactory cardFactory,
             IBoardFactory boardFactory,
-            IConfigService configService)
+            IConfigService configService,
+            IRandomService randomService)
         {
             _game = game;
             _heroFactory = heroFactory;
@@ -38,6 +41,7 @@ namespace Code.Features.Game.Systems
             _cardFactory = cardFactory;
             _boardFactory = boardFactory;
             _configService = configService;
+            _randomService = randomService;
         }
 
         public void Initialize()
@@ -90,8 +94,8 @@ namespace Code.Features.Game.Systems
 
             for (int i = 0; i < _gameConfig.DeckSize / 2; i++)
             {
-                CardData heroCardData = cardConfig.Cards[UnityEngine.Random.Range(0, cardConfig.Cards.Count)];
-                CardData enemyCardData = cardConfig.Cards[UnityEngine.Random.Range(0, cardConfig.Cards.Count)];
+                CardData heroCardData = cardConfig.Cards[_randomService.Range(0, cardConfig.Cards.Count - 1)];
+                CardData enemyCardData = cardConfig.Cards[_randomService.Range(0, cardConfig.Cards.Count - 1)];
 
                 deck.Add(new DeckCard(heroId, heroCardData));
                 deck.Add(new DeckCard(enemyId, enemyCardData));

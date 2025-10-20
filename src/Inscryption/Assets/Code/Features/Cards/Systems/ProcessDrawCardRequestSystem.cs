@@ -9,6 +9,7 @@ namespace Code.Features.Cards.Systems
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _drawRequests;
         private readonly IGroup<GameEntity> _deckCards;
+        private readonly IGroup<GameEntity> _playersWithHand;
         private readonly List<GameEntity> _buffer = new(8);
 
         private const int MaxHandSize = 5;
@@ -23,6 +24,9 @@ namespace Code.Features.Cards.Systems
             _deckCards = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.Card, GameMatcher.InHand)
                 .NoneOf(GameMatcher.Destructed));
+
+            _playersWithHand = game.GetGroup(GameMatcher
+                .AllOf(GameMatcher.CardsInHand));
         }
 
         public void Execute()
@@ -85,7 +89,7 @@ namespace Code.Features.Cards.Systems
 
         private bool IsCardInAnyHand(int cardId)
         {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.CardsInHand))
+            foreach (GameEntity entity in _playersWithHand)
             {
                 if (entity.CardsInHand.Contains(cardId))
                     return true;

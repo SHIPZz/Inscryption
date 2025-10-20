@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Features.Enemy.Services;
+using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -7,13 +9,17 @@ namespace Code.Features.Turn.Systems
     public class ProcessEndTurnRequestSystem : IExecuteSystem
     {
         private readonly GameContext _game;
+        private readonly IHeroProvider _heroProvider;
+        private readonly IEnemyProvider _enemyProvider;
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _attackPhases;
         private readonly List<GameEntity> _buffer = new(4);
 
-        public ProcessEndTurnRequestSystem(GameContext game)
+        public ProcessEndTurnRequestSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
         {
             _game = game;
+            _heroProvider = heroProvider;
+            _enemyProvider = enemyProvider;
 
             _endTurnRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.EndTurnRequest));
@@ -59,17 +65,13 @@ namespace Code.Features.Turn.Systems
 
         private GameEntity GetActivePlayer()
         {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Hero))
-            {
-                if (entity.isHeroTurn)
-                    return entity;
-            }
+            GameEntity hero = _heroProvider.GetActiveHero();
+            if (hero != null)
+                return hero;
 
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Enemy))
-            {
-                if (entity.isEnemyTurn)
-                    return entity;
-            }
+            GameEntity enemy = _enemyProvider.GetActiveEnemy();
+            if (enemy != null)
+                return enemy;
 
             return null;
         }

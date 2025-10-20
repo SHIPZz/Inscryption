@@ -9,6 +9,7 @@ namespace Code.Features.Input.Systems
         private readonly InputContext _input;
         private readonly GameContext _game;
         private readonly IGroup<InputEntity> _requests;
+        private readonly List<InputEntity> _buffer = new List<InputEntity>();
 
         public ProcessCardClickRequestSystem(InputContext input, GameContext game)
         {
@@ -19,48 +20,67 @@ namespace Code.Features.Input.Systems
 
         public void Execute()
         {
-            foreach (InputEntity request in _requests.GetEntities())
+            foreach (InputEntity request in _requests.GetEntities(_buffer))
             {
                 int cardId = request.CardClickRequest;
                 GameEntity card = _game.GetEntityWithId(cardId);
 
                 if (card is { isCard: true, isHeroOwner: true })
                 {
-                    if (!_game.hasSelectedCards)
-                    {
-                        _game.ReplaceSelectedCards(new List<int> { cardId });
-                        Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
-                    }
-                    else
-                    {
-                        List<int> selectedCards = _game.SelectedCards;
-                        
-                        if (selectedCards.Contains(cardId))
-                        {
-                            selectedCards.Remove(cardId);
-                            
-                            if (selectedCards.Count == 0)
-                            {
-                                _game.RemoveSelectedCards();
-                            }
-                            else
-                            {
-                                _game.ReplaceSelectedCards(selectedCards);
-                            }
-                            
-                            Debug.Log($"[ProcessCardClickRequest] Card {cardId} deselected");
-                        }
-                        else
-                        {
-                            selectedCards.Add(cardId);
-                            _game.ReplaceSelectedCards(selectedCards);
-                            Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
-                        }
-                    }
+                    ToggleCardSelection(cardId);
                 }
 
                 request.Destroy();
             }
+        }
+
+        private void ToggleCardSelection(int cardId)
+        {
+            if (!_game.hasSelectedCards)
+            {
+                SelectCard(cardId);
+                return;
+            }
+
+            List<int> selectedCards = _game.SelectedCards;
+
+            if (selectedCards.Contains(cardId))
+            {
+                DeselectCard(cardId, selectedCards);
+            }
+            else
+            {
+                AddToSelection(cardId, selectedCards);
+            }
+        }
+
+        private void SelectCard(int cardId)
+        {
+            _game.ReplaceSelectedCards(new List<int> { cardId });
+            Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
+        }
+
+        private void DeselectCard(int cardId, List<int> selectedCards)
+        {
+            selectedCards.Remove(cardId);
+
+            if (selectedCards.Count == 0)
+            {
+                _game.RemoveSelectedCards();
+            }
+            else
+            {
+                _game.ReplaceSelectedCards(selectedCards);
+            }
+
+            Debug.Log($"[ProcessCardClickRequest] Card {cardId} deselected");
+        }
+
+        private void AddToSelection(int cardId, List<int> selectedCards)
+        {
+            selectedCards.Add(cardId);
+            _game.ReplaceSelectedCards(selectedCards);
+            Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
         }
     }
 }

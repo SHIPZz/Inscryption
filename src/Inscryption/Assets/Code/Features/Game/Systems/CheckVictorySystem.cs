@@ -1,3 +1,5 @@
+using Code.Features.Enemy.Services;
+using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -5,12 +7,14 @@ namespace Code.Features.Game.Systems
 {
     public class CheckVictorySystem : IExecuteSystem
     {
-        private readonly GameContext _game;
+        private readonly IHeroProvider _heroProvider;
+        private readonly IEnemyProvider _enemyProvider;
         private bool _gameEnded = false;
 
-        public CheckVictorySystem(GameContext game)
+        public CheckVictorySystem(IHeroProvider heroProvider, IEnemyProvider enemyProvider)
         {
-            _game = game;
+            _heroProvider = heroProvider;
+            _enemyProvider = enemyProvider;
         }
 
         public void Execute()
@@ -18,8 +22,8 @@ namespace Code.Features.Game.Systems
             if (_gameEnded)
                 return;
 
-            GameEntity hero = GetHero();
-            GameEntity enemy = GetEnemy();
+            GameEntity hero = _heroProvider.GetHero();
+            GameEntity enemy = _enemyProvider.GetEnemy();
 
             if (hero == null || enemy == null)
                 return;
@@ -36,26 +40,6 @@ namespace Code.Features.Game.Systems
                 _gameEnded = true;
                 enemy.isDestructed = true;
             }
-        }
-
-        private GameEntity GetHero()
-        {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Hero))
-            {
-                if (!entity.isDestructed)
-                    return entity;
-            }
-            return null;
-        }
-
-        private GameEntity GetEnemy()
-        {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Enemy))
-            {
-                if (!entity.isDestructed)
-                    return entity;
-            }
-            return null;
         }
     }
 }
