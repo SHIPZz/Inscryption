@@ -1,0 +1,39 @@
+using Code.Common.Destruct;
+using Code.Features.Battle;
+using Code.Features.Board;
+using Code.Features.Camera;
+using Code.Features.Cards;
+using Code.Features.Enemy;
+using Code.Features.Game;
+using Code.Features.Hero;
+using Code.Features.Input;
+using Code.Features.Movement;
+using Code.Features.Statuses;
+using Code.Features.Turn;
+using Code.Features.View;
+using Code.Infrastructure.Systems;
+
+namespace Code.Features
+{
+    public class GameRootFeature : Feature
+    {
+        public GameRootFeature(ISystemFactory systemFactory)
+        {
+            Add(systemFactory.Create<GameStateFeature>());
+            Add(systemFactory.Create<BindViewFeature>());
+            Add(systemFactory.Create<InputFeature>());
+            Add(systemFactory.Create<CameraFeature>());
+            Add(systemFactory.Create<MovementFeature>());
+            Add(systemFactory.Create<CardFeature>());
+            Add(systemFactory.Create<HeroFeature>());
+            Add(systemFactory.Create<EnemyFeature>());
+            Add(systemFactory.Create<BoardFeature>());
+            Add(systemFactory.Create<TurnFeature>());
+            Add(systemFactory.Create<BattleFeature>());
+            
+            Add(systemFactory.Create<StatusFeature>());
+            Add(systemFactory.Create<ProcessDestructedFeature>());
+        }
+    }
+}
+
