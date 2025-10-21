@@ -10,19 +10,15 @@ namespace Code.Common.Systems
         {
             _entities = game.GetGroup(GameMatcher.AllOf(
                 GameMatcher.WorldPosition,
-                GameMatcher.View));
+                GameMatcher.Transform));
         }
 
         public void Execute()
         {
             foreach (GameEntity entity in _entities)
             {
-                if (entity.View != null && entity.View.transform != null)
-                {
-                    entity.View.transform.position = entity.WorldPosition;
-                }
+                entity.Transform.position = entity.WorldPosition;
             }
         }
     }
 }
-

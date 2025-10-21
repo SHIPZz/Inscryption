@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Features.Enemy.Services;
+using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -7,14 +9,18 @@ namespace Code.Features.Battle.Systems
     public class ProcessAttackPhaseSystem : IExecuteSystem
     {
         private readonly GameContext _game;
+        private readonly IHeroProvider _heroProvider;
+        private readonly IEnemyProvider _enemyProvider;
         private readonly IGroup<GameEntity> _attackPhases;
         private readonly IGroup<GameEntity> _switchTurnRequests;
         private readonly IGroup<GameEntity> _cardsOnBoard;
         private readonly List<GameEntity> _buffer = new(8);
 
-        public ProcessAttackPhaseSystem(GameContext game)
+        public ProcessAttackPhaseSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
         {
             _game = game;
+            _heroProvider = heroProvider;
+            _enemyProvider = enemyProvider;
 
             _attackPhases = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.AttackPhase));
@@ -84,17 +90,13 @@ namespace Code.Features.Battle.Systems
 
         private GameEntity GetActivePlayer()
         {
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Hero))
-            {
-                if (entity.isHeroTurn)
-                    return entity;
-            }
+            GameEntity hero = _heroProvider.GetActiveHero();
+            if (hero != null)
+                return hero;
 
-            foreach (GameEntity entity in _game.GetEntities(GameMatcher.Enemy))
-            {
-                if (entity.isEnemyTurn)
-                    return entity;
-            }
+            GameEntity enemy = _enemyProvider.GetActiveEnemy();
+            if (enemy != null)
+                return enemy;
 
             return null;
         }
@@ -102,15 +104,10 @@ namespace Code.Features.Battle.Systems
         private GameEntity GetOpponent(GameEntity player)
         {
             if (player.isHero)
-            {
-                foreach (GameEntity enemy in _game.GetEntities(GameMatcher.Enemy))
-                    return enemy;
-            }
-            else if (player.isEnemy)
-            {
-                foreach (GameEntity hero in _game.GetEntities(GameMatcher.Hero))
-                    return hero;
-            }
+                return _enemyProvider.GetEnemy();
+            
+            if (player.isEnemy)
+                return _heroProvider.GetHero();
 
             return null;
         }

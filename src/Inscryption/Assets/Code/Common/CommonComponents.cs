@@ -19,7 +19,7 @@ namespace Code.Common
     
     [Game] public class Damage : IComponent { public int Value; }
     
-    [Game] public class TransformReference : IComponent { public Transform Value; }
+    [Game] public class TransformComponent : IComponent { public Transform Value; }
     
     [Game] public class SpriteRendererReference : IComponent { public SpriteRenderer Value; }
     

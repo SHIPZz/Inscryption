@@ -21,7 +21,7 @@ public static class GameComponentsLookup {
     public const int SelfDestructTimer = 10;
     public const int SpriteRendererReference = 11;
     public const int TrackCameraRotation = 12;
-    public const int TransformReference = 13;
+    public const int Transform = 13;
     public const int WorldPosition = 14;
     public const int WorldRotation = 15;
     public const int BoardSlot = 16;
@@ -80,7 +80,7 @@ public static class GameComponentsLookup {
         "SelfDestructTimer",
         "SpriteRendererReference",
         "TrackCameraRotation",
-        "TransformReference",
+        "Transform",
         "WorldPosition",
         "WorldRotation",
         "BoardSlot",
@@ -138,7 +138,7 @@ public static class GameComponentsLookup {
         typeof(Code.Common.SelfDestructTimer),
         typeof(Code.Common.SpriteRendererReference),
         typeof(Code.Common.TrackCameraRotation),
-        typeof(Code.Common.TransformReference),
+        typeof(Code.Common.TransformComponent),
         typeof(Code.Common.WorldPosition),
         typeof(Code.Common.WorldRotation),
         typeof(Code.Features.Board.BoardSlot),
