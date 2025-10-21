@@ -106,54 +106,61 @@ namespace Code.Features.Game.Systems
 
         private void DealStartingHand(GameEntity player, List<DeckCard> deck, int count, bool heroOwner = false)
         {
-            bool isHero = player.isHero;
-            int cardIndex = 0;
+            int cardsDealt = 0;
 
             for (int i = 0; i < count; i++)
             {
-                if (deck.Count == 0) 
+                if (deck.Count == 0)
                     break;
 
-                DeckCard deckCard = FindCardInDeck(deck, player.Id);
-                
-                if (deckCard.CardData != null)
-                {
-                    deck.Remove(deckCard);
+                int cardIndexInDeck = FindCardIndexInDeck(deck, player.Id);
 
-                    Vector3 handPosition = isHero 
-                        ? _boardConfig.GetHeroHandPosition(cardIndex) 
-                        : _boardConfig.GetEnemyHandPosition(cardIndex);
+                if (cardIndexInDeck == -1)
+                    break;
 
-                    GameEntity card = _cardFactory.CreateCard(new CardCreateData(
-                        deckCard.OwnerId, 
-                        deckCard.CardData.Hp, 
-                        deckCard.CardData.Damage, 
-                        inHand: true,
-                        icon: deckCard.CardData.VisualData?.Icon,
-                        position: handPosition))
-                            .With(x => x.isHeroOwner = heroOwner)
-                            .With(x => x.isEnemyOwner = !heroOwner)
-                        ;
-                    
+                DeckCard deckCard = deck[cardIndexInDeck];
+                deck.RemoveAt(cardIndexInDeck);
 
-                    player.CardsInHand.Add(card.Id);
+                GameEntity card = CreateCardInHand(player, deckCard, cardsDealt, heroOwner);
+                player.CardsInHand.Add(card.Id);
 
-                    cardIndex++;
-                }
+                cardsDealt++;
             }
 
-            Debug.Log($"[InitializeGameSystem] Player {player.Id} received {player.CardsInHand.Count} cards");
+            Debug.Log($"[InitializeGameSystem] Player {player.Id} received {cardsDealt} cards");
         }
 
-        private DeckCard FindCardInDeck(List<DeckCard> deck, int ownerId)
+        private GameEntity CreateCardInHand(GameEntity player, DeckCard deckCard, int handIndex, bool heroOwner)
         {
-            foreach (DeckCard card in deck)
+            Vector3 handPosition = GetHandPosition(player.isHero, handIndex);
+
+            return _cardFactory.CreateCard(new CardCreateData(
+                    deckCard.OwnerId,
+                    deckCard.CardData.Hp,
+                    deckCard.CardData.Damage,
+                    inHand: true,
+                    icon: deckCard.CardData.VisualData?.Icon,
+                    position: handPosition))
+                .With(x => x.isHeroOwner = heroOwner)
+                .With(x => x.isEnemyOwner = !heroOwner);
+        }
+
+        private Vector3 GetHandPosition(bool isHero, int cardIndex)
+        {
+            return isHero
+                ? _boardConfig.GetHeroHandPosition(cardIndex)
+                : _boardConfig.GetEnemyHandPosition(cardIndex);
+        }
+
+        private int FindCardIndexInDeck(List<DeckCard> deck, int ownerId)
+        {
+            for (int i = 0; i < deck.Count; i++)
             {
-                if (card.OwnerId == ownerId)
-                    return card;
+                if (deck[i].OwnerId == ownerId)
+                    return i;
             }
-            
-            return new DeckCard();
+
+            return -1;
         }
 
         private struct DeckCard

@@ -13,6 +13,7 @@ namespace Code.Features.Enemy.Systems
         private readonly IGroup<GameEntity> _enemies;
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _placeCardRequests;
+        private readonly IGroup<GameEntity> _boardSlots;
 
         public EnemyAISystem(GameContext game, IRandomService randomService)
         {
@@ -28,6 +29,9 @@ namespace Code.Features.Enemy.Systems
 
             _placeCardRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.PlaceCardRequest));
+
+            _boardSlots = game.GetGroup(GameMatcher
+                .AllOf(GameMatcher.BoardSlot));
         }
 
         public void Execute()
@@ -83,7 +87,7 @@ namespace Code.Features.Enemy.Systems
 
         private void GetAvailableSlots(int ownerId, List<GameEntity> resultSlots)
         {
-            foreach (GameEntity slot in _game.GetEntities(GameMatcher.BoardSlot))
+            foreach (GameEntity slot in _boardSlots)
             {
                 if (slot.SlotOwner == ownerId && slot.OccupiedBy == -1)
                 {

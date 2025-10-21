@@ -29,36 +29,36 @@ namespace Code.Features.Turn.Systems
             if (_switchTurnRequests.count == 0)
                 return;
 
-            bool turnSwitched = false;
+            GameEntity hero = _heroProvider.GetHero();
+            GameEntity enemy = _enemyProvider.GetEnemy();
 
+            if (hero == null || enemy == null)
+            {
+                Debug.LogWarning("[ProcessSwitchTurnRequestSystem] Hero or Enemy not found!");
+                DestroyAllRequests();
+                return;
+            }
+
+            ProcessTurnSwitch(hero, enemy);
+            DestroyAllRequests();
+        }
+
+        private void ProcessTurnSwitch(GameEntity hero, GameEntity enemy)
+        {
+            if (hero.isHeroTurn)
+            {
+                SwitchTurn(hero, enemy, "Enemy");
+            }
+            else if (enemy.isEnemyTurn)
+            {
+                SwitchTurn(enemy, hero, "Hero");
+            }
+        }
+
+        private void DestroyAllRequests()
+        {
             foreach (GameEntity request in _switchTurnRequests.GetEntities(_buffer))
             {
-                if (!turnSwitched)
-                {
-                    GameEntity hero = _heroProvider.GetHero();
-                    GameEntity enemy = _enemyProvider.GetEnemy();
-
-                    if (hero == null || enemy == null)
-                    {
-                        Debug.LogWarning("[ProcessSwitchTurnRequestSystem] Hero or Enemy not found!");
-                        
-                        request.isDestructed = true;
-                        
-                        continue;
-                    }
-
-                    if (hero.isHeroTurn)
-                    {
-                        SwitchTurn(hero, enemy, "Enemy");
-                        turnSwitched = true;
-                    }
-                    else if (enemy.isEnemyTurn)
-                    {
-                        SwitchTurn(enemy, hero, "Hero");
-                        turnSwitched = true;
-                    }
-                }
-
                 request.isDestructed = true;
             }
         }

@@ -33,30 +33,28 @@ namespace Code.Features.Turn.Systems
             if (_endTurnRequests.count == 0)
                 return;
 
-            if (_attackPhases.count > 0)
+            bool shouldProcessTurn = _attackPhases.count == 0;
+
+            if (shouldProcessTurn)
             {
-                foreach (GameEntity request in _endTurnRequests.GetEntities(_buffer))
+                GameEntity activePlayer = GetActivePlayer();
+
+                if (activePlayer != null)
                 {
-                    request.isDestructed = true;
+                    Debug.Log($"[ProcessEndTurnRequestSystem] End turn for player {activePlayer.Id}, starting attack phase");
+                    _game.CreateEntity().isAttackPhase = true;
                 }
-                return;
+                else
+                {
+                    Debug.LogWarning("[ProcessEndTurnRequestSystem] No active player found!");
+                }
             }
 
-            GameEntity firstRequest = _endTurnRequests.GetEntities(_buffer)[0];
-            
-            GameEntity activePlayer = GetActivePlayer();
+            DestroyAllRequests();
+        }
 
-            if (activePlayer == null)
-            {
-                Debug.LogWarning("[ProcessEndTurnRequestSystem] No active player found!");
-                firstRequest.isDestructed = true;
-                return;
-            }
-
-            Debug.Log($"[ProcessEndTurnRequestSystem] End turn for player {activePlayer.Id}, starting attack phase");
-
-            _game.CreateEntity().isAttackPhase = true;
-
+        private void DestroyAllRequests()
+        {
             foreach (GameEntity request in _endTurnRequests.GetEntities(_buffer))
             {
                 request.isDestructed = true;

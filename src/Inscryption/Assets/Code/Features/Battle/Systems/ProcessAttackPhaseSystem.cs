@@ -15,6 +15,8 @@ namespace Code.Features.Battle.Systems
         private readonly IGroup<GameEntity> _switchTurnRequests;
         private readonly IGroup<GameEntity> _cardsOnBoard;
         private readonly List<GameEntity> _buffer = new(8);
+        private readonly List<GameEntity> _playerCardsCache = new();
+        private readonly Dictionary<int, GameEntity> _enemyCardsByLane = new();
 
         public ProcessAttackPhaseSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
         {
@@ -60,11 +62,11 @@ namespace Code.Features.Battle.Systems
 
             Debug.Log($"[ProcessAttackPhaseSystem] Processing attacks for player {activePlayer.Id}");
 
-            List<GameEntity> attackingCards = GetPlayerCardsOnBoard(activePlayer.Id);
+            BuildAttackCaches(activePlayer.Id);
 
-            foreach (GameEntity attacker in attackingCards)
+            foreach (GameEntity attacker in _playerCardsCache)
             {
-                GameEntity target = FindTargetForAttacker(attacker, activePlayer.Id);
+                GameEntity target = FindTargetForAttacker(attacker);
 
                 if (target != null)
                 {
@@ -112,34 +114,30 @@ namespace Code.Features.Battle.Systems
             return null;
         }
 
-        private List<GameEntity> GetPlayerCardsOnBoard(int playerId)
+        private void BuildAttackCaches(int playerId)
         {
-            List<GameEntity> cards = new List<GameEntity>();
+            _playerCardsCache.Clear();
+            _enemyCardsByLane.Clear();
 
             foreach (GameEntity card in _cardsOnBoard)
             {
                 if (card.CardOwner == playerId)
-                    cards.Add(card);
-            }
-
-            cards.Sort((a, b) => a.Lane.CompareTo(b.Lane));
-
-            return cards;
-        }
-
-        private GameEntity FindTargetForAttacker(GameEntity attacker, int attackerOwnerId)
-        {
-            int attackerLane = attacker.Lane;
-
-            foreach (GameEntity card in _cardsOnBoard)
-            {
-                if (card.CardOwner != attackerOwnerId && card.Lane == attackerLane)
                 {
-                    return card;
+                    _playerCardsCache.Add(card);
+                }
+                else
+                {
+                    _enemyCardsByLane[card.Lane] = card;
                 }
             }
 
-            return null;
+            _playerCardsCache.Sort((a, b) => a.Lane.CompareTo(b.Lane));
+        }
+
+        private GameEntity FindTargetForAttacker(GameEntity attacker)
+        {
+            _enemyCardsByLane.TryGetValue(attacker.Lane, out GameEntity target);
+            return target;
         }
 
         private void CreateAttackRequest(GameEntity attacker, GameEntity target)

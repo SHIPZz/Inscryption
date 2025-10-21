@@ -8,6 +8,7 @@ namespace Code.Features.Battle.Systems
     {
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _attackRequests;
+        private readonly IGroup<GameEntity> _boardSlots;
         private readonly List<GameEntity> _buffer = new(16);
 
         public ProcessAttackRequestSystem(GameContext game)
@@ -16,6 +17,9 @@ namespace Code.Features.Battle.Systems
 
             _attackRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.AttackRequest));
+
+            _boardSlots = game.GetGroup(GameMatcher
+                .AllOf(GameMatcher.BoardSlot));
         }
 
         public void Execute()
@@ -68,7 +72,7 @@ namespace Code.Features.Battle.Systems
             if (!card.hasLane)
                 return;
 
-            foreach (GameEntity slot in _game.GetEntities(GameMatcher.BoardSlot))
+            foreach (GameEntity slot in _boardSlots)
             {
                 if (slot.OccupiedBy == card.Id)
                 {

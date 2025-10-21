@@ -38,49 +38,45 @@ namespace Code.Features.Input.Systems
         {
             if (!_game.hasSelectedCards)
             {
-                SelectCard(cardId);
+                _game.ReplaceSelectedCards(new List<int> { cardId });
+                Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
                 return;
             }
 
             List<int> selectedCards = _game.SelectedCards;
+            int cardIndex = FindCardIndex(selectedCards, cardId);
 
-            if (selectedCards.Contains(cardId))
+            if (cardIndex != -1)
             {
-                DeselectCard(cardId, selectedCards);
+                RemoveCardAtIndex(selectedCards, cardIndex);
+                Debug.Log($"[ProcessCardClickRequest] Card {cardId} deselected");
             }
             else
             {
-                AddToSelection(cardId, selectedCards);
+                selectedCards.Add(cardId);
+                _game.ReplaceSelectedCards(selectedCards);
+                Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
             }
         }
 
-        private void SelectCard(int cardId)
+        private int FindCardIndex(List<int> cards, int cardId)
         {
-            _game.ReplaceSelectedCards(new List<int> { cardId });
-            Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (cards[i] == cardId)
+                    return i;
+            }
+            return -1;
         }
 
-        private void DeselectCard(int cardId, List<int> selectedCards)
+        private void RemoveCardAtIndex(List<int> selectedCards, int index)
         {
-            selectedCards.Remove(cardId);
+            selectedCards.RemoveAt(index);
 
             if (selectedCards.Count == 0)
-            {
                 _game.RemoveSelectedCards();
-            }
             else
-            {
                 _game.ReplaceSelectedCards(selectedCards);
-            }
-
-            Debug.Log($"[ProcessCardClickRequest] Card {cardId} deselected");
-        }
-
-        private void AddToSelection(int cardId, List<int> selectedCards)
-        {
-            selectedCards.Add(cardId);
-            _game.ReplaceSelectedCards(selectedCards);
-            Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
         }
     }
 }

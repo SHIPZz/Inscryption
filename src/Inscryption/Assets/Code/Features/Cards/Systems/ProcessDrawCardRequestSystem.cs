@@ -11,6 +11,7 @@ namespace Code.Features.Cards.Systems
         private readonly IGroup<GameEntity> _deckCards;
         private readonly IGroup<GameEntity> _playersWithHand;
         private readonly List<GameEntity> _buffer = new(8);
+        private readonly HashSet<int> _cardsInHands = new();
 
         private const int MaxHandSize = 5;
 
@@ -31,6 +32,8 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
+            BuildCardsInHandsCache();
+
             foreach (GameEntity request in _drawRequests.GetEntities(_buffer))
             {
                 int playerId = request.drawCardRequest.PlayerId;
@@ -58,7 +61,7 @@ namespace Code.Features.Cards.Systems
                 }
 
                 GameEntity cardToDraw = FindAvailableCard(playerId);
-                
+
                 if (cardToDraw == null)
                 {
                     Debug.Log($"[ProcessDrawCardRequestSystem] No cards left in deck for player {playerId}");
@@ -67,9 +70,23 @@ namespace Code.Features.Cards.Systems
                 }
 
                 player.CardsInHand.Add(cardToDraw.Id);
+                _cardsInHands.Add(cardToDraw.Id);
                 Debug.Log($"[ProcessDrawCardRequestSystem] Player {playerId} drew card {cardToDraw.Id} (HP={cardToDraw.Hp}, DMG={cardToDraw.Damage})");
 
                 request.isDestructed = true;
+            }
+        }
+
+        private void BuildCardsInHandsCache()
+        {
+            _cardsInHands.Clear();
+
+            foreach (GameEntity player in _playersWithHand)
+            {
+                foreach (int cardId in player.CardsInHand)
+                {
+                    _cardsInHands.Add(cardId);
+                }
             }
         }
 
@@ -77,24 +94,14 @@ namespace Code.Features.Cards.Systems
         {
             foreach (GameEntity card in _deckCards)
             {
-                if (card.CardOwner == ownerId && 
-                    card.isInHand && 
-                    !IsCardInAnyHand(card.Id))
+                if (card.CardOwner == ownerId &&
+                    card.isInHand &&
+                    !_cardsInHands.Contains(card.Id))
                 {
                     return card;
                 }
             }
             return null;
-        }
-
-        private bool IsCardInAnyHand(int cardId)
-        {
-            foreach (GameEntity entity in _playersWithHand)
-            {
-                if (entity.CardsInHand.Contains(cardId))
-                    return true;
-            }
-            return false;
         }
     }
 }

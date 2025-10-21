@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Entitas;
 
 namespace Code.Features.Cards.Systems
@@ -7,7 +6,8 @@ namespace Code.Features.Cards.Systems
     public class UpdateSelectedCardVisualSystem : IExecuteSystem
     {
         private readonly GameContext _game;
-        private readonly HashSet<int> _previousSelectedCardIds = new HashSet<int>();
+        private readonly HashSet<int> _previousSelectedCardIds = new();
+        private readonly HashSet<int> _currentSelectedCardIds = new();
 
         public UpdateSelectedCardVisualSystem(GameContext game)
         {
@@ -16,39 +16,61 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
-            HashSet<int> currentSelectedCardIds = new HashSet<int>();
-            
+            _currentSelectedCardIds.Clear();
+
             if (_game.hasSelectedCards && _game.SelectedCards != null)
             {
-                currentSelectedCardIds = new HashSet<int>(_game.SelectedCards);
-            }
-
-            foreach (int cardId in _previousSelectedCardIds)
-            {
-                if (!currentSelectedCardIds.Contains(cardId))
+                foreach (int cardId in _game.SelectedCards)
                 {
-                    GameEntity card = _game.GetEntityWithId(cardId);
-                    if (card != null && card.hasCardAnimator)
-                    {
-                        card.CardAnimator.Deselect();
-                    }
+                    _currentSelectedCardIds.Add(cardId);
                 }
             }
 
-            foreach (int cardId in currentSelectedCardIds)
+            ProcessDeselectedCards();
+            ProcessSelectedCards();
+
+            UpdatePreviousSelection();
+        }
+
+        private void ProcessDeselectedCards()
+        {
+            foreach (int cardId in _previousSelectedCardIds)
+            {
+                if (!_currentSelectedCardIds.Contains(cardId))
+                {
+                    UpdateCardVisual(cardId, isSelected: false);
+                }
+            }
+        }
+
+        private void ProcessSelectedCards()
+        {
+            foreach (int cardId in _currentSelectedCardIds)
             {
                 if (!_previousSelectedCardIds.Contains(cardId))
                 {
-                    GameEntity card = _game.GetEntityWithId(cardId);
-                    if (card != null && card.hasCardAnimator)
-                    {
-                        card.CardAnimator.Select();
-                    }
+                    UpdateCardVisual(cardId, isSelected: true);
                 }
             }
+        }
 
+        private void UpdateCardVisual(int cardId, bool isSelected)
+        {
+            GameEntity card = _game.GetEntityWithId(cardId);
+
+            if (card != null && card.hasCardAnimator)
+            {
+                if (isSelected)
+                    card.CardAnimator.Select();
+                else
+                    card.CardAnimator.Deselect();
+            }
+        }
+
+        private void UpdatePreviousSelection()
+        {
             _previousSelectedCardIds.Clear();
-            _previousSelectedCardIds.UnionWith(currentSelectedCardIds);
+            _previousSelectedCardIds.UnionWith(_currentSelectedCardIds);
         }
     }
 }
