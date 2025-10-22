@@ -32,39 +32,43 @@ public static class GameComponentsLookup {
     public const int CardAnimator = 21;
     public const int CardIcon = 22;
     public const int CardOwner = 23;
-    public const int EnemyOwner = 24;
-    public const int HeroOwner = 25;
-    public const int InHand = 26;
-    public const int Lane = 27;
-    public const int OnBoard = 28;
-    public const int Enemy = 29;
-    public const int EnemyTurn = 30;
-    public const int CardsInHand = 31;
-    public const int Hero = 32;
-    public const int HeroTurn = 33;
-    public const int DamageStatus = 34;
-    public const int Status = 35;
-    public const int StatusOwner = 36;
-    public const int StatusTarget = 37;
-    public const int StatusTypeId = 38;
-    public const int StatusValue = 39;
-    public const int AttackPhase = 40;
-    public const int AttackRequest = 41;
-    public const int CardsPlacedThisTurn = 42;
-    public const int DrawCardRequest = 43;
-    public const int EndTurnRequest = 44;
-    public const int PlaceCardRequest = 45;
-    public const int SwitchTurnRequest = 46;
-    public const int LoadingView = 47;
-    public const int SelfInitializedView = 48;
-    public const int SelfInitializeEntityViewRequest = 49;
-    public const int View = 50;
-    public const int ViewAddressableKey = 51;
-    public const int ViewAssetReference = 52;
-    public const int ViewPath = 53;
-    public const int ViewPrefab = 54;
+    public const int CardStack = 24;
+    public const int DrawCardFromStackRequest = 25;
+    public const int EnemyOwner = 26;
+    public const int HeroOwner = 27;
+    public const int InHand = 28;
+    public const int Lane = 29;
+    public const int OnBoard = 30;
+    public const int Enemy = 31;
+    public const int EnemyTurn = 32;
+    public const int CardHorizontalOffset = 33;
+    public const int CardsInHand = 34;
+    public const int HandPosition = 35;
+    public const int Hero = 36;
+    public const int HeroTurn = 37;
+    public const int DamageStatus = 38;
+    public const int Status = 39;
+    public const int StatusOwner = 40;
+    public const int StatusTarget = 41;
+    public const int StatusTypeId = 42;
+    public const int StatusValue = 43;
+    public const int AttackPhase = 44;
+    public const int AttackRequest = 45;
+    public const int CardsPlacedThisTurn = 46;
+    public const int DrawCardRequest = 47;
+    public const int EndTurnRequest = 48;
+    public const int PlaceCardRequest = 49;
+    public const int SwitchTurnRequest = 50;
+    public const int LoadingView = 51;
+    public const int SelfInitializedView = 52;
+    public const int SelfInitializeEntityViewRequest = 53;
+    public const int View = 54;
+    public const int ViewAddressableKey = 55;
+    public const int ViewAssetReference = 56;
+    public const int ViewPath = 57;
+    public const int ViewPrefab = 58;
 
-    public const int TotalComponents = 55;
+    public const int TotalComponents = 59;
 
     public static readonly string[] componentNames = {
         "Active",
@@ -91,6 +95,8 @@ public static class GameComponentsLookup {
         "CardAnimator",
         "CardIcon",
         "CardOwner",
+        "CardStack",
+        "DrawCardFromStackRequest",
         "EnemyOwner",
         "HeroOwner",
         "InHand",
@@ -98,7 +104,9 @@ public static class GameComponentsLookup {
         "OnBoard",
         "Enemy",
         "EnemyTurn",
+        "CardHorizontalOffset",
         "CardsInHand",
+        "HandPosition",
         "Hero",
         "HeroTurn",
         "DamageStatus",
@@ -149,6 +157,8 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Cards.CardAnimatorComponent),
         typeof(Code.Features.Cards.CardIcon),
         typeof(Code.Features.Cards.CardOwner),
+        typeof(Code.Features.Cards.CardStack),
+        typeof(Code.Features.Cards.DrawCardFromStackRequest),
         typeof(Code.Features.Cards.EnemyOwner),
         typeof(Code.Features.Cards.HeroOwner),
         typeof(Code.Features.Cards.InHand),
@@ -156,7 +166,9 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Cards.OnBoard),
         typeof(Code.Features.Enemy.Enemy),
         typeof(Code.Features.Enemy.EnemyTurn),
+        typeof(Code.Features.Hero.CardHorizontalOffset),
         typeof(Code.Features.Hero.CardsInHand),
+        typeof(Code.Features.Hero.HandPosition),
         typeof(Code.Features.Hero.Hero),
         typeof(Code.Features.Hero.HeroTurn),
         typeof(Code.Features.Statuses.Components.DamageStatus),

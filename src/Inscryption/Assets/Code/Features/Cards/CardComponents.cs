@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Entitas;
 using UnityEngine;
 
@@ -6,6 +7,12 @@ namespace Code.Features.Cards
     [Game]
     public class Card : IComponent
     {
+    }
+
+    [Game]
+    public class CardStack : IComponent
+    {
+        public Stack<int> Value;
     }
 
     [Game]
@@ -50,6 +57,13 @@ namespace Code.Features.Cards
     public class CardAnimatorComponent : IComponent
     {
         public CardAnimator Value;
+    }
+
+    [Game]
+    public class DrawCardFromStackRequest : IComponent
+    {
+        public int StackId;
+        public int OwnerId;
     }
 }
 

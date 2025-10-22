@@ -19,6 +19,7 @@ namespace Code.Features.Game.Systems
         private readonly IHeroFactory _heroFactory;
         private readonly IEnemyFactory _enemyFactory;
         private readonly ICardFactory _cardFactory;
+        private readonly ICardStackFactory _cardStackFactory;
         private readonly IBoardFactory _boardFactory;
         private readonly IConfigService _configService;
         private readonly IRandomService _randomService;
@@ -31,6 +32,7 @@ namespace Code.Features.Game.Systems
             IHeroFactory heroFactory,
             IEnemyFactory enemyFactory,
             ICardFactory cardFactory,
+            ICardStackFactory cardStackFactory,
             IBoardFactory boardFactory,
             IConfigService configService,
             IRandomService randomService)
@@ -39,6 +41,7 @@ namespace Code.Features.Game.Systems
             _heroFactory = heroFactory;
             _enemyFactory = enemyFactory;
             _cardFactory = cardFactory;
+            _cardStackFactory = cardStackFactory;
             _boardFactory = boardFactory;
             _configService = configService;
             _randomService = randomService;
@@ -74,6 +77,12 @@ namespace Code.Features.Game.Systems
 
             List<DeckCard> deck = CreateDeck(hero.Id, enemy.Id);
             Debug.Log($"[InitializeGameSystem] Deck created: {deck.Count} cards");
+
+            GameEntity heroStack = CreateCardStack(hero.Id, isHero: true);
+            Debug.Log($"[InitializeGameSystem] Hero card stack created: ID={heroStack.Id}");
+
+            GameEntity enemyStack = CreateCardStack(enemy.Id, isHero: false);
+            Debug.Log($"[InitializeGameSystem] Enemy card stack created: ID={enemyStack.Id}");
 
             DealStartingHand(hero, deck, _gameConfig.StartingHandSize,true);
             DealStartingHand(enemy, deck, _gameConfig.StartingHandSize);
@@ -161,6 +170,20 @@ namespace Code.Features.Game.Systems
             }
 
             return -1;
+        }
+
+        private GameEntity CreateCardStack(int ownerId, bool isHero)
+        {
+            Vector3 stackPosition = isHero
+                ? _boardConfig.GetHeroCardStackPosition()
+                : _boardConfig.GetEnemyCardStackPosition();
+
+            return _cardStackFactory.CreateCardStack(new CardStackCreateData(
+                cardCount: 10,
+                ownerId: ownerId,
+                position: stackPosition,
+                verticalOffset: 0.05f
+            ));
         }
 
         private struct DeckCard

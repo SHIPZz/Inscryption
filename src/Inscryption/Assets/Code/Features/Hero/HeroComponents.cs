@@ -18,5 +18,17 @@ namespace Code.Features.Hero
     {
         public List<int> Value;
     }
+
+    [Game]
+    public class HandPosition : IComponent
+    {
+        public UnityEngine.Vector3 Value;
+    }
+
+    [Game]
+    public class CardHorizontalOffset : IComponent
+    {
+        public float Value;
+    }
 }
 

@@ -31,6 +31,7 @@ namespace Code.Infrastructure.Installers
             Container.Bind<IStatusFactory>().To<StatusFactory>().AsSingle();
             
             Container.Bind<ICardFactory>().To<CardFactory>().AsSingle();
+            Container.Bind<ICardStackFactory>().To<CardStackFactory>().AsSingle();
             Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
             Container.Bind<IBoardFactory>().To<BoardFactory>().AsSingle();

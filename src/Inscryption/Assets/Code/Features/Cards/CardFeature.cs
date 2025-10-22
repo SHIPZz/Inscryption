@@ -8,8 +8,10 @@ namespace Code.Features.Cards
         public CardFeature(ISystemFactory systemFactory)
         {
             Add(systemFactory.Create<ProcessDrawCardRequestSystem>());
+            Add(systemFactory.Create<ProcessDrawCardFromStackSystem>());
             Add(systemFactory.Create<UpdateCardIconSystem>());
             Add(systemFactory.Create<UpdateSelectedCardVisualSystem>());
+            Add(systemFactory.Create<UpdateCardsInHandPositionSystem>());
         }
     }
 }
