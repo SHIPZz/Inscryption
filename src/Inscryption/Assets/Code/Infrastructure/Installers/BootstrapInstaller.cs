@@ -10,6 +10,7 @@ using Code.Features.Hero.Services;
 using Code.Features.Statuses.Services;
 using Code.Features.View.Factory;
 using Code.Features.View.Pool;
+using Code.Infrastructure.Level;
 using Code.Infrastructure.Services;
 using Code.Infrastructure.Systems;
 using Zenject;
@@ -24,17 +25,16 @@ namespace Code.Infrastructure.Installers
             Container.BindInterfacesTo<UnityTimeService>().AsSingle();
             Container.BindInterfacesTo<UnityRandomService>().AsSingle();
             
+            Container.BindInterfacesTo<DiContainerService>().AsSingle();
+            
             Container.Bind<IIdService>().To<IdService>().AsSingle();
             Container.Bind<ICameraProvider>().To<CameraProvider>().AsSingle();
             Container.Bind<IRaycastService>().To<RaycastService>().AsSingle();
             Container.Bind<IInputService>().To<UnityInputService>().AsSingle();
             Container.Bind<IStatusFactory>().To<StatusFactory>().AsSingle();
             
-            Container.Bind<ICardFactory>().To<CardFactory>().AsSingle();
-            Container.Bind<ICardStackFactory>().To<CardStackFactory>().AsSingle();
             Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
-            Container.Bind<IBoardFactory>().To<BoardFactory>().AsSingle();
             Container.Bind<IHeroProvider>().To<HeroProvider>().AsSingle();
             Container.Bind<IEnemyProvider>().To<EnemyProvider>().AsSingle();
             

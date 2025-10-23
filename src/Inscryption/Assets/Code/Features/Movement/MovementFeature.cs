@@ -9,6 +9,8 @@ namespace Code.Features.Movement
         {
             Add(systemFactory.Create<UpdateWorldPositionSystem>());
             Add(systemFactory.Create<UpdateWorldRotationSystem>());
+            Add(systemFactory.Create<UpdateParentSystem>());
+            Add(systemFactory.Create<UpdateLocalPositionSystem>());
         }
     }
 }

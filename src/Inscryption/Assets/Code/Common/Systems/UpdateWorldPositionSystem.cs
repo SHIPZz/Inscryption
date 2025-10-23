@@ -10,7 +10,8 @@ namespace Code.Common.Systems
         {
             _entities = game.GetGroup(GameMatcher.AllOf(
                 GameMatcher.WorldPosition,
-                GameMatcher.Transform));
+                GameMatcher.Transform)
+                .NoneOf(GameMatcher.Static));
         }
 
         public void Execute()

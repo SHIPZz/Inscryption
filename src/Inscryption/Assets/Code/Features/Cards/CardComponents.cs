@@ -65,5 +65,10 @@ namespace Code.Features.Cards
         public int StackId;
         public int OwnerId;
     }
+
+    [Game]
+    public class AnimatedToHand : IComponent
+    {
+    }
 }
 

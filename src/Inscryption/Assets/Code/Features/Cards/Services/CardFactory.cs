@@ -3,6 +3,7 @@ using Code.Common.Random;
 using Code.Common.Services;
 using Code.Features.Cards.Data;
 using Code.Features.View;
+using Code.Infrastructure.Level;
 using Code.Infrastructure.Services;
 using UnityEngine;
 
@@ -35,17 +36,20 @@ namespace Code.Features.Cards.Services
 
         public GameEntity CreateCard(CardCreateData cardCreateData)
         {
+            int clampedHp = Mathf.Clamp(cardCreateData.Hp, 1, 4);
+            int clampedDamage = Mathf.Clamp(cardCreateData.Damage, 1, 3);
+
             GameEntity card = _game.CreateEntity()
                 .AddId(_idService.Next())
                 .With(x => x.isCard = true)
-                .With(x => x.AddHp(cardCreateData.Hp))
-                .With(x => x.AddMaxHp(cardCreateData.Hp))
-                .With(x => x.AddDamage(cardCreateData.Damage))
+                .With(x => x.AddHp(clampedHp))
+                .With(x => x.AddMaxHp(clampedHp))
+                .With(x => x.AddDamage(clampedDamage))
                 .With(x => x.AddCardOwner(cardCreateData.OwnerId))
                 .With(x => x.isInHand = cardCreateData.InHand)
+                .With(x => x.AddParent(cardCreateData.Parent), when: cardCreateData.Parent != null)
                 .With(x => x.AddCardIcon(cardCreateData.Icon), when: cardCreateData.Icon != null)
                 .With(x => x.AddViewAddressableKey(cardCreateData.ViewKey), when: !string.IsNullOrEmpty(cardCreateData.ViewKey))
-                // .With(x => x.isTrackCameraRotation = true)
                 ;
 
             if (cardCreateData.Icon != null)
@@ -76,7 +80,9 @@ namespace Code.Features.Cards.Services
                 icon: cardCreateData.Icon ?? randomCardData.VisualData?.Icon,
                 viewKey: null,
                 position: cardCreateData.Position,
-                rotation: cardCreateData.Rotation));
+                rotation: cardCreateData.Rotation,
+                isHeroOwner: cardCreateData.IsHeroOwner,
+                parent: cardCreateData.Parent));
         }
 
         private void CreateView(GameEntity card, CardCreateData cardCreateData)
@@ -116,8 +122,10 @@ namespace Code.Features.Cards.Services
         public readonly string ViewKey;
         public readonly Vector3 Position;
         public readonly Quaternion Rotation;
+        public readonly bool IsHeroOwner;
+        public readonly Transform Parent;
 
-        public CardCreateData(int ownerId, int hp, int damage, bool inHand = false, Sprite icon = null, string viewKey = null, Vector3 position = default, Quaternion rotation = default)
+        public CardCreateData(int ownerId, int hp, int damage, bool inHand = false, Sprite icon = null, string viewKey = null, Vector3 position = default, Quaternion rotation = default, bool isHeroOwner = false, Transform parent = null)
         {
             OwnerId = ownerId;
             Hp = hp;
@@ -127,6 +135,8 @@ namespace Code.Features.Cards.Services
             ViewKey = viewKey;
             Position = position;
             Rotation = rotation == default ? Quaternion.identity : rotation;
+            IsHeroOwner = isHeroOwner;
+            Parent = parent;
         }
     }
 }

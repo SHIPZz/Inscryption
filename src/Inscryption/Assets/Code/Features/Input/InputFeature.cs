@@ -9,6 +9,7 @@ namespace Code.Features.Input
 		{
 			Add(systemFactory.Create<DetectClicksSystem>());
 			Add(systemFactory.Create<ProcessCardClickRequestSystem>());
+			Add(systemFactory.Create<ProcessSlotClickToPlaceRequestSystem>());
 		}
 	}
 }

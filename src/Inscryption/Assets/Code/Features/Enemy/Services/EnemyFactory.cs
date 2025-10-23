@@ -23,7 +23,8 @@ namespace Code.Features.Enemy.Services
                 .With(x => x.isEnemy = true)
                 .With(x => x.AddHp(baseHealth))
                 .With(x => x.AddMaxHp(baseHealth))
-                .With(x => x.AddCardsInHand(new List<int>()));
+                .With(x => x.AddCardsInHand(new List<int>()))
+                .With(x => x.AddCardsPlacedThisTurn(0));
         }
     }
 }

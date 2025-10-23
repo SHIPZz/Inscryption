@@ -43,7 +43,6 @@ namespace Code.Infrastructure
 			Debug.Log("[EntryPoint] Loading configs...");
 			await _configService.LoadConfigAsync<CardConfig>(nameof(CardConfig));
 			await _configService.LoadConfigAsync<GameConfig>(nameof(GameConfig));
-			await _configService.LoadConfigAsync<BoardConfig>(nameof(BoardConfig));
 
 			Debug.Log("[EntryPoint] Initializing game...");
 			_gameTestRunner.Initialize();

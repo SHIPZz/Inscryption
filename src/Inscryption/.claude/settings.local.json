@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\")",
+      "Read(//c/**)",
+      "mcp__ide__getDiagnostics"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

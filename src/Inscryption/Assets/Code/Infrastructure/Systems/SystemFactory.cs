@@ -1,4 +1,5 @@
-﻿using Entitas;
+﻿using Code.Infrastructure.Services;
+using Entitas;
 using Zenject;
 
 namespace Code.Infrastructure.Systems
@@ -10,9 +11,9 @@ namespace Code.Infrastructure.Systems
 
     public class SystemFactory : ISystemFactory
     {
-        private readonly IInstantiator _instantiator;
+        private readonly IInstantiateService _instantiator;
 
-        public SystemFactory(IInstantiator instantiator)
+        public SystemFactory(IInstantiateService instantiator)
         {
             _instantiator = instantiator;
         }

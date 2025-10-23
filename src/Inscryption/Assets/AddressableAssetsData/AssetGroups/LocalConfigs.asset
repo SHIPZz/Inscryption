@@ -20,11 +20,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6b37328ca3e3196429353a0a13f3e2cc
-    m_Address: BoardConfig
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a3b9e66acef791249a86101713c8ab65
     m_Address: CardConfig
     m_ReadOnly: 0

@@ -44,18 +44,16 @@ namespace Code.Features.Input.Systems
             }
 
             List<int> selectedCards = _game.SelectedCards;
-            int cardIndex = FindCardIndex(selectedCards, cardId);
-
-            if (cardIndex != -1)
+            
+            if (selectedCards.Count > 0 && selectedCards[0] == cardId)
             {
-                RemoveCardAtIndex(selectedCards, cardIndex);
+                _game.RemoveSelectedCards();
                 Debug.Log($"[ProcessCardClickRequest] Card {cardId} deselected");
             }
             else
             {
-                selectedCards.Add(cardId);
-                _game.ReplaceSelectedCards(selectedCards);
-                Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected");
+                _game.ReplaceSelectedCards(new List<int> { cardId });
+                Debug.Log($"[ProcessCardClickRequest] Card {cardId} selected (switched)");
             }
         }
 

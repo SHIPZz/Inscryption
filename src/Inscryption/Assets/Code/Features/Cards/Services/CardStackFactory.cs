@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using Code.Common.Random;
 using Code.Common.Services;
+using Code.Features.Layout.Services;
+using Code.Infrastructure.Level;
 using UnityEngine;
 
 namespace Code.Features.Cards.Services
@@ -9,12 +12,16 @@ namespace Code.Features.Cards.Services
         private readonly GameContext _game;
         private readonly IIdService _idService;
         private readonly ICardFactory _cardFactory;
+        private readonly IRandomService _randomService;
+        private readonly ILevelProvider _levelProvider;
 
-        public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory)
+        public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory, IRandomService randomService, ILevelProvider levelProvider)
         {
             _game = game;
             _idService = idService;
             _cardFactory = cardFactory;
+            _randomService = randomService;
+            _levelProvider = levelProvider;
         }
 
         public GameEntity CreateCardStack(CardStackCreateData createData)
@@ -36,12 +43,21 @@ namespace Code.Features.Cards.Services
 
         private List<GameEntity> CreateCardsForStack(CardStackCreateData createData)
         {
-            List<GameEntity> cards = new List<GameEntity>();
-            Quaternion cardRotation = Quaternion.Euler(0, 90, 0);
+            var cards = new List<GameEntity>();
+            
+            var layoutParams = new VerticalLayoutParams
+            {
+                Count = createData.CardCount,
+                Spacing = createData.VerticalOffset,
+                Origin = Vector3.zero
+            };
+            var cardLocalPositions = PositionCalculator.CalculateVerticalLayoutPositions(layoutParams);
 
             for (int i = 0; i < createData.CardCount; i++)
             {
-                Vector3 cardPosition = CalculateCardPosition(createData.Position, i, createData.VerticalOffset);
+                float randomYRotation = _randomService.Range(-25f, 25f);
+                Quaternion cardRotation = Quaternion.Euler(90f, randomYRotation, 0f);
+
                 GameEntity card = _cardFactory.CreateRandomCard(new CardCreateData(
                     ownerId: createData.OwnerId,
                     hp: 0,
@@ -49,23 +65,18 @@ namespace Code.Features.Cards.Services
                     inHand: false,
                     icon: null,
                     viewKey: null,
-                    position: cardPosition,
-                    rotation: cardRotation
+                    position: createData.Position,
+                    rotation: cardRotation,
+                    isHeroOwner: createData.IsHero,
+                    parent: _levelProvider.DeckStackParent
                 ));
+                
+                card.AddLocalPosition(cardLocalPositions[i]);
 
                 cards.Add(card);
             }
 
             return cards;
-        }
-
-        private Vector3 CalculateCardPosition(Vector3 basePosition, int index, float verticalOffset)
-        {
-            return new Vector3(
-                basePosition.x,
-                basePosition.y + index * verticalOffset,
-                basePosition.z
-            );
         }
 
         private void PopulateStack(GameEntity stack, List<GameEntity> cards)
@@ -74,6 +85,24 @@ namespace Code.Features.Cards.Services
             {
                 stack.cardStack.Value.Push(card.Id);
             }
+        }
+    }
+
+    public struct CardStackCreateData
+    {
+        public readonly int CardCount;
+        public readonly int OwnerId;
+        public readonly Vector3 Position;
+        public readonly float VerticalOffset;
+        public readonly bool IsHero;
+
+        public CardStackCreateData(int cardCount, int ownerId, Vector3 position, float verticalOffset, bool isHero)
+        {
+            CardCount = cardCount;
+            OwnerId = ownerId;
+            Position = position;
+            VerticalOffset = verticalOffset;
+            IsHero = isHero;
         }
     }
 }

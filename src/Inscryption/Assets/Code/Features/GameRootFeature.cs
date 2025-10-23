@@ -10,6 +10,7 @@ using Code.Features.Input;
 using Code.Features.Movement;
 using Code.Features.Statuses;
 using Code.Features.Turn;
+using Code.Features.UI;
 using Code.Features.View;
 using Code.Infrastructure.Systems;
 
@@ -30,7 +31,8 @@ namespace Code.Features
             Add(systemFactory.Create<BoardFeature>());
             Add(systemFactory.Create<TurnFeature>());
             Add(systemFactory.Create<BattleFeature>());
-            
+            Add(systemFactory.Create<UIFeature>());
+
             Add(systemFactory.Create<StatusFeature>());
             Add(systemFactory.Create<ProcessDestructedFeature>());
         }

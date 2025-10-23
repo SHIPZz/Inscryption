@@ -47,11 +47,21 @@ namespace Code.Features.Turn.Systems
         {
             if (hero.isHeroTurn)
             {
-                SwitchTurn(hero, enemy, "Enemy");
+                hero.isHeroTurn = false;
+                enemy.isEnemyTurn = true;
+                ResetCardsPlaced(hero);
+                ResetCardsPlaced(enemy);
+                _game.CreateEntity().AddDrawCardRequest(enemy.Id);
+                Debug.Log($"[ProcessSwitchTurnRequestSystem] Turn switched to Enemy (ID={enemy.Id})");
             }
             else if (enemy.isEnemyTurn)
             {
-                SwitchTurn(enemy, hero, "Hero");
+                enemy.isEnemyTurn = false;
+                hero.isHeroTurn = true;
+                ResetCardsPlaced(enemy);
+                ResetCardsPlaced(hero);
+                _game.CreateEntity().AddDrawCardRequest(hero.Id);
+                Debug.Log($"[ProcessSwitchTurnRequestSystem] Turn switched to Hero (ID={hero.Id})");
             }
         }
 
@@ -63,23 +73,10 @@ namespace Code.Features.Turn.Systems
             }
         }
 
-        private void SwitchTurn(GameEntity currentPlayer, GameEntity nextPlayer, string nextPlayerName)
+        private void ResetCardsPlaced(GameEntity player)
         {
-            currentPlayer.isHeroTurn = false;
-            currentPlayer.isEnemyTurn = false;
-            
-            nextPlayer.isHeroTurn = nextPlayer.isHero;
-            nextPlayer.isEnemyTurn = nextPlayer.isEnemy;
-
-            if (currentPlayer.hasCardsPlacedThisTurn)
-                currentPlayer.ReplaceCardsPlacedThisTurn(0);
-            
-            if (nextPlayer.hasCardsPlacedThisTurn)
-                nextPlayer.ReplaceCardsPlacedThisTurn(0);
-
-            _game.CreateEntity().AddDrawCardRequest(nextPlayer.Id);
-
-            Debug.Log($"[ProcessSwitchTurnRequestSystem] Turn switched to {nextPlayerName} (ID={nextPlayer.Id})");
+            if (player.hasCardsPlacedThisTurn)
+                player.ReplaceCardsPlacedThisTurn(0);
         }
     }
 }

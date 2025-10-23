@@ -24,7 +24,8 @@ namespace Code.Features.Hero.Services
                 .With(x => x.AddHp(baseHealth))
                 .With(x => x.AddMaxHp(baseHealth))
                 .With(x => x.isHeroTurn = true)
-                .With(x => x.AddCardsInHand(new List<int>()));
+                .With(x => x.AddCardsInHand(new List<int>()))
+                .With(x => x.AddCardsPlacedThisTurn(0));
         }
     }
 }
