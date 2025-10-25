@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using Code.Common.Extensions;
 using Code.Common.Random;
 using Code.Common.Services;
 using Code.Features.Cards.Data;
-using Code.Features.View;
-using Code.Infrastructure.Level;
+using Code.Features.Stats;
 using Code.Infrastructure.Services;
 using UnityEngine;
 
@@ -44,6 +44,8 @@ namespace Code.Features.Cards.Services
                 .With(x => x.isCard = true)
                 .With(x => x.AddHp(clampedHp))
                 .With(x => x.AddMaxHp(clampedHp))
+                .With(x => x.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, clampedHp } }))
+                .With(x => x.AddStatsModifiers(new Dictionary<StatTypeId, int>()))
                 .With(x => x.AddDamage(clampedDamage))
                 .With(x => x.AddCardOwner(cardCreateData.OwnerId))
                 .With(x => x.isInHand = cardCreateData.InHand)
@@ -81,7 +83,6 @@ namespace Code.Features.Cards.Services
                 viewKey: null,
                 position: cardCreateData.Position,
                 rotation: cardCreateData.Rotation,
-                isHeroOwner: cardCreateData.IsHeroOwner,
                 parent: cardCreateData.Parent));
         }
 
@@ -122,10 +123,9 @@ namespace Code.Features.Cards.Services
         public readonly string ViewKey;
         public readonly Vector3 Position;
         public readonly Quaternion Rotation;
-        public readonly bool IsHeroOwner;
         public readonly Transform Parent;
 
-        public CardCreateData(int ownerId, int hp, int damage, bool inHand = false, Sprite icon = null, string viewKey = null, Vector3 position = default, Quaternion rotation = default, bool isHeroOwner = false, Transform parent = null)
+        public CardCreateData(int ownerId, int hp, int damage, bool inHand = false, Sprite icon = null, string viewKey = null, Vector3 position = default, Quaternion rotation = default, Transform parent = null)
         {
             OwnerId = ownerId;
             Hp = hp;
@@ -135,7 +135,6 @@ namespace Code.Features.Cards.Services
             ViewKey = viewKey;
             Position = position;
             Rotation = rotation == default ? Quaternion.identity : rotation;
-            IsHeroOwner = isHeroOwner;
             Parent = parent;
         }
     }

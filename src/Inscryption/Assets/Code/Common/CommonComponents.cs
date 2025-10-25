@@ -8,7 +8,7 @@ namespace Code.Common
     
     [Game] public class Active : IComponent { }
     
-    [Game] public class LayerMaskComponent : IComponent { public int Value; }
+    [Game,Input] public class LayerMaskComponent : IComponent { public int Value; }
     [Game,Unique] public class Id : IComponent { [PrimaryEntityIndex] public int Value; }
     
     [Game] public class SelfDestructTimer : IComponent { public float Value; }
@@ -34,4 +34,6 @@ namespace Code.Common
     [Game] public class WorldPosition : IComponent { public UnityEngine.Vector3 Value; }
     
     [Game] public class WorldRotation : IComponent { public UnityEngine.Quaternion Value; }
+    
+    [Game] public class LocalRotation : IComponent { public UnityEngine.Quaternion Value; }
 }

@@ -5,11 +5,9 @@ namespace Code.Features.Layout.Services
 {
     public static class PositionCalculator
     {
-        private static readonly List<Vector3> Positions = new List<Vector3>(32);
-
         public static IReadOnlyList<Vector3> CalculateGridPositions(GridLayoutParams parameters)
         {
-            Positions.Clear();
+            var positions = new List<Vector3>(parameters.Rows * parameters.Columns);
             float totalWidth = (parameters.Columns - 1) * parameters.Spacing.x;
             float totalHeight = (parameters.Rows - 1) * parameters.Spacing.y;
 
@@ -22,16 +20,16 @@ namespace Code.Features.Layout.Services
                     float x = col * parameters.Spacing.x;
                     float z = row * parameters.Spacing.y;
                     Vector3 position = parameters.Origin + startOffset + new Vector3(x, 0, z);
-                    Positions.Add(position);
+                    positions.Add(position);
                 }
             }
             
-            return Positions;
+            return positions;
         }
 
         public static IReadOnlyList<Vector3> CalculateHorizontalLayoutPositions(HorizontalLayoutParams parameters)
         {
-            Positions.Clear();
+            var positions = new List<Vector3>(parameters.Count);
             float totalWidth = (parameters.Count - 1) * parameters.Spacing;
             Vector3 startOffset = new Vector3(-totalWidth / 2f, 0, 0);
 
@@ -39,15 +37,15 @@ namespace Code.Features.Layout.Services
             {
                 float x = i * parameters.Spacing;
                 Vector3 position = parameters.Origin + startOffset + new Vector3(x, 0, 0);
-                Positions.Add(position);
+                positions.Add(position);
             }
 
-            return Positions;
+            return positions;
         }
 
         public static IReadOnlyList<Vector3> CalculateVerticalLayoutPositions(VerticalLayoutParams parameters)
         {
-            Positions.Clear();
+            var positions = new List<Vector3>(parameters.Count);
             float totalHeight = (parameters.Count - 1) * parameters.Spacing;
             Vector3 startOffset = new Vector3(0, -totalHeight / 2f, 0);
 
@@ -55,10 +53,10 @@ namespace Code.Features.Layout.Services
             {
                 float y = i * parameters.Spacing;
                 Vector3 position = parameters.Origin + startOffset + new Vector3(0, y, 0);
-                Positions.Add(position);
+                positions.Add(position);
             }
 
-            return Positions;
+            return positions;
         }
     }
     

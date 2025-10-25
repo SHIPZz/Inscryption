@@ -1,4 +1,5 @@
-﻿using Code.Infrastructure.Systems;
+﻿using Code.Common.Systems.Destruct;
+using Code.Infrastructure.Systems;
 
 namespace Code.Common.Destruct
 {
@@ -7,9 +8,9 @@ namespace Code.Common.Destruct
         public ProcessDestructedFeature(ISystemFactory system)
         {
             Add(system.Create<SelfDestructTimerSystem>());
+            Add(system.Create<FinalizeCardDestructionSystem>());
             
-            
-           // Add(system.Create<CleanupGameDestructedViewSystem>());
+           Add(system.Create<CleanupGameDestructedViewSystem>());
             Add(system.Create<CleanupMetaDestructedSystem>());
             
             Add(system.Create<CleanupGameDestructedSystem>());

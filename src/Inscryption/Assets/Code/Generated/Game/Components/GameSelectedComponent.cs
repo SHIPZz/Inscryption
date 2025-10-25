@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherAnimatedToHand;
+    static Entitas.IMatcher<GameEntity> _matcherSelected;
 
-    public static Entitas.IMatcher<GameEntity> AnimatedToHand {
+    public static Entitas.IMatcher<GameEntity> Selected {
         get {
-            if (_matcherAnimatedToHand == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.AnimatedToHand);
+            if (_matcherSelected == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Selected);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherAnimatedToHand = matcher;
+                _matcherSelected = matcher;
             }
 
-            return _matcherAnimatedToHand;
+            return _matcherSelected;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Code.Features.Cards.AnimatedToHand animatedToHandComponent = new Code.Features.Cards.AnimatedToHand();
+    static readonly Code.Features.Cards.Selected selectedComponent = new Code.Features.Cards.Selected();
 
-    public bool isAnimatedToHand {
-        get { return HasComponent(GameComponentsLookup.AnimatedToHand); }
+    public bool isSelected {
+        get { return HasComponent(GameComponentsLookup.Selected); }
         set {
-            if (value != isAnimatedToHand) {
-                var index = GameComponentsLookup.AnimatedToHand;
+            if (value != isSelected) {
+                var index = GameComponentsLookup.Selected;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : animatedToHandComponent;
+                            : selectedComponent;
 
                     AddComponent(index, component);
                 } else {

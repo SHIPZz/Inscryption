@@ -3,74 +3,34 @@ using Entitas;
 
 namespace Code.Features.Cards.Systems
 {
-    public class UpdateSelectedCardVisualSystem : IExecuteSystem
+    public class UpdateSelectedCardVisualSystem : ReactiveSystem<GameEntity>
     {
-        private readonly GameContext _game;
-        private readonly HashSet<int> _previousSelectedCardIds = new();
-        private readonly HashSet<int> _currentSelectedCardIds = new();
-
-        public UpdateSelectedCardVisualSystem(GameContext game)
+        public UpdateSelectedCardVisualSystem(GameContext game) : base(game)
         {
-            _game = game;
         }
 
-        public void Execute()
+        protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            _currentSelectedCardIds.Clear();
+            return context.CreateCollector(GameMatcher.Selected.AddedOrRemoved());
+        }
 
-            if (_game.hasSelectedCards && _game.SelectedCards != null)
+        protected override bool Filter(GameEntity entity)
+        {
+            return entity.isCard && entity.hasCardAnimator && entity.isSelectionAvailable;
+        }
+
+        protected override void Execute(List<GameEntity> entities)
+        {
+            foreach (GameEntity card in entities)
             {
-                foreach (int cardId in _game.SelectedCards)
+                if (card.isSelected)
                 {
-                    _currentSelectedCardIds.Add(cardId);
-                }
-            }
-
-            ProcessDeselectedCards();
-            ProcessSelectedCards();
-
-            UpdatePreviousSelection();
-        }
-
-        private void ProcessDeselectedCards()
-        {
-            foreach (int cardId in _previousSelectedCardIds)
-            {
-                if (!_currentSelectedCardIds.Contains(cardId))
-                {
-                    UpdateCardVisual(cardId, isSelected: false);
-                }
-            }
-        }
-
-        private void ProcessSelectedCards()
-        {
-            foreach (int cardId in _currentSelectedCardIds)
-            {
-                if (!_previousSelectedCardIds.Contains(cardId))
-                {
-                    UpdateCardVisual(cardId, isSelected: true);
-                }
-            }
-        }
-
-        private void UpdateCardVisual(int cardId, bool isSelected)
-        {
-            GameEntity card = _game.GetEntityWithId(cardId);
-
-            if (card != null && card.hasCardAnimator)
-            {
-                if (isSelected)
                     card.CardAnimator.Select();
-                else
-                    card.CardAnimator.Deselect();
-            }
-        }
+                    continue;
+                }
 
-        private void UpdatePreviousSelection()
-        {
-            _previousSelectedCardIds.Clear();
-            _previousSelectedCardIds.UnionWith(_currentSelectedCardIds);
+                card.CardAnimator.Deselect();
+            }
         }
     }
 }

@@ -28,6 +28,14 @@ namespace Code.Infrastructure.Services
 
 			return null;
 		}
+		
+		public T GetConfig<T>() where T : ScriptableObject
+		{
+			if (_loadedConfigs.TryGetValue(typeof(T).Name, out ScriptableObject config))
+				return config as T;
+
+			return null;
+		}
 
 		public T LoadConfig<T>(string addressableKey) where T : ScriptableObject
 		{

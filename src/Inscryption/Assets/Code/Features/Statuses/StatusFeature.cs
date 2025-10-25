@@ -7,8 +7,8 @@ namespace Code.Features.Statuses
     {
         public StatusFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<TestDamageStatusSystem>());
             Add(systemFactory.Create<ApplyDamageStatusSystem>());
+            Add(systemFactory.Create<ApplyHpFromStatsSystem>());
         }
     }
 }

@@ -15,7 +15,8 @@ namespace Code.Features.Cards.Services
         private readonly IRandomService _randomService;
         private readonly ILevelProvider _levelProvider;
 
-        public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory, IRandomService randomService, ILevelProvider levelProvider)
+        public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory,
+            IRandomService randomService, ILevelProvider levelProvider)
         {
             _game = game;
             _idService = idService;
@@ -26,32 +27,30 @@ namespace Code.Features.Cards.Services
 
         public GameEntity CreateCardStack(CardStackCreateData createData)
         {
-            GameEntity stack = CreateStackEntity();
-            List<GameEntity> cards = CreateCardsForStack(createData);
-            PopulateStack(stack, cards);
+            GameEntity stack = CreateStackEntity(createData);
 
             return stack;
         }
 
-        private GameEntity CreateStackEntity()
+        private GameEntity CreateStackEntity(CardStackCreateData data)
         {
             GameEntity stack = _game.CreateEntity();
             stack.AddId(_idService.Next());
-            stack.AddCardStack(new Stack<int>());
+            stack.AddCardStack(new Stack<int>(32));
+            CreateCardsForStack(data, stack);
             return stack;
         }
 
-        private List<GameEntity> CreateCardsForStack(CardStackCreateData createData)
+        private void CreateCardsForStack(CardStackCreateData createData, GameEntity stack)
         {
-            var cards = new List<GameEntity>();
-            
             var layoutParams = new VerticalLayoutParams
             {
                 Count = createData.CardCount,
                 Spacing = createData.VerticalOffset,
                 Origin = Vector3.zero
             };
-            var cardLocalPositions = PositionCalculator.CalculateVerticalLayoutPositions(layoutParams);
+
+            IReadOnlyList<Vector3> cardLocalPositions = PositionCalculator.CalculateVerticalLayoutPositions(layoutParams);
 
             for (int i = 0; i < createData.CardCount; i++)
             {
@@ -59,7 +58,7 @@ namespace Code.Features.Cards.Services
                 Quaternion cardRotation = Quaternion.Euler(90f, randomYRotation, 0f);
 
                 GameEntity card = _cardFactory.CreateRandomCard(new CardCreateData(
-                    ownerId: createData.OwnerId,
+                    ownerId: stack.Id,
                     hp: 0,
                     damage: 0,
                     inHand: false,
@@ -67,42 +66,28 @@ namespace Code.Features.Cards.Services
                     viewKey: null,
                     position: createData.Position,
                     rotation: cardRotation,
-                    isHeroOwner: createData.IsHero,
                     parent: _levelProvider.DeckStackParent
                 ));
-                
+
                 card.AddLocalPosition(cardLocalPositions[i]);
-
-                cards.Add(card);
+                
+                stack.CardStack.Push(card.Id);
             }
-
-            return cards;
         }
 
-        private void PopulateStack(GameEntity stack, List<GameEntity> cards)
+        public struct CardStackCreateData
         {
-            foreach (GameEntity card in cards)
+            public readonly int CardCount;
+            public readonly Vector3 Position;
+            public readonly float VerticalOffset;
+
+            public CardStackCreateData(int cardCount, Vector3 position, float verticalOffset)
             {
-                stack.cardStack.Value.Push(card.Id);
+                CardCount = cardCount;
+                Position = position;
+                VerticalOffset = verticalOffset;
             }
-        }
-    }
-
-    public struct CardStackCreateData
-    {
-        public readonly int CardCount;
-        public readonly int OwnerId;
-        public readonly Vector3 Position;
-        public readonly float VerticalOffset;
-        public readonly bool IsHero;
-
-        public CardStackCreateData(int cardCount, int ownerId, Vector3 position, float verticalOffset, bool isHero)
-        {
-            CardCount = cardCount;
-            OwnerId = ownerId;
-            Position = position;
-            VerticalOffset = verticalOffset;
-            IsHero = isHero;
         }
     }
 }
+

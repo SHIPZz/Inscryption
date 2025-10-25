@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Features.Statuses.Components;
+using Code.Features.Statuses.Services;
 using Entitas;
 using UnityEngine;
 
@@ -7,19 +9,18 @@ namespace Code.Features.Battle.Systems
     public class ProcessAttackRequestSystem : IExecuteSystem
     {
         private readonly GameContext _game;
+        private readonly IStatusFactory _statusFactory;
         private readonly IGroup<GameEntity> _attackRequests;
-        private readonly IGroup<GameEntity> _boardSlots;
         private readonly List<GameEntity> _buffer = new(16);
 
-        public ProcessAttackRequestSystem(GameContext game)
+        public ProcessAttackRequestSystem(GameContext game, IStatusFactory statusFactory)
         {
             _game = game;
+            _statusFactory = statusFactory;
 
             _attackRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.AttackRequest));
 
-            _boardSlots = game.GetGroup(GameMatcher
-                .AllOf(GameMatcher.BoardSlot));
         }
 
         public void Execute()
@@ -40,48 +41,15 @@ namespace Code.Features.Battle.Systems
                     continue;
                 }
 
-                if (!target.hasHp)
-                {
-                    Debug.LogWarning($"[ProcessAttackRequestSystem] Target {targetId} has no HP!");
-                    request.isDestructed = true;
-                    continue;
-                }
+                _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
 
-                int oldHp = target.Hp;
-                target.ReplaceHp(oldHp - damage);
-
-                Debug.Log($"[ProcessAttackRequestSystem] Attack: {attackerId} -> {targetId}, Damage: {damage}, HP: {oldHp} -> {target.Hp}");
-
-                if (target.Hp <= 0)
-                {
-                    target.isDestructed = true;
-                    Debug.Log($"[ProcessAttackRequestSystem] Target {targetId} destroyed!");
-
-                    if (target.isCard && target.isOnBoard)
-                    {
-                        FreeSlot(target);
-                    }
-                }
+                Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
 
                 request.isDestructed = true;
             }
         }
 
-        private void FreeSlot(GameEntity card)
-        {
-            if (!card.hasLane)
-                return;
-
-            foreach (GameEntity slot in _boardSlots)
-            {
-                if (slot.OccupiedBy == card.Id)
-                {
-                    slot.ReplaceOccupiedBy(-1);
-                    Debug.Log($"[ProcessAttackRequestSystem] Slot {slot.Id} freed (lane {slot.SlotLane})");
-                    break;
-                }
-            }
-        }
+        
     }
 }
 

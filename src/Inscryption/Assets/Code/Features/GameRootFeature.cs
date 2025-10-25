@@ -24,6 +24,7 @@ namespace Code.Features
             Add(systemFactory.Create<BindViewFeature>());
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CameraFeature>());
+            Add(systemFactory.Create<TimerFeature>());
             Add(systemFactory.Create<MovementFeature>());
             Add(systemFactory.Create<CardFeature>());
             Add(systemFactory.Create<HeroFeature>());

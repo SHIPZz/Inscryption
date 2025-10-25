@@ -12,6 +12,7 @@ namespace Code.Infrastructure.Services
 		UniTask<T> LoadConfigAsync<T>(string addressableKey, CancellationToken cancellationToken = default) where T : ScriptableObject;
 		T[] GetConfigsByLabel<T>(string label) where T : ScriptableObject;
 		UniTask<T[]> GetConfigsByLabelAsync<T>(string label, CancellationToken cancellationToken = default) where T : ScriptableObject;
+		T GetConfig<T>() where T : ScriptableObject;
 	}
 }
 

@@ -33,23 +33,33 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Code.Features.Cards.DrawCardFromStackRequest drawCardFromStackRequest { get { return (Code.Features.Cards.DrawCardFromStackRequest)GetComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
+    public DrawCardFromStackRequest drawCardFromStackRequest { get { return (DrawCardFromStackRequest)GetComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
     public bool hasDrawCardFromStackRequest { get { return HasComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
 
-    public GameEntity AddDrawCardFromStackRequest(int newStackId, int newOwnerId) {
+    public GameEntity AddDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3> newTargetPositions, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
-        var component = (Code.Features.Cards.DrawCardFromStackRequest)CreateComponent(index, typeof(Code.Features.Cards.DrawCardFromStackRequest));
-        component.StackId = newStackId;
+        var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
+        component.StackEntityId = newStackEntityId;
+        component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;
+        component.TargetPositions = newTargetPositions;
+        component.DelayBetweenCards = newDelayBetweenCards;
+        component.MoveDuration = newMoveDuration;
+        component.Parent = newParent;
         AddComponent(index, component);
         return this;
     }
 
-    public GameEntity ReplaceDrawCardFromStackRequest(int newStackId, int newOwnerId) {
+    public GameEntity ReplaceDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3> newTargetPositions, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
-        var component = (Code.Features.Cards.DrawCardFromStackRequest)CreateComponent(index, typeof(Code.Features.Cards.DrawCardFromStackRequest));
-        component.StackId = newStackId;
+        var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
+        component.StackEntityId = newStackEntityId;
+        component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;
+        component.TargetPositions = newTargetPositions;
+        component.DelayBetweenCards = newDelayBetweenCards;
+        component.MoveDuration = newMoveDuration;
+        component.Parent = newParent;
         ReplaceComponent(index, component);
         return this;
     }

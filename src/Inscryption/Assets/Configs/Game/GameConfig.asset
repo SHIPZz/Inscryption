@@ -16,3 +16,7 @@ MonoBehaviour:
   _baseEnemyHealth: 20
   _deckSize: 30
   _startingHandSize: 3
+  StackVerticalOffset: 0.025
+  InputMask:
+    serializedVersion: 2
+    m_Bits: 192

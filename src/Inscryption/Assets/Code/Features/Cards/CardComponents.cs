@@ -52,23 +52,17 @@ namespace Code.Features.Cards
     {
         public Sprite Value;
     }
+    
+    [Game]
+    public class Selected : IComponent {}
+    
+    [Game]
+    public class SelectionAvailable : IComponent {}
 
     [Game]
     public class CardAnimatorComponent : IComponent
     {
         public CardAnimator Value;
-    }
-
-    [Game]
-    public class DrawCardFromStackRequest : IComponent
-    {
-        public int StackId;
-        public int OwnerId;
-    }
-
-    [Game]
-    public class AnimatedToHand : IComponent
-    {
     }
 }
 

@@ -19,6 +19,10 @@ namespace Code.Infrastructure.Data
 		[Tooltip("Количество карт в стартовой руке")]
 		[SerializeField] private int _startingHandSize = 3;
 
+		public float StackVerticalOffset = 0.025f;
+
+		public LayerMask InputMask;
+
 		public int BaseHeroHealth => _baseHeroHealth;
 		public int BaseEnemyHealth => _baseEnemyHealth;
 		public int DeckSize => _deckSize;

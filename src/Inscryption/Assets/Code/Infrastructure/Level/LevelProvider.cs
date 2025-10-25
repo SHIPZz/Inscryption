@@ -13,7 +13,7 @@ namespace Code.Infrastructure.Level
 
         [Header("Slots Parent")]
         [SerializeField] private Transform _slotsParent;
-
+        
         public Transform HeroCardParent => _heroCardParent;
         public Transform EnemyCardParent => _enemyCardParent;
         public Transform DeckStackParent => _deckStackParent;

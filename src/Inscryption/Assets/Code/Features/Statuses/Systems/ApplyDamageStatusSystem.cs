@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Features.Stats;
 using Entitas;
 using UnityEngine;
 
@@ -27,36 +28,23 @@ namespace Code.Features.Statuses.Systems
             {
                 int targetId = status.StatusTarget;
                 GameEntity target = _game.GetEntityWithId(targetId);
-                
+
                 if (target == null)
                 {
                     Debug.LogError($"[ApplyDamageStatusSystem] Target entity {targetId} not found!");
                     status.isDestructed = true;
                     continue;
                 }
-                
-                if (!target.hasHp)
-                {
-                    Debug.LogWarning($"[ApplyDamageStatusSystem] Target {targetId} has no HP!");
-                    status.isDestructed = true;
-                    continue;
-                }
 
                 int damageValue = status.StatusValue;
-                int oldHp = target.Hp;
-                target.ReplaceHp(oldHp - damageValue);
-                
-                Debug.Log($"[ApplyDamageStatusSystem] Applied {damageValue} damage: {oldHp} -> {target.Hp}");
-                
-                if (target.Hp <= 0)
-                {
-                    target.isDestructed = true;
-                }
+
+                target.StatsModifiers.TryGetValue(StatTypeId.Hp, out int currentHpDelta);
+                target.StatsModifiers[StatTypeId.Hp] = currentHpDelta - damageValue;
+
+                Debug.Log($"[ApplyDamageStatusSystem] Queued damage modifier: -{damageValue} HP to entity {targetId}");
 
                 status.isDestructed = true;
             }
         }
     }
 }
-
-

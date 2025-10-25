@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5938083160083696447}
   - component: {fileID: 6416816879140152792}
   - component: {fileID: 5533383756946273682}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CardEntityView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,8 +99,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5222716, y: 0.6262114, z: 0.28447533}
-  m_Center: {x: 0.0007493794, y: -0.011140004, z: -0.04528141}
+  m_Size: {x: 0.4177021, y: 0.5669564, z: 0.04244566}
+  m_Center: {x: -0.0049313754, y: -0.0017884374, z: -0.00021529198}
 --- !u!114 &6416816879140152792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 2406669108142270871}
   - component: {fileID: 3514911424808404866}
   - component: {fileID: 8969576742222233039}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

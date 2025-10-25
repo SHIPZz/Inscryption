@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8422630125447654984}
   - component: {fileID: 3162682107088449272}
   - component: {fileID: 5149912593500299646}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SlotEntityView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 3259603568367110756}
   - component: {fileID: 8711756798718614983}
   - component: {fileID: 235358560242388603}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}

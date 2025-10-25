@@ -37,7 +37,7 @@ namespace Code.Features.View
 					registrar.RegisterComponents();
 			}
 
-			foreach (Collider2D collider2d in GetComponentsInChildren<Collider2D>(includeInactive: true))
+			foreach (Collider collider2d in GetComponentsInChildren<Collider>(includeInactive: true))
 			{
 				_collisionRegistry.Register(collider2d.GetInstanceID(), _entity);
 			}
@@ -65,7 +65,7 @@ namespace Code.Features.View
 					registrar.UnregisterComponents();
 			}
 
-			foreach (Collider2D collider2d in GetComponentsInChildren<Collider2D>(includeInactive: true))
+			foreach (Collider collider2d in GetComponentsInChildren<Collider>(includeInactive: true))
 			{
 				_collisionRegistry.Unregister(collider2d.GetInstanceID());
 			}

@@ -18,12 +18,7 @@ namespace Code.Features.UI
         [Header("End Turn Button")]
         [SerializeField] private Button _endTurnButton;
         [SerializeField] private TextMeshProUGUI _endTurnButtonText;
-
-        public TextMeshProUGUI HeroHealthText => _heroHealthText;
-        public TextMeshProUGUI EnemyHealthText => _enemyHealthText;
-        public TextMeshProUGUI TurnIndicatorText => _turnIndicatorText;
-        public GameObject HeroTurnIndicator => _heroTurnIndicator;
-        public GameObject EnemyTurnIndicator => _enemyTurnIndicator;
+        
         public Button EndTurnButton => _endTurnButton;
 
         private void Awake()
@@ -51,7 +46,7 @@ namespace Code.Features.UI
         {
             if (_heroHealthText != null)
             {
-                _heroHealthText.text = $"HP: {currentHp}/{maxHp}";
+                _heroHealthText.text = $"Hero HP: {currentHp}/{maxHp}";
             }
         }
 
@@ -59,7 +54,7 @@ namespace Code.Features.UI
         {
             if (_enemyHealthText != null)
             {
-                _enemyHealthText.text = $"HP: {currentHp}/{maxHp}";
+                _enemyHealthText.text = $"Enemy HP: {currentHp}/{maxHp}";
             }
         }
 
