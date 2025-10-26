@@ -43,6 +43,7 @@ namespace Code.Features.Cards.Services
                 .AddId(_idService.Next())
                 .With(x => x.isCard = true)
                 .With(x => x.AddHp(clampedHp))
+                .With(x => x.AddName("Card"))
                 .With(x => x.AddMaxHp(clampedHp))
                 .With(x => x.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, clampedHp } }))
                 .With(x => x.AddStatsModifiers(new Dictionary<StatTypeId, int>()))

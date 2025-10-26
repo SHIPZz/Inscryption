@@ -21,12 +21,14 @@ namespace Code.Features.Enemy.Services
         {
             return _game.CreateEntity()
                 .AddId(_idService.Next())
+                .AddName("Enemy")
                 .With(x => x.isEnemy = true)
                 .With(x => x.AddHp(baseHealth))
                 .With(x => x.AddMaxHp(baseHealth))
                 .With(x => x.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, baseHealth } }))
                 .With(x => x.AddStatsModifiers(new Dictionary<StatTypeId, int>()))
                 .With(x => x.AddCardsInHand(new List<int>()))
+                .With(x => x.AddPlacedCards(new List<int>()))
                 .With(x => x.AddCardsPlacedThisTurn(0));
         }
     }

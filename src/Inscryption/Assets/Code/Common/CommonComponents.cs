@@ -27,6 +27,8 @@ namespace Code.Common
     
     [Game] public class ColliderReference : IComponent { public Collider Value; }
     
+    [Game] public class NameComponent : IComponent { public string Value; }
+    
     [Game] public class TrackCameraRotation : IComponent { }
     
     [Game, Unique] public class SelectedCards : IComponent { public System.Collections.Generic.List<int> Value; }

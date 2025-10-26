@@ -18,6 +18,7 @@ namespace Code.Features.Statuses.Systems
                 .AllOf(
                     GameMatcher.DamageStatus,
                     GameMatcher.StatusTarget,
+                    GameMatcher.StatusOwner,
                     GameMatcher.StatusValue)
                 .NoneOf(GameMatcher.Destructed));
         }
@@ -41,7 +42,7 @@ namespace Code.Features.Statuses.Systems
                 target.StatsModifiers.TryGetValue(StatTypeId.Hp, out int currentHpDelta);
                 target.StatsModifiers[StatTypeId.Hp] = currentHpDelta - damageValue;
 
-                Debug.Log($"[ApplyDamageStatusSystem] Queued damage modifier: - {damageValue} HP to entity {targetId}");
+                Debug.Log($"[ApplyDamageStatusSystem] Queued damage modifier: from {status.StatusOwner} - {damageValue} HP to entity {targetId} - {target.Name}");
 
                 status.isDestructed = true;
             }

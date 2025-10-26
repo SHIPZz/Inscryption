@@ -1,4 +1,3 @@
-using Code.Features.Turn.Systems;
 using Code.Infrastructure.Systems;
 
 namespace Code.Features.Turn
@@ -7,8 +6,6 @@ namespace Code.Features.Turn
     {
         public TurnFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<ProcessEndTurnRequestSystem>());
-            Add(systemFactory.Create<ProcessSwitchTurnRequestSystem>());
         }
     }
 }

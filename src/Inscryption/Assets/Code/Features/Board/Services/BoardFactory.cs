@@ -77,6 +77,7 @@ namespace Code.Features.Board.Services
                 .With(x => x.AddSlotLane(lane))
                 .With(x => x.AddSlotOwner(ownerId))
                 .With(x => x.AddOccupiedBy(-1))
+                .With(x => x.AddName("slot"))
                 .With(x => x.isStatic = true)
                 .With(x => x.isHeroOwner = isHero)
                 .With(x => x.isEnemyOwner = !isHero)

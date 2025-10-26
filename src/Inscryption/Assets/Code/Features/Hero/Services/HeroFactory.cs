@@ -24,10 +24,12 @@ namespace Code.Features.Hero.Services
                 .With(x => x.isHero = true)
                 .With(x => x.AddHp(baseHealth))
                 .With(x => x.AddMaxHp(baseHealth))
+                .With(x => x.AddName("hero"))
                 .With(x => x.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, baseHealth } }))
                 .With(x => x.AddStatsModifiers(new Dictionary<StatTypeId, int>()))
                 .With(x => x.isHeroTurn = true)
                 .With(x => x.AddCardsInHand(new List<int>()))
+                .With(x => x.AddPlacedCards(new List<int>()))
                 .With(x => x.AddCardsPlacedThisTurn(0));
         }
     }

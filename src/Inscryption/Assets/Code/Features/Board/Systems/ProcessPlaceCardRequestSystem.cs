@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -9,9 +10,11 @@ namespace Code.Features.Board.Systems
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _requests;
         private readonly List<GameEntity> _buffer = new();
+        private IHeroProvider _heroProvider;
 
-        public ProcessPlaceCardRequestSystem(GameContext game)
+        public ProcessPlaceCardRequestSystem(GameContext game, IHeroProvider heroProvider)
         {
+            _heroProvider = heroProvider;
             _game = game;
             _requests = game.GetGroup(GameMatcher.PlaceCardRequest);
         }
@@ -33,14 +36,12 @@ namespace Code.Features.Board.Systems
                     SetupPlacing(card, slot);
 
                     cardOwner.CardsInHand.Remove(cardId);
+                    cardOwner.PlacedCards.Add(cardId);
 
-                    Debug.Log($"[ProcessPlaceCardRequestSystem] Player {cardOwner.Id} placed card {cardId}. Switching turn...");
+                    Debug.Log(
+                        $"[ProcessPlaceCardRequestSystem] Player {cardOwner.Id} placed card {cardId}. Switching turn...");
                 }
 
-                if(slot.isHeroOwner)
-                    _game.CreateEntity()
-                        .isEndTurnRequest = true;
-                
                 request.Destroy();
             }
         }
@@ -54,8 +55,8 @@ namespace Code.Features.Board.Systems
             card.ReplaceParent(slot.Transform);
             card.ReplaceLocalPosition(Vector3.zero);
             card.ReplaceWorldPosition(Vector3.zero);
-            card.ReplaceWorldRotation(Quaternion.Euler(0,0,0));
-            card.ReplaceLocalRotation(Quaternion.Euler(0,0,0));
+            card.ReplaceWorldRotation(Quaternion.Euler(0, 0, 0));
+            card.ReplaceLocalRotation(Quaternion.Euler(0, 0, 0));
             card.ReplaceSlotLane(slot.SlotLane);
             card.ReplaceSlotId(slot.Id);
 
@@ -65,4 +66,3 @@ namespace Code.Features.Board.Systems
         }
     }
 }
-

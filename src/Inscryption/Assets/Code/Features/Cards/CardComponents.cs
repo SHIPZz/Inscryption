@@ -27,6 +27,12 @@ namespace Code.Features.Cards
     }
     
     [Game]
+    public class PlacedCards : IComponent
+    {
+        public List<int> Value;
+    }
+    
+    [Game]
     public class EnemyOwner : IComponent
     {
     }

@@ -44,7 +44,7 @@ namespace Code.Features.UI
         {
             GameEntity hero = _heroProvider.GetHero();
             
-            if (hero == null || !hero.isHeroTurn)
+            if (hero == null || !hero.isHeroTurn || hero.PlacedCards.Count <= 0)
             {
                 Debug.LogWarning("[ProcessEndTurnButtonSystem] Not hero's turn!");
                 return;
