@@ -1,6 +1,8 @@
+using Code.Features.Hero.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Code.Features.UI
 {
@@ -18,8 +20,9 @@ namespace Code.Features.UI
         [Header("End Turn Button")]
         [SerializeField] private Button _endTurnButton;
         [SerializeField] private TextMeshProUGUI _endTurnButtonText;
-        
-        public Button EndTurnButton => _endTurnButton;
+     
+        [Inject] IHeroProvider _heroProvider;
+        [Inject] private GameContext _gameContext;
 
         private void Awake()
         {
@@ -39,7 +42,16 @@ namespace Code.Features.UI
 
         private void OnEndTurnClicked()
         {
-            Debug.Log("[GameHUD] End Turn button clicked");
+            GameEntity hero = _heroProvider.GetHero();
+            
+            if (hero == null || !hero.isHeroTurn)
+            {
+                Debug.LogWarning("[ProcessEndTurnButtonSystem] Not hero's turn!");
+                return;
+            }
+
+            Debug.Log("[ProcessEndTurnButtonSystem] Creating EndTurnRequest");
+            _gameContext.CreateEntity().isEndTurnRequest = true;
         }
 
         public void UpdateHeroHealth(int currentHp, int maxHp)

@@ -40,6 +40,11 @@ namespace Code.Features.Cards
     public class OnBoard : IComponent
     {
     }
+    
+    [Game]
+    public class AllCardDelivered : IComponent
+    {
+    }
 
     [Game]
     public class Lane : IComponent
@@ -53,11 +58,13 @@ namespace Code.Features.Cards
         public Sprite Value;
     }
     
-    [Game]
-    public class Selected : IComponent {}
+    [Game] public class Selected : IComponent {}
     
-    [Game]
-    public class SelectionAvailable : IComponent {}
+    [Game] public class SelectionAvailable : IComponent {}
+    
+    [Game] public class SlotId : IComponent { public int Value; }
+    
+    [Game] public class Placed : IComponent { }
 
     [Game]
     public class CardAnimatorComponent : IComponent

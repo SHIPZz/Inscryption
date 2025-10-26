@@ -1135,6 +1135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Infrastructure.Installers.GameInstaller
   LevelProvider: {fileID: 1137275560}
+  UIProvider: {fileID: 1137275562}
   Initializables: []
 --- !u!1 &1137275559
 GameObject:
@@ -1146,6 +1147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1137275561}
   - component: {fileID: 1137275560}
+  - component: {fileID: 1137275562}
   m_Layer: 0
   m_Name: LevelProvider
   m_TagString: Untagged
@@ -1184,6 +1186,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1137275562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1137275559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e81ede8fe85b49a3acdd8b0865f18102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Features.UI.Services.UIProvider
+  <GameHUD>k__BackingField: {fileID: 421171758}
 --- !u!1 &1167218066
 GameObject:
   m_ObjectHideFlags: 0

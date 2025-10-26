@@ -8,7 +8,6 @@ namespace Code.Features.Statuses.Systems
     public class ApplyHpFromStatsSystem : IExecuteSystem
     {
         private readonly IGroup<GameEntity> _targets;
-        private readonly List<GameEntity> _buffer = new(64);
 
         public ApplyHpFromStatsSystem(GameContext game)
         {
@@ -20,10 +19,10 @@ namespace Code.Features.Statuses.Systems
 
         public void Execute()
         {
-            foreach (GameEntity target in _targets.GetEntities(_buffer))
+            foreach (GameEntity target in _targets)
             {
                 if(target.StatsModifiers.Count <= 0)
-                    return;
+                    continue;
                 
                 Dictionary<StatTypeId, int> stats = target.Stats;
                 

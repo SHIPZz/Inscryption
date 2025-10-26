@@ -7,7 +7,7 @@ namespace Code.Features.Battle
     {
         public BattleFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<ProcessAttackPhaseSystem>());
+            Add(systemFactory.Create<CreateAttackRequestOnCardPlacedSystem>());
             Add(systemFactory.Create<ProcessAttackRequestSystem>());
         }
     }

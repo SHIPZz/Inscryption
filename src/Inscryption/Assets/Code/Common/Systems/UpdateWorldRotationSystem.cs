@@ -10,7 +10,8 @@ namespace Code.Common.Systems
         {
             _entities = game.GetGroup(GameMatcher.AllOf(
                 GameMatcher.WorldRotation,
-                GameMatcher.Transform));
+                GameMatcher.Transform)
+                .NoneOf(GameMatcher.LocalRotation,GameMatcher.Static));
         }
 
         public void Execute()

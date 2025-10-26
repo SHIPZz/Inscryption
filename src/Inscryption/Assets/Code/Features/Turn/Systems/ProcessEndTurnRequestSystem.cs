@@ -30,7 +30,7 @@ namespace Code.Features.Turn.Systems
 
         public void Execute()
         {
-            if (_endTurnRequests.count == 0)
+            /*if (_endTurnRequests.count == 0)
                 return;
 
             bool shouldProcessTurn = _attackPhases.count == 0;
@@ -50,7 +50,7 @@ namespace Code.Features.Turn.Systems
                 }
             }
 
-            DestroyAllRequests();
+            DestroyAllRequests();*/
         }
 
         private void DestroyAllRequests()

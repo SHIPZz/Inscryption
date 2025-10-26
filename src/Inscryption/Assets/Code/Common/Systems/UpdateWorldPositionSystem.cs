@@ -11,7 +11,7 @@ namespace Code.Common.Systems
             _entities = game.GetGroup(GameMatcher.AllOf(
                 GameMatcher.WorldPosition,
                 GameMatcher.Transform)
-                .NoneOf(GameMatcher.Static));
+                .NoneOf(GameMatcher.Static,GameMatcher.LocalPosition));
         }
 
         public void Execute()

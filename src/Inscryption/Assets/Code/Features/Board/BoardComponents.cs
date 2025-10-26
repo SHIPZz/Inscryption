@@ -24,5 +24,10 @@ namespace Code.Features.Board
     {
         public int Value;
     }
+    
+    [Game]
+    public class Occupied : IComponent
+    {
+    }
 }
 

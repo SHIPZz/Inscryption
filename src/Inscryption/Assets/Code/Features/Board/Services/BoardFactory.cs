@@ -43,6 +43,7 @@ namespace Code.Features.Board.Services
                 Spacing = new Vector2(2.2f, 0),
                 Origin = new Vector3(0, 0, -2f)
             };
+            
             var heroSlotPositions = PositionCalculator.CalculateGridPositions(heroGridParams);
 
             for (var i = 0; i < heroSlotPositions.Count; i++)
@@ -57,6 +58,7 @@ namespace Code.Features.Board.Services
                 Spacing = new Vector2(2.2f, 0),
                 Origin = new Vector3(0, 0, 2f)
             };
+            
             var enemySlotPositions = PositionCalculator.CalculateGridPositions(enemyGridParams);
 
             for (var i = 0; i < enemySlotPositions.Count; i++)
@@ -75,7 +77,10 @@ namespace Code.Features.Board.Services
                 .With(x => x.AddSlotLane(lane))
                 .With(x => x.AddSlotOwner(ownerId))
                 .With(x => x.AddOccupiedBy(-1))
-                .With(x => x.isStatic = true);
+                .With(x => x.isStatic = true)
+                .With(x => x.isHeroOwner = isHero)
+                .With(x => x.isEnemyOwner = !isHero)
+                ;
 
             CreateSlotView(lane, isHero, slot, position);
 

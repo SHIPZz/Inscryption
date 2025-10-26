@@ -41,7 +41,7 @@ namespace Code.Features.Statuses.Systems
                 target.StatsModifiers.TryGetValue(StatTypeId.Hp, out int currentHpDelta);
                 target.StatsModifiers[StatTypeId.Hp] = currentHpDelta - damageValue;
 
-                Debug.Log($"[ApplyDamageStatusSystem] Queued damage modifier: -{damageValue} HP to entity {targetId}");
+                Debug.Log($"[ApplyDamageStatusSystem] Queued damage modifier: - {damageValue} HP to entity {targetId}");
 
                 status.isDestructed = true;
             }

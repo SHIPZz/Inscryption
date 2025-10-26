@@ -88,9 +88,23 @@ namespace Code.Features.Game.Systems
                 newCardsToDraw: 3,
                 hero.Id,
                 _heroHandPositions,
-                newDelayBetweenCards: 1.5f,
-                newMoveDuration: 1f,
+                newDelayBetweenCards: 0.5f,
+                newMoveDuration: 0.25f,
                 _levelProvider.HeroCardParent);
+
+            DOTween.Sequence().AppendInterval(3f)
+                .OnComplete((() =>
+                        {
+                            _game.CreateEntity().AddDrawCardFromStackRequest(
+                                newStackEntityId: commonStack.Id,
+                                newCardsToDraw: 3,
+                                enemy.Id,
+                                _enemyHandPositions,
+                                newDelayBetweenCards: 0.5f,
+                                newMoveDuration: 0.25f,
+                                _levelProvider.EnemyCardParent);
+                        }
+                    ));
 
             Debug.Log("[InitializeGameSystem] Game initialization complete. Hero's turn!");
         }

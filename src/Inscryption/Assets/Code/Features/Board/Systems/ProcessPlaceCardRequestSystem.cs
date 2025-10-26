@@ -28,17 +28,41 @@ namespace Code.Features.Board.Systems
 
                 if (card != null && slot != null && slot.hasWorldPosition)
                 {
-                    card.isStatic = false;
-                    card.isSelected = false;
-                    card.ReplaceParent(slot.Transform);
-                    card.ReplaceLocalPosition(Vector3.zero);
-                    card.ReplaceWorldPosition(Vector3.zero);
-                    card.ReplaceWorldRotation(Quaternion.Euler(0,0,0));
-                    card.ReplaceLocalRotation(Quaternion.Euler(0,0,0));
+                    GameEntity cardOwner = _game.GetEntityWithId(card.CardOwner);
+
+                    SetupPlacing(card, slot);
+
+                    cardOwner.CardsInHand.Remove(cardId);
+
+                    Debug.Log($"[ProcessPlaceCardRequestSystem] Player {cardOwner.Id} placed card {cardId}. Switching turn...");
                 }
 
+                if(slot.isHeroOwner)
+                    _game.CreateEntity()
+                        .isEndTurnRequest = true;
+                
                 request.Destroy();
             }
         }
+
+        private static void SetupPlacing(GameEntity card, GameEntity slot)
+        {
+            card.isStatic = false;
+            card.isSelected = false;
+            card.isSelectionAvailable = false;
+
+            card.ReplaceParent(slot.Transform);
+            card.ReplaceLocalPosition(Vector3.zero);
+            card.ReplaceWorldPosition(Vector3.zero);
+            card.ReplaceWorldRotation(Quaternion.Euler(0,0,0));
+            card.ReplaceLocalRotation(Quaternion.Euler(0,0,0));
+            card.ReplaceSlotLane(slot.SlotLane);
+            card.ReplaceSlotId(slot.Id);
+
+
+            slot.isOccupied = true;
+            card.isPlaced = true;
+        }
     }
 }
+
