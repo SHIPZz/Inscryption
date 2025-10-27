@@ -43,5 +43,27 @@ namespace Code.Features.Turn
     {
         public int Value;
     }
+
+    public enum TurnPhase
+    {
+        PlayerPlacement,
+        PlayerAttack,
+        EnemyWait,
+        EnemyPlacement,
+        EnemyAttack
+    }
+
+    [Game]
+    public class CurrentTurnPhase : IComponent
+    {
+        public TurnPhase Phase;
+    }
+
+    [Game]
+    public class PhaseTimer : IComponent
+    {
+        public float ElapsedTime;
+        public float TargetDuration;
+    }
 }
 

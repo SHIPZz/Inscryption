@@ -20,7 +20,6 @@ namespace Code.Features
     {
         public GameRootFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<GameStateFeature>());
             Add(systemFactory.Create<BindViewFeature>());
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CameraFeature>());
@@ -30,11 +29,12 @@ namespace Code.Features
             Add(systemFactory.Create<HeroFeature>());
             Add(systemFactory.Create<EnemyFeature>());
             Add(systemFactory.Create<BoardFeature>());
-            Add(systemFactory.Create<TurnFeature>());
             Add(systemFactory.Create<BattleFeature>());
+            Add(systemFactory.Create<TurnFeature>());
             Add(systemFactory.Create<UIFeature>());
 
             Add(systemFactory.Create<StatusFeature>());
+            Add(systemFactory.Create<GameStateFeature>());
             Add(systemFactory.Create<ProcessDestructedFeature>());
         }
     }

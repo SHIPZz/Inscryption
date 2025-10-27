@@ -36,8 +36,6 @@ namespace Code.Common.Physics
 
             int hitCount = UnityEngine.Physics.RaycastNonAlloc(ray, _results, maxDistance, layerMask);
 
-            Debug.Log($"{hitCount} hit {_results.Length} results");
-            
             if (hitCount <= 0)
                 return null;
             

@@ -7,12 +7,26 @@ using UnityEngine;
 
 namespace Code.Editor
 {
+    [InitializeOnLoad]
     public static class JsonLogSaver
     {
         private const string LOGS_FOLDER = "Logs";
         private const string JSON_LOG_FILE_NAME = "UnityLogs.json";
         private static readonly List<LogEntry> _logEntries = new List<LogEntry>();
         private static bool _isLoggingEnabled = false;
+        private static readonly object _sync = new object();
+        private static string _sessionStartTimeString;
+        private static bool _pendingFlush = false;
+        private static double _nextAutoFlushTime = 0;
+
+        static JsonLogSaver()
+        {
+            _sessionStartTimeString = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            EnableLogging();
+            EditorApplication.update += OnEditorUpdate;
+            EditorApplication.quitting += OnEditorQuitting;
+            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+        }
 
         [Serializable]
         public class LogEntry
@@ -90,25 +104,7 @@ namespace Code.Editor
 
         public static void SaveLogsToFile()
         {
-            try
-            {
-                string directoryPath = Path.Combine(Application.dataPath, "..", LOGS_FOLDER);
-                Directory.CreateDirectory(directoryPath);
-
-                string filePath = Path.Combine(directoryPath, JSON_LOG_FILE_NAME);
-
-                var logData = new LogData(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                logData.entries = new List<LogEntry>(_logEntries);
-
-                string json = JsonUtility.ToJson(logData, true);
-                File.WriteAllText(filePath, json);
-
-                Debug.Log($"[JsonLogSaver] Logs saved to: {filePath} ({_logEntries.Count} entries)");
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[JsonLogSaver] Failed to save logs: {e.Message}");
-            }
+            WriteLogsToFile(true);
         }
 
         public static LogData LoadLogsFromFile()
@@ -210,7 +206,13 @@ namespace Code.Editor
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff");
             string category = ExtractCategory(message);
 
-            _logEntries.Add(new LogEntry(timestamp, level, message, stackTrace, category));
+            lock (_sync)
+            {
+                _logEntries.Add(new LogEntry(timestamp, level, message, stackTrace, category));
+            }
+
+            _pendingFlush = true;
+            _nextAutoFlushTime = EditorApplication.timeSinceStartup + 0.5f;
         }
 
         private static void OnLogMessageReceivedThreaded(string message, string stackTrace, LogType type)
@@ -247,6 +249,75 @@ namespace Code.Editor
         public static string GetLogFilePath()
         {
             return Path.Combine(Application.dataPath, "..", LOGS_FOLDER, JSON_LOG_FILE_NAME);
+        }
+
+        private static void OnEditorUpdate()
+        {
+            if (!_pendingFlush) return;
+            if (EditorApplication.timeSinceStartup < _nextAutoFlushTime) return;
+            WriteLogsToFile(false);
+            _pendingFlush = false;
+        }
+
+        private static void OnEditorQuitting()
+        {
+            WriteLogsToFile(false);
+        }
+
+        private static void OnBeforeAssemblyReload()
+        {
+            WriteLogsToFile(false);
+        }
+
+        private static void WriteLogsToFile(bool logToConsole)
+        {
+            try
+            {
+                string directoryPath = Path.Combine(Application.dataPath, "..", LOGS_FOLDER);
+                Directory.CreateDirectory(directoryPath);
+
+                string filePath = Path.Combine(directoryPath, JSON_LOG_FILE_NAME);
+
+                var existing = LoadLogsFromFile();
+                var mergedEntries = new List<LogEntry>();
+                var seen = new HashSet<string>();
+
+                if (existing != null && existing.entries != null)
+                {
+                    foreach (var e in existing.entries)
+                    {
+                        string key = $"{e.timestamp}|{e.level}|{e.message}|{e.stackTrace}|{e.category}";
+                        if (seen.Add(key)) mergedEntries.Add(e);
+                    }
+                }
+
+                List<LogEntry> snapshot;
+                lock (_sync)
+                {
+                    snapshot = new List<LogEntry>(_logEntries);
+                }
+
+                foreach (var e in snapshot)
+                {
+                    string key = $"{e.timestamp}|{e.level}|{e.message}|{e.stackTrace}|{e.category}";
+                    if (seen.Add(key)) mergedEntries.Add(e);
+                }
+
+                var logData = new LogData(existing?.sessionStartTime ?? _sessionStartTimeString);
+                logData.entries = mergedEntries;
+
+                string json = JsonUtility.ToJson(logData, true);
+                File.WriteAllText(filePath, json);
+
+                if (logToConsole)
+                {
+                    Debug.Log($"[JsonLogSaver] Logs saved to: {filePath} ({logData.entries.Count} entries)");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonLogSaver] Failed to save logs: {e.Message}");
+            }
         }
     }
 

@@ -77,5 +77,11 @@ namespace Code.Features.Cards
     {
         public CardAnimator Value;
     }
+
+    [Game]
+    public class VisualTransform : IComponent
+    {
+        public Transform Value;
+    }
 }
 

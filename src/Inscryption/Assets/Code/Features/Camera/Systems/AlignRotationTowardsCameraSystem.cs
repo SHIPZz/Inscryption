@@ -14,25 +14,28 @@ namespace Code.Features.Camera.Systems
 		{
 			_entities = game.GetGroup(GameMatcher.AllOf(
 				GameMatcher.TrackCameraRotation,
-				GameMatcher.View));
+				GameMatcher.View,
+				GameMatcher.Transform));
 			_cameraProvider = cameraProvider;
 		}
 
 		public void Execute()
 		{
 			UnityEngine.Camera camera = _cameraProvider.MainCamera;
-			
+
 			if (camera == null)
 				return;
 
 			foreach (GameEntity entity in _entities)
 			{
-				if (entity.View == null || entity.View.transform == null)
+				if (entity.View == null || entity.Transform == null)
 					continue;
 
-				Vector3 position = entity.View.transform.position;
+				Vector3 position = entity.Transform.position;
 				Quaternion rotation = position.GetLookRotationTo(camera.transform.position, ignoreY: false);
-				entity.View.transform.rotation = rotation;
+				entity.ReplaceWorldRotation(rotation);
+
+				Debug.Log($"[AlignRotationTowardsCameraSystem] Set camera rotation for card {entity.Id} (hero: {entity.isHero}) to {rotation.eulerAngles}");
 			}
 		}
 	}

@@ -9,6 +9,7 @@ namespace Code.Features.Game
         {
             Add(systemFactory.Create<InitializeGameSystem>());
             Add(systemFactory.Create<CheckVictorySystem>());
+            Add(systemFactory.Create<ProcessGameEndRequestSystem>());
         }
     }
 }

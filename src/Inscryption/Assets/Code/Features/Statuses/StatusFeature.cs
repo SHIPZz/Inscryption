@@ -9,6 +9,7 @@ namespace Code.Features.Statuses
         {
             Add(systemFactory.Create<ApplyDamageStatusSystem>());
             Add(systemFactory.Create<ApplyHpFromStatsSystem>());
+            Add(systemFactory.Create<AnimateOnDamageSystem>());
         }
     }
 }

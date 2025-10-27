@@ -8,9 +8,8 @@ namespace Code.Common.Systems
 
         public UpdateWorldLocalRotationSystem(GameContext game)
         {
-            _entities = game.GetGroup(GameMatcher.AllOf(
-                GameMatcher.LocalRotation,
-                GameMatcher.Transform));
+            _entities = game.GetGroup(GameMatcher
+                .AllOf(GameMatcher.LocalRotation, GameMatcher.Transform));
         }
 
         public void Execute()

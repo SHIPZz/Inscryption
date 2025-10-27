@@ -23,20 +23,16 @@ namespace Code.Features.UI.Systems
                 return;
 
             GameHUD hud = _meta.gameHUD.Value;
+            
             if (hud == null)
                 return;
 
             GameEntity hero = _heroProvider.GetHero();
-            if (hero != null && hero.hasHp && hero.hasMaxHp)
-            {
-                hud.UpdateHeroHealth(hero.Hp, hero.MaxHp);
-            }
-
             GameEntity enemy = _enemyProvider.GetEnemy();
-            if (enemy != null && enemy.hasHp && enemy.hasMaxHp)
-            {
-                hud.UpdateEnemyHealth(enemy.Hp, enemy.MaxHp);
-            }
+
+            hud.UpdateHeroHealth(hero?.Hp ?? 0,hero?.MaxHp ?? 0 );
+
+            hud.UpdateEnemyHealth(enemy?.Hp ?? 0,enemy?.MaxHp ?? 0 );
         }
     }
 }

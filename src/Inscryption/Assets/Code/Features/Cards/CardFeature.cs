@@ -7,7 +7,9 @@ namespace Code.Features.Cards
     {
         public CardFeature(ISystemFactory systemFactory)
         {
+            Add(systemFactory.Create<ProcessDrawCardRequestSystem>());
             Add(systemFactory.Create<DrawCardFromStackAnimatedSystem>());
+            Add(systemFactory.Create<ProcessUpdateHandLayoutRequestSystem>());
             Add(systemFactory.Create<UpdateSelectedCardVisualSystem>());
         }
     }

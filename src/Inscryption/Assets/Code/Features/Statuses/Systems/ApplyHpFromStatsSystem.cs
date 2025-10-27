@@ -23,16 +23,23 @@ namespace Code.Features.Statuses.Systems
             {
                 if(target.StatsModifiers.Count <= 0)
                     continue;
-                
+
                 Dictionary<StatTypeId, int> stats = target.Stats;
-                
+
                 target.StatsModifiers.TryGetValue(StatTypeId.Hp, out int hpDelta);
-                
+
+                if (hpDelta == 0)
+                    continue;
+
                 stats.TryGetValue(StatTypeId.Hp, out int current);
-                stats[StatTypeId.Hp] = current + hpDelta;
-                
-                target.ReplaceHp(stats[StatTypeId.Hp]);
+                int newHp = current + hpDelta;
+                stats[StatTypeId.Hp] = newHp;
+
+                target.ReplaceHp(newHp);
                 target.StatsModifiers[StatTypeId.Hp] = 0;
+
+                string entityName = target.hasName ? target.Name : $"Entity {target.Id}";
+                Debug.Log($"[ApplyHpFromStatsSystem] {entityName}: HP changed from {current} to {newHp} (delta: {hpDelta})");
             }
         }
     }

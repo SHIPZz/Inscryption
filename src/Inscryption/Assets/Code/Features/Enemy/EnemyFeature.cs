@@ -7,7 +7,7 @@ namespace Code.Features.Enemy
     {
         public EnemyFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<ProcessEnemyTurnOnEndTurnRequestSystem>());
+            Add(systemFactory.Create<ProcessEnemyTurnSystem>());
         }
     }
 }

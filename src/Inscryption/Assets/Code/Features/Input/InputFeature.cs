@@ -11,8 +11,7 @@ namespace Code.Features.Input
 			Add(systemFactory.Create<CreateInputSystem>());
 			Add(systemFactory.Create<DetectClicksSystem>());
 			Add(systemFactory.Create<ProcessCardClickRequestSystem>());
-			Add(systemFactory.Create<ProcessSlotClickToPlaceRequestSystem>());
-			Add(systemFactory.Create<ProcessPlaceCardRequestSystem>());
+				Add(systemFactory.Create<ProcessSlotClickToPlaceRequestSystem>());
 		}
 	}
 	

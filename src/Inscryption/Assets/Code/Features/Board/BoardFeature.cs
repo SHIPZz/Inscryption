@@ -1,3 +1,4 @@
+using Code.Features.Board.Systems;
 using Code.Infrastructure.Systems;
 
 namespace Code.Features.Board
@@ -6,6 +7,7 @@ namespace Code.Features.Board
     {
         public BoardFeature(ISystemFactory systemFactory)
         {
+            Add(systemFactory.Create<ProcessPlaceCardRequestSystem>());
         }
     }
 }

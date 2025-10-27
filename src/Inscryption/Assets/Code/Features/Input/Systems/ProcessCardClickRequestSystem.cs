@@ -27,7 +27,8 @@ namespace Code.Features.Input.Systems
                 int cardId = request.CardClickRequest;
                 GameEntity card = _game.GetEntityWithId(cardId);
 
-                if (card.isCard && card.CardOwner == _heroProvider.GetActiveHero().Id)
+                GameEntity activeHero = _heroProvider.GetActiveHero();
+                if (card != null && card.isCard && card.hasCardOwner && activeHero != null && card.CardOwner == activeHero.Id)
                 {
                     card.isSelected = !card.isSelected;
                 }
