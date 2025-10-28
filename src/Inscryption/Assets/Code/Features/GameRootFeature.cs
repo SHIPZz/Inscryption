@@ -9,6 +9,7 @@ using Code.Features.Game;
 using Code.Features.Hero;
 using Code.Features.Input;
 using Code.Features.Movement;
+using Code.Features.Requests;
 using Code.Features.Stats;
 using Code.Features.Statuses;
 using Code.Features.Turn;
@@ -26,6 +27,7 @@ namespace Code.Features
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CameraFeature>());
             Add(systemFactory.Create<CooldownFeature>());
+            Add(systemFactory.Create<RequestFeature>());
             Add(systemFactory.Create<MovementFeature>());
             Add(systemFactory.Create<CardFeature>());
             Add(systemFactory.Create<HeroFeature>());

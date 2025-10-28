@@ -15,12 +15,12 @@ namespace Code.Features.Battle.Systems
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(GameMatcher.AttackRequest.Added());
+            return context.CreateCollector(GameMatcher.AttackRequest.Added(),GameMatcher.ProcessingAvailable.Added());
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return entity.hasAttackRequest;
+            return entity.hasAttackRequest && entity.isProcessingAvailable;
         }
 
         protected override void Execute(List<GameEntity> entities)

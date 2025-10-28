@@ -5,3 +5,4 @@ group.
 - Add to memory. Use always functionalextensions if there is a possibility to use it
 - Add to memory. Use Jenny.bat to generate components, after you create it
 - Add to memory. "C:\Projects\Inscryption\Jenny\Jenny-Gen.bat" there is a path to run jenny gen, use it always after you make any components.
+- Add to memory. Skip jenny bat executing

@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherDamaged;
+    static Entitas.IMatcher<GameEntity> _matcherProcessingAvailable;
 
-    public static Entitas.IMatcher<GameEntity> Damaged {
+    public static Entitas.IMatcher<GameEntity> ProcessingAvailable {
         get {
-            if (_matcherDamaged == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Damaged);
+            if (_matcherProcessingAvailable == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.ProcessingAvailable);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherDamaged = matcher;
+                _matcherProcessingAvailable = matcher;
             }
 
-            return _matcherDamaged;
+            return _matcherProcessingAvailable;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Code.Features.Statuses.Components.Damaged damagedComponent = new Code.Features.Statuses.Components.Damaged();
+    static readonly Code.Features.Cooldowns.ProcessingAvailable processingAvailableComponent = new Code.Features.Cooldowns.ProcessingAvailable();
 
-    public bool isDamaged {
-        get { return HasComponent(GameComponentsLookup.Damaged); }
+    public bool isProcessingAvailable {
+        get { return HasComponent(GameComponentsLookup.ProcessingAvailable); }
         set {
-            if (value != isDamaged) {
-                var index = GameComponentsLookup.Damaged;
+            if (value != isProcessingAvailable) {
+                var index = GameComponentsLookup.ProcessingAvailable;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : damagedComponent;
+                            : processingAvailableComponent;
 
                     AddComponent(index, component);
                 } else {

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Code.Common.Extensions;
 using Code.Features.Board;
+using Code.Features.Cooldowns.Extensions;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
 using Code.Features.Turn;
@@ -21,6 +23,8 @@ namespace Code.Features.Battle.Systems
         private readonly IGroup<GameEntity> _slots;
         private readonly List<GameEntity> _requestBuffer = new(1);
         private readonly GameConfig _gameConfig;
+        private readonly IGroup<GameEntity> _heroPlacedCards;
+        private readonly IGroup<GameEntity> _enemyPlacedCards;
 
         public CreateAttacksOnEndTurnSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider,
             IConfigService configService)
@@ -28,8 +32,10 @@ namespace Code.Features.Battle.Systems
             _game = game;
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
-            _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
+            _endTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
             _slots = game.GetGroup(GameMatcher.BoardSlot);
+            _heroPlacedCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card,GameMatcher.PlacedCards,GameMatcher.HeroOwner));
+            _enemyPlacedCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card,GameMatcher.PlacedCards,GameMatcher.EnemyOwner));
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 
@@ -53,10 +59,14 @@ namespace Code.Features.Battle.Systems
             string attackerName = attacker.isHero ? "Hero" : "Enemy";
             Debug.Log($"[CreateAttacksOnEndTurnSystem] Creating attack queue for {attackerName}'s cards");
 
-            var attacks = new List<QueuedAttack>();
+            float delay = 0f;
 
-            foreach (GameEntity slot in GetAttackerSlots(attacker))
+            IEnumerable<GameEntity> attackerSlots = GetAttackerSlots(attacker);
+            
+            for (int i = 0; i < attackerSlots.Count(); i++)
             {
+                GameEntity slot = attackerSlots.ElementAt(i);
+                
                 if (!IsValidAttacker(slot, out GameEntity attackerCard))
                     continue;
 
@@ -64,35 +74,25 @@ namespace Code.Features.Battle.Systems
 
                 if (target != null)
                 {
-                    attacks.Add(new QueuedAttack
-                    {
-                        AttackerId = attackerCard.Id,
-                        TargetId = target.Id,
-                        Damage = attackerCard.Damage,
-                        Lane = slot.SlotLane
-                    });
+                    delay += _gameConfig.AnimationTiming.DelayBetweenAttacks;
+
+                    var delay1 = delay;
+                    
+                    _game.CreateEntity().AddAttackRequest(attackerCard.Id,target.Id,attackerCard.Damage)
+                        .With(x => x.PutOnCooldown(delay1))
+                        .With(x => x.isRequest = true)
+                        ;
                 }
             }
-
-            if (attacks.Count > 0)
-            {
-                var animTiming = _gameConfig.AnimationTiming;
-                var queueEntity = _game.CreateEntity();
-                queueEntity.AddAttackQueue(attacks);
-                queueEntity.AddAttackQueueTimer(0f, animTiming.DelayBetweenAttacks, 0, animTiming.PostAttackDelay,
-                    false);
-
-                Debug.Log(
-                    $"[CreateAttacksOnEndTurnSystem] Created attack queue with {attacks.Count} attacks, {animTiming.DelayBetweenAttacks}s delay between each, {animTiming.PostAttackDelay}s post-attack delay");
-            }
-            else
-            {
-                Debug.Log(
-                    $"[CreateAttacksOnEndTurnSystem] No attacks to process, creating SwitchTurnRequest for turn transition");
-                _game.CreateEntity().isSwitchTurnRequest = true;
-            }
+            
+            _game.CreateEntity()
+                .With(x => x.isSwitchTurnRequest = true)
+                .With(x => x.isRequest = true)
+                .With(x => x.PutOnCooldown(delay + _gameConfig.AnimationTiming.PostAttackDelay))
+                ;
         }
 
+        
         private (GameEntity attacker, GameEntity defender) GetAttackerAndDefender()
         {
             GameEntity hero = _heroProvider.GetHero();

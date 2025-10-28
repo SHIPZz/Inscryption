@@ -19,13 +19,14 @@ namespace Code.Features.Battle.Systems
             _statusFactory = statusFactory;
 
             _attackRequests = game.GetGroup(GameMatcher
-                .AllOf(GameMatcher.AttackRequest));
+                .AllOf(GameMatcher.AttackRequest, GameMatcher.ProcessingAvailable));
         }
 
         public void Execute()
         {
             foreach (GameEntity request in _attackRequests.GetEntities(_buffer))
             {
+                Debug.Log("@@@ request created");
                 int attackerId = request.attackRequest.AttackerId;
                 int targetId = request.attackRequest.TargetId;
                 int damage = request.attackRequest.Damage;
@@ -35,8 +36,7 @@ namespace Code.Features.Battle.Systems
 
                 if (attacker == null || target == null)
                 {
-                    Debug.LogWarning(
-                        $"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
+                    Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
                     request.isDestructed = true;
                     continue;
                 }

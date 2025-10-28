@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Common.Extensions;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
 using Code.Infrastructure.Data;
@@ -21,7 +22,7 @@ namespace Code.Features.Turn.Systems
             _game = game;
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
-            _switchTurnRequests = game.GetGroup(GameMatcher.SwitchTurnRequest);
+            _switchTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.SwitchTurnRequest, GameMatcher.ProcessingAvailable));
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 
@@ -58,9 +59,10 @@ namespace Code.Features.Turn.Systems
                 entity.ReplaceCardsPlacedThisTurn(0);
 
             var maxHandSize = _gameConfig.GameBalance.MaxHandSize;
-            
+
             if (entity.CardsInHand.Count < maxHandSize)
-                _game.CreateEntity().AddDrawCardRequest(entity.Id);
+                _game.CreateEntity().AddDrawCardRequest(entity.Id)
+                    .With(x => x.isRequest = true);
         }
     }
 }

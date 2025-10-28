@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherDamaged;
+    static Entitas.IMatcher<GameEntity> _matcherAttacking;
 
-    public static Entitas.IMatcher<GameEntity> Damaged {
+    public static Entitas.IMatcher<GameEntity> Attacking {
         get {
-            if (_matcherDamaged == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Damaged);
+            if (_matcherAttacking == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Attacking);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherDamaged = matcher;
+                _matcherAttacking = matcher;
             }
 
-            return _matcherDamaged;
+            return _matcherAttacking;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Code.Features.Statuses.Components.Damaged damagedComponent = new Code.Features.Statuses.Components.Damaged();
+    static readonly Code.Features.Turn.Attacking attackingComponent = new Code.Features.Turn.Attacking();
 
-    public bool isDamaged {
-        get { return HasComponent(GameComponentsLookup.Damaged); }
+    public bool isAttacking {
+        get { return HasComponent(GameComponentsLookup.Attacking); }
         set {
-            if (value != isDamaged) {
-                var index = GameComponentsLookup.Damaged;
+            if (value != isAttacking) {
+                var index = GameComponentsLookup.Attacking;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : damagedComponent;
+                            : attackingComponent;
 
                     AddComponent(index, component);
                 } else {

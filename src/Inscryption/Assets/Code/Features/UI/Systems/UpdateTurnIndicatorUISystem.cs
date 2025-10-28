@@ -15,14 +15,12 @@ namespace Code.Features.UI.Systems
 
         protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            return context.CreateCollector(
-                GameMatcher.AnyOf(GameMatcher.HeroTurn, GameMatcher.EnemyTurn)
-            );
+            return context.CreateCollector(GameMatcher.HeroTurn.Added(), GameMatcher.EnemyTurn.Added());
         }
 
         protected override bool Filter(GameEntity entity)
         {
-            return entity.isHero || entity.isEnemy;
+            return (entity.isHero || entity.isEnemy) && !entity.isDestructed;
         }
 
         protected override void Execute(List<GameEntity> entities)

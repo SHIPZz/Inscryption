@@ -21,7 +21,7 @@ namespace Code.Features.Turn.Systems
         {
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
-            _switchTurnRequests = game.GetGroup(GameMatcher.SwitchTurnRequest);
+            _switchTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.SwitchTurnRequest, GameMatcher.ProcessingAvailable));
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 

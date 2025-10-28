@@ -22,7 +22,7 @@ namespace Code.Features.Cards.Systems
         {
             _game = game;
             _levelProvider = levelProvider;
-            _requests = game.GetGroup(GameMatcher.DrawCardRequest);
+            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.DrawCardRequest, GameMatcher.ProcessingAvailable));
             _stacks = game.GetGroup(GameMatcher.CardStack);
             _gameConfig = configService.GetConfig<GameConfig>();
         }

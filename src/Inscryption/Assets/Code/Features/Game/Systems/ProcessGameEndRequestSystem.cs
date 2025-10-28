@@ -21,7 +21,7 @@ namespace Code.Features.Game.Systems
         public ProcessGameEndRequestSystem(GameContext game, IUIProvider uiProvider)
         {
             _uiProvider = uiProvider;
-            _requests = game.GetGroup(GameMatcher.GameEndRequest);
+            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.GameEndRequest, GameMatcher.ProcessingAvailable));
             _gameRequests = game.GetGroup(GameMatcher.AnyOf(
                 GameMatcher.SwitchTurnRequest,
                 GameMatcher.EndTurnRequest,

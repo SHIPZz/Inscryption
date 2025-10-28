@@ -49,7 +49,9 @@ namespace Code.Features.Enemy.Systems
             if (CanPlaceCard(enemy))
                 PlaceEnemyCard(enemy);
 
-            _game.CreateEntity().isEndTurnRequest = true;
+            _game.CreateEntity()
+                .With(x => x.isRequest = true)
+                .With(x => x.isEndTurnRequest = true);
         }
 
         private bool CanPlaceCard(GameEntity enemy) =>
@@ -59,7 +61,8 @@ namespace Code.Features.Enemy.Systems
         {
             var randomSlot = _enemySlots.AsEnumerable().PickRandom();
             var cardId = enemy.CardsInHand[0];
-            _game.CreateEntity().AddPlaceCardRequest(cardId, randomSlot.Id);
+            _game.CreateEntity().AddPlaceCardRequest(cardId, randomSlot.Id)
+                .With(x => x.isRequest = true);
             Debug.Log($"[ProcessEnemyTurnSystem] Enemy placing card {cardId} on slot {randomSlot.Id}");
         }
     }

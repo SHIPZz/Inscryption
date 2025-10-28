@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Code.Features.Statuses.Components;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherAttackAnimator;
@@ -36,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public AttackAnimatorComponent attackAnimator { get { return (AttackAnimatorComponent)GetComponent(GameComponentsLookup.AttackAnimator); } }
+    public Code.Features.Statuses.Components.AttackAnimatorComponent attackAnimator { get { return (Code.Features.Statuses.Components.AttackAnimatorComponent)GetComponent(GameComponentsLookup.AttackAnimator); } }
     public Code.Features.Statuses.Services.IAttackAnimator AttackAnimator { get { return attackAnimator.Value; } }
     public bool hasAttackAnimator { get { return HasComponent(GameComponentsLookup.AttackAnimator); } }
 
     public GameEntity AddAttackAnimator(Code.Features.Statuses.Services.IAttackAnimator newValue) {
         var index = GameComponentsLookup.AttackAnimator;
-        var component = (AttackAnimatorComponent)CreateComponent(index, typeof(AttackAnimatorComponent));
+        var component = (Code.Features.Statuses.Components.AttackAnimatorComponent)CreateComponent(index, typeof(Code.Features.Statuses.Components.AttackAnimatorComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -50,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceAttackAnimator(Code.Features.Statuses.Services.IAttackAnimator newValue) {
         var index = GameComponentsLookup.AttackAnimator;
-        var component = (AttackAnimatorComponent)CreateComponent(index, typeof(AttackAnimatorComponent));
+        var component = (Code.Features.Statuses.Components.AttackAnimatorComponent)CreateComponent(index, typeof(Code.Features.Statuses.Components.AttackAnimatorComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

@@ -41,6 +41,8 @@ namespace Code.Features.Turn
         public int TargetId;
         public int Damage;
     }
+    
+    [Game] public class Attacking : IComponent{}
 
     [Game]
     public class DrawCardRequest : IComponent

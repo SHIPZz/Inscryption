@@ -16,6 +16,32 @@ MonoBehaviour:
   _baseEnemyHealth: 20
   _deckSize: 30
   _startingHandSize: 3
+  _handLayout:
+    HorizontalSpacing: 0.3
+    VerticalCurve: 0.05
+    DepthSpacing: 0.02
+    AnglePerCard: 5
+  _boardLayout:
+    Spacing: {x: 2.2, y: 0}
+    HeroOrigin: {x: 0, y: 0, z: -2}
+    EnemyOrigin: {x: 0, y: 0, z: 2}
+    SlotRotation: {x: 90, y: 0, z: 0}
+    HeroSlotColor: {r: 0.3, g: 0.7, b: 1, a: 0.5}
+    EnemySlotColor: {r: 1, g: 0.3, b: 0.3, a: 0.5}
+  _animationTiming:
+    DelayBetweenAttacks: 1
+    PostAttackDelay: 1
+    EnemyTurnDelay: 1
+    DelayBetweenCards: 0.5
+    CardMoveDuration: 0.25
+    LayoutUpdateDuration: 0.2
+  _gameBalance:
+    MaxHandSize: 3
+    MaxCardsPlacedPerTurn: 1
+  _cardGeneration:
+    HpRange: {x: 1, y: 4}
+    DamageRange: {x: 1, y: 3}
+    RotationRange: {x: -25, y: 25}
   StackVerticalOffset: 0.025
   InputMask:
     serializedVersion: 2

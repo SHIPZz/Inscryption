@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Common.Extensions;
 using Entitas;
 using UnityEngine;
 
@@ -32,7 +33,10 @@ namespace Code.Features.Input.Systems
 
                 if (slot != null && slot.isBoardSlot)
                 {
-                    _game.CreateEntity().AddPlaceCardRequest(selectedCard.Id, slotId);
+                    _game.CreateEntity()
+                        .AddPlaceCardRequest(selectedCard.Id, slotId)
+                        .With(x => x.isRequest = true)
+                        ;
                     
                     Debug.Log($"[ProcessSlotClickToPlaceRequest] Created PlaceCardRequest card={selectedCard.Id} slot={slotId}");
                 }

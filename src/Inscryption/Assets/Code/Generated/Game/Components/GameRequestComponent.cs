@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherDamaged;
+    static Entitas.IMatcher<GameEntity> _matcherRequest;
 
-    public static Entitas.IMatcher<GameEntity> Damaged {
+    public static Entitas.IMatcher<GameEntity> Request {
         get {
-            if (_matcherDamaged == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Damaged);
+            if (_matcherRequest == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Request);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherDamaged = matcher;
+                _matcherRequest = matcher;
             }
 
-            return _matcherDamaged;
+            return _matcherRequest;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Code.Features.Statuses.Components.Damaged damagedComponent = new Code.Features.Statuses.Components.Damaged();
+    static readonly Code.Features.Requests.Request requestComponent = new Code.Features.Requests.Request();
 
-    public bool isDamaged {
-        get { return HasComponent(GameComponentsLookup.Damaged); }
+    public bool isRequest {
+        get { return HasComponent(GameComponentsLookup.Request); }
         set {
-            if (value != isDamaged) {
-                var index = GameComponentsLookup.Damaged;
+            if (value != isRequest) {
+                var index = GameComponentsLookup.Request;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : damagedComponent;
+                            : requestComponent;
 
                     AddComponent(index, component);
                 } else {

@@ -2,6 +2,7 @@
 using Code.Features.Board.Services;
 using Code.Features.Cards.Services;
 using Code.Features.UI.Services;
+using Code.Infrastructure.Cheats;
 using Code.Infrastructure.Level;
 using Code.Infrastructure.Services;
 using Zenject;
@@ -26,6 +27,7 @@ namespace Code.Infrastructure.Installers
             Container.BindInterfacesAndSelfTo<EntryPoint>().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<GameRunner>().AsSingle();
             Container.BindInterfacesAndSelfTo<InstantiatorSetter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CheatService>().AsSingle();
 
             foreach (var initializable in Initializables)
             {

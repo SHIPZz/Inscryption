@@ -10,4 +10,7 @@ namespace Code.Features.Cooldowns
     
     [Game]
     public class Cooldown : IComponent { public float Value; }
+
+    [Game]
+    public class ProcessingAvailable : IComponent { }
 }

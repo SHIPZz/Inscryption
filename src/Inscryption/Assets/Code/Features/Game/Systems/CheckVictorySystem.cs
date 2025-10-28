@@ -1,3 +1,4 @@
+using Code.Common.Extensions;
 using Entitas;
 using UnityEngine;
 
@@ -28,17 +29,29 @@ namespace Code.Features.Game.Systems
                 if (hero.isDestructed)
                 {
                     _gameEnded = true;
+                    Debug.Log($"[CheckVictorySystem] Hero died! HP: {hero.Hp} - DEFEAT");
 
-                    _game.CreateEntity().AddGameEndRequest(false, hero.Hp, hero.Hp);
+                    foreach (GameEntity enemy in _enemies)
+                    {
+                        _game.CreateEntity().AddGameEndRequest(false, hero.Hp, enemy.Hp)
+                            .With(x => x.isRequest = true)
+                            ;
+                    }
+                    return;
                 }
-                
+
                 foreach (GameEntity enemy in _enemies)
                 {
                     if (enemy.isDestructed)
                     {
                         _gameEnded = true;
+                        Debug.Log($"[CheckVictorySystem] Enemy died! HP: {enemy.Hp} - VICTORY");
 
-                        _game.CreateEntity().AddGameEndRequest(true, enemy.Hp, enemy.Hp);
+                        var request = _game.CreateEntity();
+                        request.AddGameEndRequest(true, hero.Hp, enemy.Hp);
+                        request.isRequest = true;
+
+                        return;
                     }
                 }
             }

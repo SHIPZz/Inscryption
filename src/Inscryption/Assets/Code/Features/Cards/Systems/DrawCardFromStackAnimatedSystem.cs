@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.Common.Extensions;
 using DG.Tweening;
 using Entitas;
 using UnityEngine;
@@ -49,7 +50,8 @@ namespace Code.Features.Cards.Systems
                             cardEntity.ReplaceParent(request.Parent);
                             cardEntity.ReplaceLocalPosition(cardEntity.Transform.localPosition);
                             cardEntity.ReplaceLocalRotation(cardEntity.Transform.localRotation);
-                            _gameContext.CreateEntity().AddUpdateHandLayoutRequest(cardOwner.Id);
+                            _gameContext.CreateEntity().AddUpdateHandLayoutRequest(cardOwner.Id)
+                                .With(x => x.isRequest = true);
                         })
                         ;
                 }

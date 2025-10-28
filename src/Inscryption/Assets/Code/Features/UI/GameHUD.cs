@@ -1,4 +1,5 @@
-﻿using Code.Features.Hero.Services;
+﻿using Code.Common.Extensions;
+using Code.Features.Hero.Services;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,8 +63,12 @@ namespace Code.Features.UI
 
             _endTurnLockedUntilNextHeroTurn = true;
             if (_endTurnButton != null)
-                _endTurnButton.interactable = false; // disable immediately until next player turn
-            _gameContext.CreateEntity().isEndTurnRequest = true;
+                _endTurnButton.interactable = false;
+
+            _gameContext.CreateEntity()
+                .With(x => x.isRequest = true)
+                .With(x => x.isEndTurnRequest = true)
+                ;
         }
 
         public void UpdateHeroHealth(int currentHp, int maxHp)
