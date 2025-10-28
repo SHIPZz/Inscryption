@@ -1,22 +1,23 @@
 ﻿using System.Collections.Generic;
-using Code.Common.Services;
 using DG.Tweening;
 using Entitas;
 using UnityEngine;
+
 namespace Code.Features.Cards.Systems
 {
+    //todo refactor this:
     public class DrawCardFromStackAnimatedSystem : IExecuteSystem
     {
         private readonly IGroup<GameEntity> _requests;
         private readonly GameContext _gameContext;
-        private readonly ICameraProvider _cameraProvider;
         private readonly List<GameEntity> _buffer = new(5);
-        public DrawCardFromStackAnimatedSystem(GameContext gameContext, ICameraProvider cameraProvider)
+
+        public DrawCardFromStackAnimatedSystem(GameContext gameContext)
         {
             _gameContext = gameContext;
-            _cameraProvider = cameraProvider;
             _requests = gameContext.GetGroup(GameMatcher.DrawCardFromStackRequest);
         }
+
         public void Execute()
         {
             foreach (GameEntity requestEntity in _requests.GetEntities(_buffer))
@@ -30,6 +31,7 @@ namespace Code.Features.Cards.Systems
                         Debug.LogWarning("Not enough target positions for cards to draw.");
                         break;
                     }
+
                     int cardId = stackEntity.CardStack.Pop();
                     var cardEntity = _gameContext.GetEntityWithId(cardId);
                     cardEntity.isStatic = true;
@@ -51,6 +53,7 @@ namespace Code.Features.Cards.Systems
                         })
                         ;
                 }
+
                 requestEntity.Destroy();
             }
         }

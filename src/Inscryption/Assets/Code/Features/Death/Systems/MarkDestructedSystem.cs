@@ -3,14 +3,15 @@ using Entitas;
 
 namespace Code.Features.Death.Systems
 {
-    public class MarkDeadSystem : IExecuteSystem
+    public class MarkDestructedSystem : IExecuteSystem
     {
         private readonly IGroup<GameEntity> _targets;
         private readonly List<GameEntity> _buffer = new(32);
 
-        public MarkDeadSystem(GameContext game)
+        public MarkDestructedSystem(GameContext game)
         {
-            _targets = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hp).NoneOf(GameMatcher.Destructed));
+            _targets = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hp)
+                .NoneOf(GameMatcher.Destructed));
         }
 
         public void Execute()

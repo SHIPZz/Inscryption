@@ -34,8 +34,6 @@ namespace Code.Features.Camera.Systems
 				Vector3 position = entity.Transform.position;
 				Quaternion rotation = position.GetLookRotationTo(camera.transform.position, ignoreY: false);
 				entity.ReplaceWorldRotation(rotation);
-
-				Debug.Log($"[AlignRotationTowardsCameraSystem] Set camera rotation for card {entity.Id} (hero: {entity.isHero}) to {rotation.eulerAngles}");
 			}
 		}
 	}

@@ -3,11 +3,15 @@ using System.Linq;
 using Code.Features.Board;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
+using Code.Features.Turn;
+using Code.Infrastructure.Data;
+using Code.Infrastructure.Services;
 using Entitas;
 using UnityEngine;
 
 namespace Code.Features.Battle.Systems
 {
+    //todo refactor this
     public class CreateAttacksOnEndTurnSystem : IExecuteSystem
     {
         private readonly GameContext _game;
@@ -16,65 +20,90 @@ namespace Code.Features.Battle.Systems
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _slots;
         private readonly List<GameEntity> _requestBuffer = new(1);
-        private readonly List<GameEntity> _slotsBuffer = new(8);
+        private readonly GameConfig _gameConfig;
 
-        public CreateAttacksOnEndTurnSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
+        public CreateAttacksOnEndTurnSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider,
+            IConfigService configService)
         {
             _game = game;
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
             _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
             _slots = game.GetGroup(GameMatcher.BoardSlot);
+            _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public void Execute()
         {
             foreach (GameEntity request in _endTurnRequests.GetEntities(_requestBuffer))
             {
-                var (attacker, defender) = GetTurnPlayers();
+                (GameEntity attacker, GameEntity defender) = GetAttackerAndDefender();
 
                 if (attacker != null)
                 {
                     ProcessAttacks(attacker, defender);
                 }
+
+                request.isDestructed = true;
             }
         }
 
         private void ProcessAttacks(GameEntity attacker, GameEntity defender)
         {
             string attackerName = attacker.isHero ? "Hero" : "Enemy";
-            Debug.Log($"[CreateAttacksOnEndTurnSystem] Creating attacks for {attackerName}'s cards");
+            Debug.Log($"[CreateAttacksOnEndTurnSystem] Creating attack queue for {attackerName}'s cards");
 
-            foreach (var slot in GetAttackerSlots(attacker))
+            var attacks = new List<QueuedAttack>();
+
+            foreach (GameEntity slot in GetAttackerSlots(attacker))
             {
-                if (!IsValidAttacker(slot, out var attackerCard))
+                if (!IsValidAttacker(slot, out GameEntity attackerCard))
                     continue;
 
-                var target = FindAttackTarget(slot, defender);
+                GameEntity target = FindAttackTarget(slot, defender);
+
                 if (target != null)
                 {
-                    CreateAttackRequest(attackerCard, target, attackerCard.Damage, slot.SlotLane);
+                    attacks.Add(new QueuedAttack
+                    {
+                        AttackerId = attackerCard.Id,
+                        TargetId = target.Id,
+                        Damage = attackerCard.Damage,
+                        Lane = slot.SlotLane
+                    });
                 }
+            }
+
+            if (attacks.Count > 0)
+            {
+                var animTiming = _gameConfig.AnimationTiming;
+                var queueEntity = _game.CreateEntity();
+                queueEntity.AddAttackQueue(attacks);
+                queueEntity.AddAttackQueueTimer(0f, animTiming.DelayBetweenAttacks, 0, animTiming.PostAttackDelay,
+                    false);
+
+                Debug.Log(
+                    $"[CreateAttacksOnEndTurnSystem] Created attack queue with {attacks.Count} attacks, {animTiming.DelayBetweenAttacks}s delay between each, {animTiming.PostAttackDelay}s post-attack delay");
+            }
+            else
+            {
+                Debug.Log(
+                    $"[CreateAttacksOnEndTurnSystem] No attacks to process, creating SwitchTurnRequest for turn transition");
+                _game.CreateEntity().isSwitchTurnRequest = true;
             }
         }
 
-        private (GameEntity attacker, GameEntity defender) GetTurnPlayers()
+        private (GameEntity attacker, GameEntity defender) GetAttackerAndDefender()
         {
             GameEntity hero = _heroProvider.GetHero();
             GameEntity enemy = _enemyProvider.GetEnemy();
 
-            if (hero?.isHeroTurn == true)
-                return (hero, enemy);
-
-            if (enemy?.isEnemyTurn == true)
-                return (enemy, hero);
-
-            return (null, null);
+            return enemy?.isEnemyTurn == true ? (enemy, hero) : (hero, enemy);
         }
 
         private IEnumerable<GameEntity> GetAttackerSlots(GameEntity attacker)
         {
-            return _slots.GetEntities(_slotsBuffer)
+            return _slots.GetEntities()
                 .Where(s => s.hasSlotOwner && s.hasSlotLane && s.SlotOwner == attacker.Id)
                 .OrderBy(s => s.SlotLane);
         }
@@ -87,29 +116,33 @@ namespace Code.Features.Battle.Systems
                 return false;
 
             card = _game.GetEntityWithId(slot.OccupiedBy);
-            return card != null && !card.isDestructed && card.hasDamage;
+            return card is { isDestructed: false, hasDamage: true };
         }
 
         private GameEntity FindAttackTarget(GameEntity slot, GameEntity defender)
         {
             var oppositeSlot = BoardHelpers.FindOppositeSlot(_game, slot);
 
-            if (oppositeSlot?.isOccupied == true && oppositeSlot.OccupiedBy >= 0)
-            {
-                var targetCard = _game.GetEntityWithId(oppositeSlot.OccupiedBy);
-                if (targetCard != null && !targetCard.isDestructed)
-                    return targetCard;
-            }
-
-            return defender;
+            return TryGetDefenderCard(oppositeSlot, out GameEntity defenderCard) ? defenderCard : defender;
         }
 
-        private void CreateAttackRequest(GameEntity attacker, GameEntity target, int damage, int lane)
+        private bool TryGetDefenderCard(GameEntity oppositeSlot, out GameEntity targetCard)
         {
-            _game.CreateEntity().AddAttackRequest(attacker.Id, target.Id, damage);
+            if (oppositeSlot is not { isOccupied: true, OccupiedBy: >= 0 })
+            {
+                targetCard = null;
+                return false;
+            }
 
-            string targetType = target.isCard ? $"card {target.Id}" : $"player {target.Id}";
-            Debug.Log($"[CreateAttacksOnEndTurnSystem] Card {attacker.Id} attacks {targetType} for {damage} damage (Lane {lane})");
+            targetCard = _game.GetEntityWithId(oppositeSlot.OccupiedBy);
+
+            if (targetCard is { isDestructed: false })
+            {
+                return true;
+            }
+
+            targetCard = null;
+            return false;
         }
     }
 }

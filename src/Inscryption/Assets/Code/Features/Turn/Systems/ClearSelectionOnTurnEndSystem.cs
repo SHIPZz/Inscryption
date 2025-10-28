@@ -4,9 +4,9 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
+    //todo refactor this
     public class ClearSelectionOnTurnEndSystem : IExecuteSystem
     {
-        private readonly GameContext _game;
         private readonly IHeroProvider _heroProvider;
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _heroCards;
@@ -15,7 +15,6 @@ namespace Code.Features.Turn.Systems
 
         public ClearSelectionOnTurnEndSystem(GameContext game, IHeroProvider heroProvider)
         {
-            _game = game;
             _heroProvider = heroProvider;
             _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
             _heroCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card, GameMatcher.Selected));
@@ -26,11 +25,9 @@ namespace Code.Features.Turn.Systems
             foreach (GameEntity req in _endTurnRequests.GetEntities(_reqBuffer))
             {
                 GameEntity hero = _heroProvider.GetHero();
+                
                 if (hero == null || !hero.isHeroTurn)
-                {
-                    req.isDestructed = true;
                     continue;
-                }
 
                 foreach (GameEntity card in _heroCards.GetEntities(_cardBuffer))
                 {
@@ -39,8 +36,7 @@ namespace Code.Features.Turn.Systems
                         card.isSelected = false;
                     }
                 }
-
-                req.isDestructed = true;
+                // Important: do not destruct EndTurnRequest here; CreateAttacksOnEndTurnSystem will consume it
             }
         }
     }

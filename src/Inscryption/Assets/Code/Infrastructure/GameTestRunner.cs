@@ -38,6 +38,23 @@ namespace Code.Infrastructure
             if (!_isInitialized)
                 return;
 
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Contexts.sharedInstance.game.GetGroup(GameMatcher.Enemy).GetSingleEntity().isDestructed = true;
+                
+                Contexts.sharedInstance.game.CreateEntity()
+                    .AddGameEndRequest(true,0,0);
+            }
+            
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
+            {
+                Contexts.sharedInstance.game.GetGroup(GameMatcher.Hero).GetSingleEntity().isDestructed = true;
+                
+                Contexts.sharedInstance.game.CreateEntity()
+                    .AddGameEndRequest(false,0,0);
+            }
+            
+            
             _gameRootFeature?.Execute();
             _gameRootFeature?.Cleanup();
         }

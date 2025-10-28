@@ -20,7 +20,6 @@ namespace Code.Features.Battle.Systems
 
             _attackRequests = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.AttackRequest));
-
         }
 
         public void Execute()
@@ -36,7 +35,8 @@ namespace Code.Features.Battle.Systems
 
                 if (attacker == null || target == null)
                 {
-                    Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
+                    Debug.LogWarning(
+                        $"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
                     request.isDestructed = true;
                     continue;
                 }
@@ -48,8 +48,5 @@ namespace Code.Features.Battle.Systems
                 request.isDestructed = true;
             }
         }
-
-        
     }
 }
-

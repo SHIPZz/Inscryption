@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Code.Infrastructure.Data;
+using Code.Infrastructure.Services;
 using Entitas;
 using UnityEngine;
 
@@ -9,11 +11,13 @@ namespace Code.Features.Board.Systems
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _requests;
         private readonly List<GameEntity> _buffer = new();
+        private readonly GameConfig _gameConfig;
 
-        public ProcessPlaceCardRequestSystem(GameContext game)
+        public ProcessPlaceCardRequestSystem(GameContext game, IConfigService configService)
         {
             _game = game;
             _requests = game.GetGroup(GameMatcher.PlaceCardRequest);
+            _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public void Execute()
@@ -34,7 +38,7 @@ namespace Code.Features.Board.Systems
 
                 GameEntity owner = _game.GetEntityWithId(card.CardOwner);
 
-                SetupPlacing(card, slot, owner);
+                SetupPlacing(card, slot);
 
                 owner.CardsInHand.Remove(cardId);
                 owner.PlacedCards.Add(cardId);
@@ -60,7 +64,8 @@ namespace Code.Features.Board.Systems
             if (!ownerTurn)
                 return false;
 
-            if (!owner.hasCardsPlacedThisTurn || owner.CardsPlacedThisTurn >= 1)
+            var maxCardsPerTurn = _gameConfig.GameBalance.MaxCardsPlacedPerTurn;
+            if (!owner.hasCardsPlacedThisTurn || owner.CardsPlacedThisTurn >= maxCardsPerTurn)
                 return false;
 
             if (slot.isOccupied || slot.OccupiedBy >= 0)
@@ -72,7 +77,7 @@ namespace Code.Features.Board.Systems
             return true;
         }
 
-        private void SetupPlacing(GameEntity card, GameEntity slot, GameEntity owner)
+        private void SetupPlacing(GameEntity card, GameEntity slot)
         {
             card.isStatic = false;
             card.isSelected = false;

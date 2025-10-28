@@ -1,7 +1,32 @@
+using System.Collections.Generic;
 using Entitas;
 
 namespace Code.Features.Turn
 {
+    public struct QueuedAttack
+    {
+        public int AttackerId;
+        public int TargetId;
+        public int Damage;
+        public int Lane;
+    }
+
+    [Game]
+    public class AttackQueue : IComponent
+    {
+        public List<QueuedAttack> Attacks;
+    }
+
+    [Game]
+    public class AttackQueueTimer : IComponent
+    {
+        public float ElapsedTime;
+        public float DelayBetweenAttacks;
+        public int CurrentAttackIndex;
+        public float PostAttackDelay;
+        public bool AllAttacksComplete;
+    }
+
     [Game]
     public class PlaceCardRequest : IComponent
     {
@@ -61,6 +86,13 @@ namespace Code.Features.Turn
 
     [Game]
     public class PhaseTimer : IComponent
+    {
+        public float ElapsedTime;
+        public float TargetDuration;
+    }
+
+    [Game]
+    public class DelayedAttackPhase : IComponent
     {
         public float ElapsedTime;
         public float TargetDuration;

@@ -7,7 +7,6 @@ namespace Code.Features.UI
     {
         public UIFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<InitializeGameHUDSystem>());
             Add(systemFactory.Create<UpdateHealthUISystem>());
             Add(systemFactory.Create<UpdateTurnIndicatorUISystem>());
         }

@@ -17,33 +17,39 @@ namespace Code.Features.Board.Services
         private readonly IAssetsService _assetsService;
         private readonly IInstantiateService _instantiateService;
         private readonly ILevelProvider _levelProvider;
+        private readonly IConfigService _configService;
+        private GameConfig _gameConfig;
 
         public BoardFactory(
             GameContext game,
             IIdService idService,
             IAssetsService assetsService,
             IInstantiateService instantiateService,
-            ILevelProvider levelProvider)
+            ILevelProvider levelProvider,
+            IConfigService configService)
         {
             _game = game;
             _idService = idService;
             _assetsService = assetsService;
             _instantiateService = instantiateService;
             _levelProvider = levelProvider;
+            _configService = configService;
+            _gameConfig = _configService.GetConfig<GameConfig>();
         }
 
         public List<GameEntity> CreateSlots(int heroId, int enemyId, int lanes = 4)
         {
             var slots = new List<GameEntity>();
+            var boardLayout = _gameConfig.BoardLayout;
 
             var heroGridParams = new GridLayoutParams
             {
                 Rows = 1,
                 Columns = lanes,
-                Spacing = new Vector2(2.2f, 0),
-                Origin = new Vector3(0, 0, -2f)
+                Spacing = boardLayout.Spacing,
+                Origin = boardLayout.HeroOrigin
             };
-            
+
             var heroSlotPositions = PositionCalculator.CalculateGridPositions(heroGridParams);
 
             for (var i = 0; i < heroSlotPositions.Count; i++)
@@ -55,10 +61,10 @@ namespace Code.Features.Board.Services
             {
                 Rows = 1,
                 Columns = lanes,
-                Spacing = new Vector2(2.2f, 0),
-                Origin = new Vector3(0, 0, 2f)
+                Spacing = boardLayout.Spacing,
+                Origin = boardLayout.EnemyOrigin
             };
-            
+
             var enemySlotPositions = PositionCalculator.CalculateGridPositions(enemyGridParams);
 
             for (var i = 0; i < enemySlotPositions.Count; i++)
@@ -90,9 +96,10 @@ namespace Code.Features.Board.Services
 
         private void CreateSlotView(int lane, bool isHero, GameEntity slot, Vector3 position)
         {
+            var boardLayout = _gameConfig.BoardLayout;
             SlotEntityView slotPrefab = _assetsService.LoadPrefabWithComponent<SlotEntityView>(nameof(SlotEntityView));
-            Quaternion rotation = Quaternion.Euler(90f, 0f, 0f);
-            
+            Quaternion rotation = Quaternion.Euler(boardLayout.SlotRotation);
+
             SlotEntityView slotView = _instantiateService.Instantiate(slotPrefab, position, rotation, _levelProvider.SlotsParent);
 
             position.y = 0;
@@ -100,7 +107,7 @@ namespace Code.Features.Board.Services
 
             slotView.EntityBehaviour.SetEntity(slot);
             slotView.name = $"Slot_Lane{lane}_{(isHero ? "Hero" : "Enemy")}";
-            slotView.SetColor(isHero ? new Color(0.3f, 0.7f, 1f, 0.5f) : new Color(1f, 0.3f, 0.3f, 0.5f));
+            slotView.SetColor(isHero ? boardLayout.HeroSlotColor : boardLayout.EnemySlotColor);
 
             slot.ReplaceView(slotView.EntityBehaviour);
             slot.ReplaceWorldPosition(position);

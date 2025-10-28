@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using Code.Common.Random;
 using Code.Common.Services;
 using Code.Features.Layout.Services;
+using Code.Infrastructure.Data;
 using Code.Infrastructure.Level;
+using Code.Infrastructure.Services;
 using UnityEngine;
 
 namespace Code.Features.Cards.Services
@@ -14,15 +16,19 @@ namespace Code.Features.Cards.Services
         private readonly ICardFactory _cardFactory;
         private readonly IRandomService _randomService;
         private readonly ILevelProvider _levelProvider;
+        private readonly IConfigService _configService;
+        private GameConfig _gameConfig;
 
         public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory,
-            IRandomService randomService, ILevelProvider levelProvider)
+            IRandomService randomService, ILevelProvider levelProvider, IConfigService configService)
         {
             _game = game;
             _idService = idService;
             _cardFactory = cardFactory;
             _randomService = randomService;
             _levelProvider = levelProvider;
+            _configService = configService;
+            _gameConfig = _configService.GetConfig<GameConfig>();
         }
 
         public GameEntity CreateCardStack(CardStackCreateData createData)
@@ -51,10 +57,11 @@ namespace Code.Features.Cards.Services
             };
 
             IReadOnlyList<Vector3> cardLocalPositions = PositionCalculator.CalculateVerticalLayoutPositions(layoutParams);
+            var rotationRange = _gameConfig.CardGeneration.RotationRange;
 
             for (int i = 0; i < createData.CardCount; i++)
             {
-                float randomYRotation = _randomService.Range(-25f, 25f);
+                float randomYRotation = _randomService.Range(rotationRange.x, rotationRange.y);
                 Quaternion cardRotation = Quaternion.Euler(90f, randomYRotation, 0f);
 
                 GameEntity card = _cardFactory.CreateRandomCard(new CardCreateData(
@@ -70,7 +77,7 @@ namespace Code.Features.Cards.Services
                 ));
 
                 card.AddLocalPosition(cardLocalPositions[i]);
-                
+
                 stack.CardStack.Push(card.Id);
             }
         }

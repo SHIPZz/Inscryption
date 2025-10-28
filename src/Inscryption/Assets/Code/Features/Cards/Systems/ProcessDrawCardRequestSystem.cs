@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using Code.Features.Layout.Services;
+using Code.Infrastructure.Data;
 using Code.Infrastructure.Level;
+using Code.Infrastructure.Services;
 using Entitas;
 using UnityEngine;
 
 namespace Code.Features.Cards.Systems
 {
+    //todo refactor this:
     public class ProcessDrawCardRequestSystem : IExecuteSystem
     {
         private readonly GameContext _game;
@@ -13,16 +16,15 @@ namespace Code.Features.Cards.Systems
         private readonly IGroup<GameEntity> _requests;
         private readonly IGroup<GameEntity> _stacks;
         private readonly List<GameEntity> _requestBuffer = new(8);
-        private readonly List<GameEntity> _stackBuffer = new(1);
-        private const float DelayBetweenCards = 0.5f;
-        private const float MoveDuration = 0.25f;
+        private readonly GameConfig _gameConfig;
 
-        public ProcessDrawCardRequestSystem(GameContext game, ILevelProvider levelProvider)
+        public ProcessDrawCardRequestSystem(GameContext game, ILevelProvider levelProvider, IConfigService configService)
         {
             _game = game;
             _levelProvider = levelProvider;
             _requests = game.GetGroup(GameMatcher.DrawCardRequest);
             _stacks = game.GetGroup(GameMatcher.CardStack);
+            _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public void Execute()
@@ -59,28 +61,30 @@ namespace Code.Features.Cards.Systems
             var parent = player.isHero ? _levelProvider.HeroCardParent : _levelProvider.EnemyCardParent;
             var layoutData = CalculateHandLayout(player, parent);
             var targetPosition = layoutData[^1].Position;
+            var animTiming = _gameConfig.AnimationTiming;
 
             _game.CreateEntity().AddDrawCardFromStackRequest(
                 stack.Id,
                 1,
                 player.Id,
                 new[] { targetPosition },
-                DelayBetweenCards,
-                MoveDuration,
+                animTiming.DelayBetweenCards,
+                animTiming.CardMoveDuration,
                 parent
             );
         }
 
         private CardLayoutData[] CalculateHandLayout(GameEntity player, Transform parent)
         {
+            var handLayout = _gameConfig.HandLayout;
             var arcLayout = new ArcLayoutParams
             {
                 Count = player.CardsInHand.Count + 1,
                 Origin = parent.position,
-                HorizontalSpacing = 0.3f,
-                VerticalCurve = 0.05f,
-                DepthSpacing = 0.02f,
-                AnglePerCard = 5f
+                HorizontalSpacing = handLayout.HorizontalSpacing,
+                VerticalCurve = handLayout.VerticalCurve,
+                DepthSpacing = handLayout.DepthSpacing,
+                AnglePerCard = handLayout.AnglePerCard
             };
             return PositionCalculator.CalculateArcLayout(arcLayout);
         }

@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherTimer;
+    static Entitas.IMatcher<GameEntity> _matcherCooldown;
 
-    public static Entitas.IMatcher<GameEntity> Timer {
+    public static Entitas.IMatcher<GameEntity> Cooldown {
         get {
-            if (_matcherTimer == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Timer);
+            if (_matcherCooldown == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.Cooldown);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherTimer = matcher;
+                _matcherCooldown = matcher;
             }
 
-            return _matcherTimer;
+            return _matcherCooldown;
         }
     }
 }
@@ -33,28 +33,28 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public TimerComponent timer { get { return (TimerComponent)GetComponent(GameComponentsLookup.Timer); } }
-    public float Timer { get { return timer.Value; } }
-    public bool hasTimer { get { return HasComponent(GameComponentsLookup.Timer); } }
+    public Code.Features.Cooldowns.Cooldown cooldown { get { return (Code.Features.Cooldowns.Cooldown)GetComponent(GameComponentsLookup.Cooldown); } }
+    public float Cooldown { get { return cooldown.Value; } }
+    public bool hasCooldown { get { return HasComponent(GameComponentsLookup.Cooldown); } }
 
-    public GameEntity AddTimer(float newValue) {
-        var index = GameComponentsLookup.Timer;
-        var component = (TimerComponent)CreateComponent(index, typeof(TimerComponent));
+    public GameEntity AddCooldown(float newValue) {
+        var index = GameComponentsLookup.Cooldown;
+        var component = (Code.Features.Cooldowns.Cooldown)CreateComponent(index, typeof(Code.Features.Cooldowns.Cooldown));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
     }
 
-    public GameEntity ReplaceTimer(float newValue) {
-        var index = GameComponentsLookup.Timer;
-        var component = (TimerComponent)CreateComponent(index, typeof(TimerComponent));
+    public GameEntity ReplaceCooldown(float newValue) {
+        var index = GameComponentsLookup.Cooldown;
+        var component = (Code.Features.Cooldowns.Cooldown)CreateComponent(index, typeof(Code.Features.Cooldowns.Cooldown));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;
     }
 
-    public GameEntity RemoveTimer() {
-        RemoveComponent(GameComponentsLookup.Timer);
+    public GameEntity RemoveCooldown() {
+        RemoveComponent(GameComponentsLookup.Cooldown);
         return this;
     }
 }

@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherTimerEnded;
+    static Entitas.IMatcher<GameEntity> _matcherCooldownUp;
 
-    public static Entitas.IMatcher<GameEntity> TimerEnded {
+    public static Entitas.IMatcher<GameEntity> CooldownUp {
         get {
-            if (_matcherTimerEnded == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.TimerEnded);
+            if (_matcherCooldownUp == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.CooldownUp);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherTimerEnded = matcher;
+                _matcherCooldownUp = matcher;
             }
 
-            return _matcherTimerEnded;
+            return _matcherCooldownUp;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly TimerEndedComponent timerEndedComponent = new TimerEndedComponent();
+    static readonly Code.Features.Cooldowns.CooldownUp cooldownUpComponent = new Code.Features.Cooldowns.CooldownUp();
 
-    public bool isTimerEnded {
-        get { return HasComponent(GameComponentsLookup.TimerEnded); }
+    public bool isCooldownUp {
+        get { return HasComponent(GameComponentsLookup.CooldownUp); }
         set {
-            if (value != isTimerEnded) {
-                var index = GameComponentsLookup.TimerEnded;
+            if (value != isCooldownUp) {
+                var index = GameComponentsLookup.CooldownUp;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : timerEndedComponent;
+                            : cooldownUpComponent;
 
                     AddComponent(index, component);
                 } else {

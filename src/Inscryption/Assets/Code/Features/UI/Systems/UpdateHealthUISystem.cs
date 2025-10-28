@@ -1,28 +1,27 @@
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
+using Code.Features.UI.Services;
 using Entitas;
 
 namespace Code.Features.UI.Systems
 {
+    // todo refactor this
     public class UpdateHealthUISystem : IExecuteSystem
     {
-        private readonly MetaContext _meta;
         private readonly IHeroProvider _heroProvider;
         private readonly IEnemyProvider _enemyProvider;
+        private readonly IUIProvider _uiProvider;
 
-        public UpdateHealthUISystem(MetaContext meta, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
+        public UpdateHealthUISystem(IHeroProvider heroProvider, IEnemyProvider enemyProvider, IUIProvider uiProvider)
         {
-            _meta = meta;
+            _uiProvider = uiProvider;
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
         }
 
         public void Execute()
         {
-            if (!_meta.hasGameHUD)
-                return;
-
-            GameHUD hud = _meta.gameHUD.Value;
+            GameHUD hud = _uiProvider.GameHUD;
             
             if (hud == null)
                 return;

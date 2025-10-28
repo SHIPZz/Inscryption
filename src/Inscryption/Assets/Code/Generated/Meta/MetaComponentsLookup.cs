@@ -9,22 +9,19 @@
 public static class MetaComponentsLookup {
 
     public const int Destructed = 0;
-    public const int GameHUD = 1;
-    public const int UpdateHealthUIRequest = 2;
-    public const int UpdateTurnUIRequest = 3;
+    public const int UpdateHealthUIRequest = 1;
+    public const int UpdateTurnUIRequest = 2;
 
-    public const int TotalComponents = 4;
+    public const int TotalComponents = 3;
 
     public static readonly string[] componentNames = {
         "Destructed",
-        "GameHUD",
         "UpdateHealthUIRequest",
         "UpdateTurnUIRequest"
     };
 
     public static readonly System.Type[] componentTypes = {
         typeof(Code.Common.Destructed),
-        typeof(Code.Features.UI.GameHUDComponent),
         typeof(Code.Features.UI.UpdateHealthUIRequest),
         typeof(Code.Features.UI.UpdateTurnUIRequest)
     };

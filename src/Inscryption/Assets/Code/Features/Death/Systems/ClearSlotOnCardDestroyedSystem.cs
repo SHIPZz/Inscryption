@@ -2,6 +2,7 @@ using Entitas;
 
 namespace Code.Features.Death.Systems
 {
+    //todo refactor this
     public class ClearSlotOnCardDestroyedSystem : IExecuteSystem
     {
         private readonly GameContext _game;

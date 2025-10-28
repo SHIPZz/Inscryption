@@ -8,6 +8,7 @@ namespace Code.Features.Battle
         public BattleFeature(ISystemFactory systemFactory)
         {
             Add(systemFactory.Create<CreateAttacksOnEndTurnSystem>());
+            Add(systemFactory.Create<ProcessAttackQueueSystem>());
             Add(systemFactory.Create<ProcessAttackRequestSystem>());
             Add(systemFactory.Create<AnimateOnAttackSystem>());
         }

@@ -1,42 +1,42 @@
-using Code.Features.Enemy.Services;
-using Code.Features.Hero.Services;
+using System.Collections.Generic;
+using Code.Features.UI.Services;
 using Entitas;
 
 namespace Code.Features.UI.Systems
 {
-    public class UpdateTurnIndicatorUISystem : IExecuteSystem
+    public class UpdateTurnIndicatorUISystem : ReactiveSystem<GameEntity>
     {
-        private readonly MetaContext _meta;
-        private readonly IHeroProvider _heroProvider;
-        private readonly IEnemyProvider _enemyProvider;
+        private readonly IUIProvider _uiProvider;
 
-        public UpdateTurnIndicatorUISystem(MetaContext meta, IHeroProvider heroProvider, IEnemyProvider enemyProvider)
+        public UpdateTurnIndicatorUISystem(GameContext game, IUIProvider uiProvider) : base(game)
         {
-            _meta = meta;
-            _heroProvider = heroProvider;
-            _enemyProvider = enemyProvider;
+            _uiProvider = uiProvider;
         }
 
-        public void Execute()
+        protected override ICollector<GameEntity> GetTrigger(IContext<GameEntity> context)
         {
-            if (!_meta.hasGameHUD)
-                return;
+            return context.CreateCollector(
+                GameMatcher.AnyOf(GameMatcher.HeroTurn, GameMatcher.EnemyTurn)
+            );
+        }
 
-            GameHUD hud = _meta.gameHUD.Value;
-            if (hud == null)
-                return;
+        protected override bool Filter(GameEntity entity)
+        {
+            return entity.isHero || entity.isEnemy;
+        }
 
-            GameEntity hero = _heroProvider.GetHero();
-            if (hero != null && hero.isHeroTurn)
+        protected override void Execute(List<GameEntity> entities)
+        {
+            foreach (var entity in entities)
             {
-                hud.SetHeroTurn(true);
-                return;
-            }
-
-            GameEntity enemy = _enemyProvider.GetEnemy();
-            if (enemy != null && enemy.isEnemyTurn)
-            {
-                hud.SetHeroTurn(false);
+                if (entity.isHero && entity.isHeroTurn)
+                {
+                    _uiProvider.GameHUD.SetHeroTurn(true);
+                }
+                else if (entity.isEnemy && entity.isEnemyTurn)
+                {
+                    _uiProvider.GameHUD.SetHeroTurn(false);
+                }
             }
         }
     }
