@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+
 namespace Code.Features.Layout.Services
 {
     public struct CardLayoutData
@@ -7,6 +8,7 @@ namespace Code.Features.Layout.Services
         public Vector3 Position;
         public Quaternion Rotation;
     }
+
     public static class PositionCalculator
     {
         public static IReadOnlyList<Vector3> CalculateGridPositions(GridLayoutParams parameters)
@@ -25,8 +27,10 @@ namespace Code.Features.Layout.Services
                     positions.Add(position);
                 }
             }
+
             return positions;
         }
+
         public static IReadOnlyList<Vector3> CalculateHorizontalLayoutPositions(HorizontalLayoutParams parameters)
         {
             var positions = new List<Vector3>(parameters.Count);
@@ -38,8 +42,10 @@ namespace Code.Features.Layout.Services
                 Vector3 position = parameters.Origin + startOffset + new Vector3(x, 0, 0);
                 positions.Add(position);
             }
+
             return positions;
         }
+
         public static IReadOnlyList<Vector3> CalculateVerticalLayoutPositions(VerticalLayoutParams parameters)
         {
             var positions = new List<Vector3>(parameters.Count);
@@ -51,8 +57,10 @@ namespace Code.Features.Layout.Services
                 Vector3 position = parameters.Origin + startOffset + new Vector3(0, y, 0);
                 positions.Add(position);
             }
+
             return positions;
         }
+
         public static CardLayoutData[] CalculateArcLayout(ArcLayoutParams parameters)
         {
             var layoutData = new CardLayoutData[parameters.Count];
@@ -67,6 +75,7 @@ namespace Code.Features.Layout.Services
                 };
                 return layoutData;
             }
+
             float centerIndex = (parameters.Count - 1) / 2f;
             for (int i = 0; i < parameters.Count; i++)
             {
@@ -85,9 +94,11 @@ namespace Code.Features.Layout.Services
                     Rotation = rotation
                 };
             }
+
             return layoutData;
         }
     }
+
     public struct GridLayoutParams
     {
         public int Rows;
@@ -95,25 +106,28 @@ namespace Code.Features.Layout.Services
         public Vector2 Spacing;
         public Vector3 Origin;
     }
+
     public struct HorizontalLayoutParams
     {
         public int Count;
         public float Spacing;
         public Vector3 Origin;
     }
+
     public struct VerticalLayoutParams
     {
         public int Count;
         public float Spacing;
         public Vector3 Origin;
     }
+
     public struct ArcLayoutParams
     {
         public int Count;
         public Vector3 Origin;
-        public float HorizontalSpacing;    
-        public float VerticalCurve;        
-        public float DepthSpacing;         
-        public float AnglePerCard;         
+        public float HorizontalSpacing;
+        public float VerticalCurve;
+        public float DepthSpacing;
+        public float AnglePerCard;
     }
 }

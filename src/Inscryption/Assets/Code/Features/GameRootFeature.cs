@@ -9,6 +9,7 @@ using Code.Features.Game;
 using Code.Features.Hero;
 using Code.Features.Input;
 using Code.Features.Movement;
+using Code.Features.Stats;
 using Code.Features.Statuses;
 using Code.Features.Turn;
 using Code.Features.UI;
@@ -35,8 +36,9 @@ namespace Code.Features
             Add(systemFactory.Create<UIFeature>());
 
             Add(systemFactory.Create<StatusFeature>());
-            Add(systemFactory.Create<GameStateFeature>());
+            Add(systemFactory.Create<StatsFeature>());
             Add(systemFactory.Create<ProcessDestructedFeature>());
+            Add(systemFactory.Create<GameStateFeature>());
         }
     }
 }

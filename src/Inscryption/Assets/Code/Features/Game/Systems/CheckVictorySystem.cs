@@ -3,12 +3,13 @@ using UnityEngine;
 
 namespace Code.Features.Game.Systems
 {
+    //todo refactor this
     public class CheckVictorySystem : IExecuteSystem
     {
         private readonly GameContext _game;
-        private bool _gameEnded = false;
         private readonly IGroup<GameEntity> _heroes;
         private readonly IGroup<GameEntity> _enemies;
+        private bool _gameEnded = false;
 
         public CheckVictorySystem(GameContext game)
         {

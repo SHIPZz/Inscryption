@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Code.Features.Statuses.Services;
 using Entitas;
 
-namespace Code.Features.Statuses.Systems
+namespace Code.Features.Stats.Systems
 {
     public class AnimateOnDamageSystem : ReactiveSystem<GameEntity>
     {

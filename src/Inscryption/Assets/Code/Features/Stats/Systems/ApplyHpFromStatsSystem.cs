@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Code.Features.Stats;
 using Entitas;
 using UnityEngine;
 
-namespace Code.Features.Statuses.Systems
+namespace Code.Features.Stats.Systems
 {
     public class ApplyHpFromStatsSystem : IExecuteSystem
     {

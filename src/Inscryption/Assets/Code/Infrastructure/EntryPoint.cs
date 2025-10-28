@@ -12,13 +12,13 @@ namespace Code.Infrastructure
 	{
 		private readonly IAssetsService _assetsService;
 		private readonly IConfigService _configService;
-		private readonly GameTestRunner _gameTestRunner;
+		private readonly GameRunner _gameRunner;
 
-		public EntryPoint(IAssetsService assetsService, IConfigService configService, GameTestRunner gameTestRunner)
+		public EntryPoint(IAssetsService assetsService, IConfigService configService, GameRunner gameRunner)
 		{
 			_assetsService = assetsService;
 			_configService = configService;
-			_gameTestRunner = gameTestRunner;
+			_gameRunner = gameRunner;
 		}
 
 		public async void Initialize()
@@ -45,7 +45,7 @@ namespace Code.Infrastructure
 			await _configService.LoadConfigAsync<GameConfig>(nameof(GameConfig));
 
 			Debug.Log("[EntryPoint] Initializing game...");
-			_gameTestRunner.Initialize();
+			_gameRunner.Initialize();
 
 			Debug.Log("[EntryPoint] Initialization complete!");
 		}

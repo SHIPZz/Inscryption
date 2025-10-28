@@ -6,6 +6,9 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
+using Code.Features.Statuses.Components;
+
 public static class GameComponentsLookup {
 
     public const int AttackAnimator = 0;

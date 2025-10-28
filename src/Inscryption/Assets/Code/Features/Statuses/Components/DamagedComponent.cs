@@ -1,6 +1,9 @@
 using Entitas;
 
-[Game]
-public class Damaged : IComponent
+namespace Code.Features.Statuses.Components
 {
+    [Game]
+    public class Damaged : IComponent
+    {
+    }
 }

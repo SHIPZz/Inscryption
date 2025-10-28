@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
+using Code.Features.Board.Services;
+using Code.Features.Cards.Services;
+using Code.Features.UI.Services;
 using Code.Infrastructure.Level;
 using Code.Infrastructure.Services;
 using Zenject;
-using Code.Features.Board.Services;
-using Code.Features.Cards.Services;
-using Code.Features.Layout.Services;
-using Code.Features.UI.Services;
 
 namespace Code.Infrastructure.Installers
 {
@@ -25,7 +24,7 @@ namespace Code.Infrastructure.Installers
             Container.Bind<ICardStackFactory>().To<CardStackFactory>().AsSingle();
 
             Container.BindInterfacesAndSelfTo<EntryPoint>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<GameTestRunner>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameRunner>().AsSingle();
             Container.BindInterfacesAndSelfTo<InstantiatorSetter>().AsSingle();
 
             foreach (var initializable in Initializables)
