@@ -21,11 +21,11 @@ namespace Code.Common
     
     [Game] public class TransformComponent : IComponent { public Transform Value; }
     
-    [Game] public class SpriteRendererReference : IComponent { public SpriteRenderer Value; }
+    [Game] public class SpriteRendererComponent : IComponent { public SpriteRenderer Value; }
     
-    [Game] public class RendererReference : IComponent { public Renderer Value; }
+    [Game] public class RendererComponent : IComponent { public Renderer Value; }
     
-    [Game] public class ColliderReference : IComponent { public Collider Value; }
+    [Game] public class ColliderComponent : IComponent { public Collider Value; }
     
     [Game] public class NameComponent : IComponent { public string Value; }
     

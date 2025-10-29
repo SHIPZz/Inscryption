@@ -1,10 +1,9 @@
 ﻿using Code.Common;
 using Code.Common.Extensions;
-using Code.Features.Hero.Services;
 using UnityEngine;
 using Zenject;
 
-namespace Code.Features.UI
+namespace Code.Features.UI.Views
 {
     public class GameHUD : MonoBehaviour
     {
@@ -12,7 +11,7 @@ namespace Code.Features.UI
         [SerializeField] private TurnIndicator _turnIndicator;
         [SerializeField] private EndTurnButton _endTurnButton;
 
-        [Inject] private IHeroProvider _heroProvider;
+        [Inject] private GameContext _game;
 
         private bool _wasHeroTurn;
 
@@ -24,12 +23,14 @@ namespace Code.Features.UI
 
         private void OnEndTurnRequested()
         {
-            GameEntity hero = _heroProvider.GetHero();
-            if (hero == null || !hero.isHeroTurn)
-                return;
+            var heroGroup = _game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.HeroTurn));
 
-            CreateEntity.Request()
-                .With(x => x.isEndTurnRequest = true);
+            foreach (var hero in heroGroup)
+            {
+                CreateEntity.Request()
+                    .With(x => x.isEndTurnRequest = true);
+                return;
+            }
         }
 
         public void UpdateHeroHealth(int currentHp, int maxHp)

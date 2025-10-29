@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using Code.Features.Cooldowns.Extensions;
-using Code.Features.Enemy.Services;
-using Code.Features.Hero.Services;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
 using Entitas;
@@ -11,75 +8,73 @@ namespace Code.Features.Turn.Systems
 {
     public class ProcessTurnTransitionSystem : IExecuteSystem
     {
-        private readonly IHeroProvider _heroProvider;
-        private readonly IEnemyProvider _enemyProvider;
+        private readonly IGroup<GameEntity> _heroes;
+        private readonly IGroup<GameEntity> _enemies;
         private readonly IGroup<GameEntity> _switchTurnRequests;
-        private readonly List<GameEntity> _requestBuffer = new(8);
         private readonly GameConfig _gameConfig;
 
-        public ProcessTurnTransitionSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider, IConfigService configService)
+        public ProcessTurnTransitionSystem(GameContext game, IConfigService configService)
         {
-            _heroProvider = heroProvider;
-            _enemyProvider = enemyProvider;
+            _heroes = game.GetGroup(GameMatcher.Hero);
+            _enemies = game.GetGroup(GameMatcher.Enemy);
             _switchTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.SwitchTurnRequest, GameMatcher.ProcessingAvailable));
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public void Execute()
         {
-            foreach (GameEntity request in _switchTurnRequests.GetEntities(_requestBuffer))
+            foreach (GameEntity request in _switchTurnRequests)
             {
                 Debug.Log("[ProcessTurnTransitionSystem] Processing SwitchTurnRequest");
                 ProcessTurnSwitch();
-                request.isDestructed = true;
             }
         }
 
         private void ProcessTurnSwitch()
         {
-            GameEntity hero = _heroProvider.GetHero();
-            GameEntity enemy = _enemyProvider.GetEnemy();
-
-            if (hero is { isHeroTurn: true })
+            foreach (var hero in _heroes)
             {
-                Debug.Log("[ProcessTurnTransitionSystem] Switching from Hero to Enemy");
+                if (hero.isHeroTurn)
+                {
+                    Debug.Log("[ProcessTurnTransitionSystem] Switching from Hero to Enemy");
+                    hero.isHeroTurn = false;
 
-                hero.isHeroTurn = false;
-                
-                HandleEnemyTurn(hero, enemy);
-
-                return;
+                    foreach (var enemy in _enemies)
+                    {
+                        HandleEnemyTurn(enemy);
+                    }
+                    return;
+                }
             }
 
-            if (enemy is { isEnemyTurn: true }) 
-                HandleHeroTurn(enemy, hero);
+            foreach (var enemy in _enemies)
+            {
+                if (enemy.isEnemyTurn)
+                {
+                    Debug.Log("[ProcessTurnTransitionSystem] Switching from Enemy to Hero");
+                    enemy.isEnemyTurn = false;
+
+                    foreach (var hero in _heroes)
+                    {
+                        HandleHeroTurn(hero);
+                    }
+                }
+            }
         }
 
-        private static void HandleHeroTurn(GameEntity enemy, GameEntity hero)
+        private void HandleHeroTurn(GameEntity hero)
         {
-            Debug.Log("[ProcessTurnTransitionSystem] Switching from Enemy to Hero");
-
-            enemy.isEnemyTurn = false;
-         
-            if (hero != null)
-            {
-                hero.isHeroTurn = true;
-                hero.ReplaceCardsPlacedThisTurn(0);
-            }
+            hero.isHeroTurn = true;
+            hero.ReplaceCardsPlacedThisTurn(0);
         }
 
-        private void HandleEnemyTurn(GameEntity hero, GameEntity enemy)
+        private void HandleEnemyTurn(GameEntity enemy)
         {
-            hero.isHeroTurn = false;
-            
-            if (enemy != null)
-            {
-                var enemyTurnDelay = _gameConfig.AnimationTiming.EnemyTurnDelay;
-                enemy.isEnemyTurn = true;
-                enemy.ReplaceCardsPlacedThisTurn(0);
-                enemy.PutOnCooldown(enemyTurnDelay);
-                Debug.Log($"[ProcessTurnTransitionSystem] Enemy turn started - waiting {enemyTurnDelay}s");
-            }
+            var enemyTurnDelay = _gameConfig.AnimationTiming.EnemyTurnDelay;
+            enemy.isEnemyTurn = true;
+            enemy.ReplaceCardsPlacedThisTurn(0);
+            enemy.PutOnCooldown(enemyTurnDelay);
+            Debug.Log($"[ProcessTurnTransitionSystem] Enemy turn started - waiting {enemyTurnDelay}s");
         }
     }
 }

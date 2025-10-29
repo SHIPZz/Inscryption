@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Code.Common;
+﻿using Code.Common;
 using Code.Features.Cards.Services;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
@@ -13,7 +12,6 @@ namespace Code.Features.Cards.Systems
         private readonly IHandLayoutService _handLayoutService;
         private readonly IGroup<GameEntity> _requests;
         private readonly IGroup<GameEntity> _stacks;
-        private readonly List<GameEntity> _requestBuffer = new(8);
         private readonly GameConfig _gameConfig;
 
         public ProcessDrawCardRequestSystem(GameContext game, IHandLayoutService handLayoutService, IConfigService configService)
@@ -27,7 +25,7 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests.GetEntities(_requestBuffer))
+            foreach (GameEntity request in _requests)
             {
                 ProcessDrawCardRequest(request);
             }
@@ -38,20 +36,17 @@ namespace Code.Features.Cards.Systems
             var player = _game.GetEntityWithId(request.drawCardRequest.PlayerId);
             if (player == null)
             {
-                request.isDestructed = true;
                 return;
             }
 
             GameEntity stack = _stacks.GetEntities()[0];
-            
+
             if (stack == null || stack.CardStack.Count <= 0)
             {
-                request.isDestructed = true;
                 return;
             }
 
             CreateDrawCardFromStackRequest(player, stack);
-            request.isDestructed = true;
         }
 
         private void CreateDrawCardFromStackRequest(GameEntity player, GameEntity stack)

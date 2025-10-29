@@ -32,9 +32,7 @@ namespace Code.Infrastructure.Installers
             
             Container.Bind<IHeroFactory>().To<HeroFactory>().AsSingle();
             Container.Bind<IEnemyFactory>().To<EnemyFactory>().AsSingle();
-            Container.Bind<IHeroProvider>().To<HeroProvider>().AsSingle();
-            Container.Bind<IEnemyProvider>().To<EnemyProvider>().AsSingle();
-            
+
             Container.Bind<IAssetsService>().To<AssetsService>().AsSingle();
             Container.Bind<IConfigService>().To<ConfigService>().AsSingle();
             Container.Bind<IInstantiateService>().To<InstantiateService>().AsSingle();

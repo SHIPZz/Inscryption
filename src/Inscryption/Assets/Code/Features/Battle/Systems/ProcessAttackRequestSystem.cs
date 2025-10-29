@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Code.Features.Statuses.Components;
 using Code.Features.Statuses.Services;
 using Entitas;
@@ -11,7 +10,6 @@ namespace Code.Features.Battle.Systems
         private readonly GameContext _game;
         private readonly IStatusFactory _statusFactory;
         private readonly IGroup<GameEntity> _attackRequests;
-        private readonly List<GameEntity> _buffer = new(16);
 
         public ProcessAttackRequestSystem(GameContext game, IStatusFactory statusFactory)
         {
@@ -24,7 +22,7 @@ namespace Code.Features.Battle.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _attackRequests.GetEntities(_buffer))
+            foreach (GameEntity request in _attackRequests)
             {
                 Debug.Log("@@@ request created");
                 int attackerId = request.attackRequest.AttackerId;
@@ -37,15 +35,12 @@ namespace Code.Features.Battle.Systems
                 if (attacker == null || target == null)
                 {
                     Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
-                    request.isDestructed = true;
                     continue;
                 }
 
                 _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
 
                 Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
-
-                request.isDestructed = true;
             }
         }
     }

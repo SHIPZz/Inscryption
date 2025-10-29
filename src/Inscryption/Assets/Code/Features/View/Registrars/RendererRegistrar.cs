@@ -11,13 +11,13 @@ namespace Code.Features.View.Registrars
 		public override void RegisterComponents()
 		{
 			if (_targetRenderer != null && Entity != null)
-				Entity.AddRendererReference(_targetRenderer);
+				Entity.AddRenderer(_targetRenderer);
 		}
 
 		public override void UnregisterComponents()
 		{
-			if (Entity != null && Entity.hasRendererReference)
-				Entity.RemoveRendererReference();
+			if (Entity != null && Entity.hasRenderer)
+				Entity.RemoveRenderer();
 		}
 
 		public void SetColor(Color color)

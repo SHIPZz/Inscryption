@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Code.Features.Common.Components;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherStatic;
@@ -36,7 +33,7 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly StaticComponent staticComponent = new StaticComponent();
+    static readonly Code.Features.Common.Components.StaticComponent staticComponent = new Code.Features.Common.Components.StaticComponent();
 
     public bool isStatic {
         get { return HasComponent(GameComponentsLookup.Static); }

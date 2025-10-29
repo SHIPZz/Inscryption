@@ -1,4 +1,4 @@
-namespace Code.Features.Statuses.Services
+namespace Code.Common.Visuals
 {
     public interface IDamageAnimator
     {

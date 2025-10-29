@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Code.Common.Components;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherParent;
@@ -36,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public ParentComponent parent { get { return (ParentComponent)GetComponent(GameComponentsLookup.Parent); } }
+    public Code.Common.Components.ParentComponent parent { get { return (Code.Common.Components.ParentComponent)GetComponent(GameComponentsLookup.Parent); } }
     public UnityEngine.Transform Parent { get { return parent.Value; } }
     public bool hasParent { get { return HasComponent(GameComponentsLookup.Parent); } }
 
     public GameEntity AddParent(UnityEngine.Transform newValue) {
         var index = GameComponentsLookup.Parent;
-        var component = (ParentComponent)CreateComponent(index, typeof(ParentComponent));
+        var component = (Code.Common.Components.ParentComponent)CreateComponent(index, typeof(Code.Common.Components.ParentComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -50,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceParent(UnityEngine.Transform newValue) {
         var index = GameComponentsLookup.Parent;
-        var component = (ParentComponent)CreateComponent(index, typeof(ParentComponent));
+        var component = (Code.Common.Components.ParentComponent)CreateComponent(index, typeof(Code.Common.Components.ParentComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

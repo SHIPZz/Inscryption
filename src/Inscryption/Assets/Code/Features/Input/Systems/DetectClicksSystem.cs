@@ -1,3 +1,4 @@
+using Code.Common;
 using Code.Common.Physics;
 using Code.Common.Services;
 using Entitas;
@@ -51,12 +52,14 @@ namespace Code.Features.Input.Systems
 
             if (entity.isCard && entity.isSelectionAvailable)
             {
-                _input.CreateEntity()
+                CreateEntity
+                    .Request()
                     .AddCardClickRequest(entity.Id);
             }
             else if (entity.isBoardSlot)
             {
-                _input.CreateEntity()
+                CreateEntity
+                    .Request()
                     .AddSlotClickRequest(entity.Id);
             }
         }

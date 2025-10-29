@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Code.Features.Statuses.Components.AttackAnimatorComponent attackAnimator { get { return (Code.Features.Statuses.Components.AttackAnimatorComponent)GetComponent(GameComponentsLookup.AttackAnimator); } }
-    public Code.Features.Statuses.Services.IAttackAnimator AttackAnimator { get { return attackAnimator.Value; } }
+    public Code.Common.Visuals.IAttackAnimator AttackAnimator { get { return attackAnimator.Value; } }
     public bool hasAttackAnimator { get { return HasComponent(GameComponentsLookup.AttackAnimator); } }
 
-    public GameEntity AddAttackAnimator(Code.Features.Statuses.Services.IAttackAnimator newValue) {
+    public GameEntity AddAttackAnimator(Code.Common.Visuals.IAttackAnimator newValue) {
         var index = GameComponentsLookup.AttackAnimator;
         var component = (Code.Features.Statuses.Components.AttackAnimatorComponent)CreateComponent(index, typeof(Code.Features.Statuses.Components.AttackAnimatorComponent));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceAttackAnimator(Code.Features.Statuses.Services.IAttackAnimator newValue) {
+    public GameEntity ReplaceAttackAnimator(Code.Common.Visuals.IAttackAnimator newValue) {
         var index = GameComponentsLookup.AttackAnimator;
         var component = (Code.Features.Statuses.Components.AttackAnimatorComponent)CreateComponent(index, typeof(Code.Features.Statuses.Components.AttackAnimatorComponent));
         component.Value = newValue;

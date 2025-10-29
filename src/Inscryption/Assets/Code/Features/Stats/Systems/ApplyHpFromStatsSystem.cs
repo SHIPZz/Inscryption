@@ -31,7 +31,7 @@ namespace Code.Features.Stats.Systems
                     continue;
 
                 stats.TryGetValue(StatTypeId.Hp, out int current);
-                int newHp = current + hpDelta;
+                int newHp = Mathf.Max(0, current + hpDelta);
                 stats[StatTypeId.Hp] = newHp;
 
                 target.ReplaceHp(newHp);

@@ -4,7 +4,10 @@
       "Bash(cmd /c dir /b C:/Projects/Inscryption/Jenny/)",
       "mcp__UnityMCP__execute_menu_item",
       "Bash(timeout /t 5 /nobreak)",
-      "mcp__UnityMCP__manage_editor"
+      "mcp__UnityMCP__manage_editor",
+      "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Hero\\Services\\IHeroProvider.cs\")",
+      "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Hero\\Services\\HeroProvider.cs\")",
+      "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Enemy\\Services\\IEnemyProvider.cs\")"
     ],
     "deny": [],
     "ask": []

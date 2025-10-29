@@ -8,6 +8,11 @@ namespace Code.Features.Cards
     public class Card : IComponent
     {
     }
+    
+    [Game] public class CardClickRequest : IComponent { public int Value; }
+    
+    [Game] public class SlotClickRequest : IComponent { public int Value; }
+    
 
     [Game]
     public class CardStack : IComponent

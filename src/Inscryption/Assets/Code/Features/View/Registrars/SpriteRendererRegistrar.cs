@@ -11,13 +11,13 @@ namespace Code.Features.View.Registrars
 		public override void RegisterComponents()
 		{
 			if (_spriteRenderer != null && Entity != null)
-				Entity.AddSpriteRendererReference(_spriteRenderer);
+				Entity.AddSpriteRenderer(_spriteRenderer);
 		}
 
 		public override void UnregisterComponents()
 		{
-			if (Entity != null && Entity.hasSpriteRendererReference)
-				Entity.RemoveSpriteRendererReference();
+			if (Entity != null && Entity.hasSpriteRenderer)
+				Entity.RemoveSpriteRenderer();
 		}
 	}
 }

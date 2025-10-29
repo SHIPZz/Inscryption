@@ -8,24 +8,18 @@
 //------------------------------------------------------------------------------
 public static class InputComponentsLookup {
 
-    public const int CardClickRequest = 0;
-    public const int Input = 1;
-    public const int SlotClickRequest = 2;
-    public const int LayerMask = 3;
+    public const int Input = 0;
+    public const int LayerMask = 1;
 
-    public const int TotalComponents = 4;
+    public const int TotalComponents = 2;
 
     public static readonly string[] componentNames = {
-        "CardClickRequest",
         "Input",
-        "SlotClickRequest",
         "LayerMask"
     };
 
     public static readonly System.Type[] componentTypes = {
-        typeof(Code.Common.Inputs.CardClickRequest),
         typeof(Code.Common.Inputs.InputComponent),
-        typeof(Code.Common.Inputs.SlotClickRequest),
         typeof(Code.Common.LayerMaskComponent)
     };
 }

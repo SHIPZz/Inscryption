@@ -1,6 +1,4 @@
 using Code.Common.Services;
-using Code.Features.Enemy.Services;
-using Code.Features.Hero.Services;
 using Entitas;
 using UnityEngine;
 
@@ -8,14 +6,14 @@ namespace Code.Features.Cheats.Systems
 {
     public class CheatSystem : IExecuteSystem
     {
-        private readonly IHeroProvider _heroProvider;
-        private readonly IEnemyProvider _enemyProvider;
+        private readonly IGroup<GameEntity> _heroes;
+        private readonly IGroup<GameEntity> _enemies;
         private readonly IInputService _inputService;
 
-        public CheatSystem(IHeroProvider heroProvider, IEnemyProvider enemyProvider, IInputService inputService)
+        public CheatSystem(GameContext game, IInputService inputService)
         {
-            _heroProvider = heroProvider;
-            _enemyProvider = enemyProvider;
+            _heroes = game.GetGroup(GameMatcher.Hero);
+            _enemies = game.GetGroup(GameMatcher.Enemy);
             _inputService = inputService;
         }
 
@@ -36,21 +34,25 @@ namespace Code.Features.Cheats.Systems
 
         public void KillHero()
         {
-            var hero = _heroProvider.GetHero();
-            if (hero != null && !hero.isDestructed)
+            foreach (var hero in _heroes)
             {
-                Debug.Log("[CheatService] Killing hero via cheat");
-                hero.ReplaceHp(0);
+                if (!hero.isDestructed)
+                {
+                    Debug.Log("[CheatService] Killing hero via cheat");
+                    hero.ReplaceHp(0);
+                }
             }
         }
 
         public void KillEnemy()
         {
-            var enemy = _enemyProvider.GetEnemy();
-            if (enemy != null && !enemy.isDestructed)
+            foreach (var enemy in _enemies)
             {
-                Debug.Log("[CheatService] Killing enemy via cheat");
-                enemy.ReplaceHp(0);
+                if (!enemy.isDestructed)
+                {
+                    Debug.Log("[CheatService] Killing enemy via cheat");
+                    enemy.ReplaceHp(0);
+                }
             }
         }
     }

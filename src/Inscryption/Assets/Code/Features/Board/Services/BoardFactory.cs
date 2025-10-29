@@ -17,8 +17,7 @@ namespace Code.Features.Board.Services
         private readonly IAssetsService _assetsService;
         private readonly IInstantiateService _instantiateService;
         private readonly ILevelProvider _levelProvider;
-        private readonly IConfigService _configService;
-        private GameConfig _gameConfig;
+        private readonly GameConfig _gameConfig;
 
         public BoardFactory(
             GameContext game,
@@ -33,85 +32,112 @@ namespace Code.Features.Board.Services
             _assetsService = assetsService;
             _instantiateService = instantiateService;
             _levelProvider = levelProvider;
-            _configService = configService;
-            _gameConfig = _configService.GetConfig<GameConfig>();
+            _gameConfig = configService.GetConfig<GameConfig>(nameof(GameConfig));
         }
 
         public List<GameEntity> CreateSlots(int heroId, int enemyId, int lanes = 4)
         {
             var slots = new List<GameEntity>();
-            var boardLayout = _gameConfig.BoardLayout;
 
-            var heroGridParams = new GridLayoutParams
-            {
-                Rows = 1,
-                Columns = lanes,
-                Spacing = boardLayout.Spacing,
-                Origin = boardLayout.HeroOrigin
-            };
+            slots.AddRange(CreateSlotsForOwner(heroId, lanes, isHero: true));
+            slots.AddRange(CreateSlotsForOwner(enemyId, lanes, isHero: false));
 
-            var heroSlotPositions = PositionCalculator.CalculateGridPositions(heroGridParams);
+            return
+                slots;
+        }
 
-            for (var i = 0; i < heroSlotPositions.Count; i++)
-            {
-                slots.Add(CreateSlot(i, heroId, true, heroSlotPositions[i]));
-            }
+        private List<GameEntity> CreateSlotsForOwner(int ownerId, int lanes, bool isHero)
+        {
+            Vector3 origin = isHero ? _gameConfig.BoardLayout.HeroOrigin : _gameConfig.BoardLayout.EnemyOrigin;
+            IReadOnlyList<Vector3> positions = CalculateSlotPositions(lanes, origin);
 
-            var enemyGridParams = new GridLayoutParams
-            {
-                Rows = 1,
-                Columns = lanes,
-                Spacing = boardLayout.Spacing,
-                Origin = boardLayout.EnemyOrigin
-            };
-
-            var enemySlotPositions = PositionCalculator.CalculateGridPositions(enemyGridParams);
-
-            for (var i = 0; i < enemySlotPositions.Count; i++)
-            {
-                slots.Add(CreateSlot(i, enemyId, false, enemySlotPositions[i]));
-            }
+            var slots = new List<GameEntity>();
+        
+            for (int i = 0; i < positions.Count; i++)
+                slots.Add(CreateSlot(i, ownerId, isHero, positions[i]));
 
             return slots;
         }
 
+        private IReadOnlyList<Vector3> CalculateSlotPositions(int lanes, Vector3 origin)
+        {
+            var gridParams = new GridLayoutParams
+            {
+                Rows = 1,
+                Columns = lanes,
+                Spacing = _gameConfig.BoardLayout.Spacing,
+                Origin = origin
+            };
+
+            return PositionCalculator.CalculateGridPositions(gridParams);
+        }
+
         private GameEntity CreateSlot(int lane, int ownerId, bool isHero, Vector3 position)
+        {
+            GameEntity slot = CreateSlotEntity(lane, ownerId, isHero);
+            CreateSlotView(lane, isHero, slot, position);
+
+            return
+                slot;
+        }
+
+        private GameEntity CreateSlotEntity(int lane, int ownerId, bool isHero)
         {
             GameEntity slot = _game.CreateEntity()
                 .AddId(_idService.Next())
-                .With(x => x.isBoardSlot = true)
-                .With(x => x.AddSlotLane(lane))
-                .With(x => x.AddSlotOwner(ownerId))
-                .With(x => x.AddOccupiedBy(-1))
-                .With(x => x.AddName("slot"))
-                .With(x => x.isStatic = true)
-                .With(x => x.isHeroOwner = isHero)
-                .With(x => x.isEnemyOwner = !isHero)
-                ;
+                .With(x => x.isBoardSlot = true);
 
-            CreateSlotView(lane, isHero, slot, position);
+            AddSlotProperties(slot, lane, ownerId, isHero);
 
-            return slot;
+            return
+                slot;
+        }
+
+        private void AddSlotProperties(GameEntity slot, int lane, int ownerId, bool isHero)
+        {
+            slot.AddSlotLane(lane);
+            slot.AddSlotOwner(ownerId);
+            slot.AddOccupiedBy(-1);
+            slot.AddName("slot");
+            slot.isStatic = true;
+            slot.isHeroOwner = isHero;
+            slot.isEnemyOwner = !isHero;
         }
 
         private void CreateSlotView(int lane, bool isHero, GameEntity slot, Vector3 position)
         {
-            var boardLayout = _gameConfig.BoardLayout;
-            SlotEntityView slotPrefab = _assetsService.LoadPrefabWithComponent<SlotEntityView>(nameof(SlotEntityView));
-            Quaternion rotation = Quaternion.Euler(boardLayout.SlotRotation);
+            SlotEntityView view = InstantiateSlotView(position);
+            ConfigureSlotView(view, lane, isHero, position);
+            LinkSlotViewToEntity(slot, view, position);
+        }
 
-            SlotEntityView slotView = _instantiateService.Instantiate(slotPrefab, position, rotation, _levelProvider.SlotsParent);
+        private SlotEntityView InstantiateSlotView(Vector3 position)
+        {
+            SlotEntityView prefab = _assetsService.LoadPrefabWithComponent<SlotEntityView>(nameof(SlotEntityView));
+            Quaternion rotation = Quaternion.Euler(_gameConfig.BoardLayout.SlotRotation);
+
+            return
+                _instantiateService.Instantiate(prefab, position, rotation, _levelProvider.SlotsParent);
+        }
+
+        private void ConfigureSlotView(SlotEntityView view, int lane, bool isHero, Vector3 position)
+        {
+            position.y = 0;
+            view.transform.localPosition = position;
+            view.name = $"Slot_Lane{lane}_{(isHero ? "Hero" : "Enemy")}";
+
+            Color slotColor = isHero ? _gameConfig.BoardLayout.HeroSlotColor : _gameConfig.BoardLayout.EnemySlotColor;
+            view.SetColor(slotColor);
+        }
+
+        private void LinkSlotViewToEntity(GameEntity slot, SlotEntityView view, Vector3 position)
+        {
+            view.EntityBehaviour.SetEntity(slot);
+            slot.ReplaceView(view.EntityBehaviour);
 
             position.y = 0;
-            slotView.transform.localPosition = position;
-
-            slotView.EntityBehaviour.SetEntity(slot);
-            slotView.name = $"Slot_Lane{lane}_{(isHero ? "Hero" : "Enemy")}";
-            slotView.SetColor(isHero ? boardLayout.HeroSlotColor : boardLayout.EnemySlotColor);
-
-            slot.ReplaceView(slotView.EntityBehaviour);
             slot.ReplaceWorldPosition(position);
-            slot.ReplaceWorldRotation(rotation);
+            slot.ReplaceWorldRotation(Quaternion.Euler(_gameConfig.BoardLayout.SlotRotation));
         }
     }
 }

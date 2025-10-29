@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Code.Features.Statuses.Components.DamageAnimator damageAnimator { get { return (Code.Features.Statuses.Components.DamageAnimator)GetComponent(GameComponentsLookup.DamageAnimator); } }
-    public Code.Features.Statuses.Services.IDamageAnimator DamageAnimator { get { return damageAnimator.Value; } }
+    public Code.Common.Visuals.IDamageAnimator DamageAnimator { get { return damageAnimator.Value; } }
     public bool hasDamageAnimator { get { return HasComponent(GameComponentsLookup.DamageAnimator); } }
 
-    public GameEntity AddDamageAnimator(Code.Features.Statuses.Services.IDamageAnimator newValue) {
+    public GameEntity AddDamageAnimator(Code.Common.Visuals.IDamageAnimator newValue) {
         var index = GameComponentsLookup.DamageAnimator;
         var component = (Code.Features.Statuses.Components.DamageAnimator)CreateComponent(index, typeof(Code.Features.Statuses.Components.DamageAnimator));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceDamageAnimator(Code.Features.Statuses.Services.IDamageAnimator newValue) {
+    public GameEntity ReplaceDamageAnimator(Code.Common.Visuals.IDamageAnimator newValue) {
         var index = GameComponentsLookup.DamageAnimator;
         var component = (Code.Features.Statuses.Components.DamageAnimator)CreateComponent(index, typeof(Code.Features.Statuses.Components.DamageAnimator));
         component.Value = newValue;

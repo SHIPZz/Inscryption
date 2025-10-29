@@ -1,6 +1,6 @@
-﻿using DG.Tweening;
+﻿using Code.Common.Visuals;
+using DG.Tweening;
 using UnityEngine;
-using Code.Features.Statuses.Services;
 
 namespace Code.Features.Cards
 {
@@ -117,7 +117,6 @@ namespace Code.Features.Cards
 
             seq.Append(_renderer.material.DOColor(_attackColor, _attackColorDuration));
             seq.Join(_visualTransform.DOMove(attackPosition, _attackMoveDuration).SetEase(_attackMoveEase));
-            seq.Append(_visualTransform.DOShakePosition(_attackShakeDuration, _attackShakeStrength, _attackShakeVibrato));
             seq.AppendInterval(_attackReturnDelay);
 
             seq.Append(_visualTransform.DOMove(originalPosition, _attackReturnDuration).SetEase(_attackReturnEase));

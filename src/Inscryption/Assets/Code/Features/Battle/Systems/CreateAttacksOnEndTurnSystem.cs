@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using Code.Common;
 using Code.Common.Extensions;
 using Code.Features.Board;
 using Code.Features.Cooldowns.Extensions;
-using Code.Features.Enemy.Services;
-using Code.Features.Hero.Services;
 using Code.Features.Turn;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
@@ -16,19 +15,17 @@ namespace Code.Features.Battle.Systems
     public class CreateAttacksOnEndTurnSystem : IExecuteSystem
     {
         private readonly GameContext _game;
-        private readonly IHeroProvider _heroProvider;
-        private readonly IEnemyProvider _enemyProvider;
+        private readonly IGroup<GameEntity> _heroes;
+        private readonly IGroup<GameEntity> _enemies;
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _slots;
-        private readonly List<GameEntity> _requestBuffer = new(1);
         private readonly GameConfig _gameConfig;
 
-        public CreateAttacksOnEndTurnSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider,
-            IConfigService configService)
+        public CreateAttacksOnEndTurnSystem(GameContext game, IConfigService configService)
         {
             _game = game;
-            _heroProvider = heroProvider;
-            _enemyProvider = enemyProvider;
+            _heroes = game.GetGroup(GameMatcher.Hero);
+            _enemies = game.GetGroup(GameMatcher.Enemy);
             _endTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
             _slots = game.GetGroup(GameMatcher.BoardSlot);
             _gameConfig = configService.GetConfig<GameConfig>();
@@ -36,7 +33,7 @@ namespace Code.Features.Battle.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _endTurnRequests.GetEntities(_requestBuffer))
+            foreach (GameEntity request in _endTurnRequests)
             {
                 (GameEntity attacker, GameEntity defender) = GetAttackerAndDefender();
 
@@ -44,8 +41,6 @@ namespace Code.Features.Battle.Systems
                 {
                     ProcessAttacks(attacker, defender);
                 }
-
-                request.isDestructed = true;
             }
         }
 
@@ -73,25 +68,36 @@ namespace Code.Features.Battle.Systems
 
                     var delay1 = delay;
                     
-                    _game.CreateEntity().AddAttackRequest(attackerCard.Id,target.Id,attackerCard.Damage)
+                    CreateEntity
+                        .Request()
+                        .AddAttackRequest(attackerCard.Id,target.Id,attackerCard.Damage)
                         .With(x => x.PutOnCooldown(delay1))
-                        .With(x => x.isRequest = true)
                         ;
                 }
             }
             
-            _game.CreateEntity()
+            CreateEntity
+                .Request()
                 .With(x => x.isSwitchTurnRequest = true)
-                .With(x => x.isRequest = true)
                 .With(x => x.PutOnCooldown(delay + _gameConfig.AnimationTiming.PostAttackDelay))
                 ;
         }
 
-        
+
         private (GameEntity attacker, GameEntity defender) GetAttackerAndDefender()
         {
-            GameEntity hero = _heroProvider.GetHero();
-            GameEntity enemy = _enemyProvider.GetEnemy();
+            GameEntity hero = null;
+            GameEntity enemy = null;
+
+            foreach (var h in _heroes)
+            {
+                hero = h;
+            }
+
+            foreach (var e in _enemies)
+            {
+                enemy = e;
+            }
 
             return enemy?.isEnemyTurn == true ? (enemy, hero) : (hero, enemy);
         }

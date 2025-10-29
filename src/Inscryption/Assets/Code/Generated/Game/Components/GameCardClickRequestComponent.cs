@@ -6,15 +6,15 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public sealed partial class InputMatcher {
+public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<InputEntity> _matcherCardClickRequest;
+    static Entitas.IMatcher<GameEntity> _matcherCardClickRequest;
 
-    public static Entitas.IMatcher<InputEntity> CardClickRequest {
+    public static Entitas.IMatcher<GameEntity> CardClickRequest {
         get {
             if (_matcherCardClickRequest == null) {
-                var matcher = (Entitas.Matcher<InputEntity>)Entitas.Matcher<InputEntity>.AllOf(InputComponentsLookup.CardClickRequest);
-                matcher.componentNames = InputComponentsLookup.componentNames;
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.CardClickRequest);
+                matcher.componentNames = GameComponentsLookup.componentNames;
                 _matcherCardClickRequest = matcher;
             }
 
@@ -31,30 +31,30 @@ public sealed partial class InputMatcher {
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public partial class InputEntity {
+public partial class GameEntity {
 
-    public Code.Common.Inputs.CardClickRequest cardClickRequest { get { return (Code.Common.Inputs.CardClickRequest)GetComponent(InputComponentsLookup.CardClickRequest); } }
+    public Code.Features.Cards.CardClickRequest cardClickRequest { get { return (Code.Features.Cards.CardClickRequest)GetComponent(GameComponentsLookup.CardClickRequest); } }
     public int CardClickRequest { get { return cardClickRequest.Value; } }
-    public bool hasCardClickRequest { get { return HasComponent(InputComponentsLookup.CardClickRequest); } }
+    public bool hasCardClickRequest { get { return HasComponent(GameComponentsLookup.CardClickRequest); } }
 
-    public InputEntity AddCardClickRequest(int newValue) {
-        var index = InputComponentsLookup.CardClickRequest;
-        var component = (Code.Common.Inputs.CardClickRequest)CreateComponent(index, typeof(Code.Common.Inputs.CardClickRequest));
+    public GameEntity AddCardClickRequest(int newValue) {
+        var index = GameComponentsLookup.CardClickRequest;
+        var component = (Code.Features.Cards.CardClickRequest)CreateComponent(index, typeof(Code.Features.Cards.CardClickRequest));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
     }
 
-    public InputEntity ReplaceCardClickRequest(int newValue) {
-        var index = InputComponentsLookup.CardClickRequest;
-        var component = (Code.Common.Inputs.CardClickRequest)CreateComponent(index, typeof(Code.Common.Inputs.CardClickRequest));
+    public GameEntity ReplaceCardClickRequest(int newValue) {
+        var index = GameComponentsLookup.CardClickRequest;
+        var component = (Code.Features.Cards.CardClickRequest)CreateComponent(index, typeof(Code.Features.Cards.CardClickRequest));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;
     }
 
-    public InputEntity RemoveCardClickRequest() {
-        RemoveComponent(InputComponentsLookup.CardClickRequest);
+    public GameEntity RemoveCardClickRequest() {
+        RemoveComponent(GameComponentsLookup.CardClickRequest);
         return this;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Code.Features.Board;
-using Code.Features.Statuses.Services;
 using Entitas;
 using UnityEngine;
 

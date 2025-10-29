@@ -32,7 +32,6 @@ namespace Code.Features.Cards.Systems
 
                 if (!ValidateRequest(stackEntity, owner))
                 {
-                    requestEntity.isDestructed = true;
                     continue;
                 }
 
@@ -42,8 +41,6 @@ namespace Code.Features.Cards.Systems
                 {
                     DrawCard(i, stackEntity, owner, request);
                 }
-
-                requestEntity.isDestructed = true;
             }
         }
 

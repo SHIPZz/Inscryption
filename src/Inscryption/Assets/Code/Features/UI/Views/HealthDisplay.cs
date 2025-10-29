@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Code.Features.UI
+namespace Code.Features.UI.Views
 {
     public class HealthDisplay : MonoBehaviour
     {

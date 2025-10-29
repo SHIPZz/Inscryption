@@ -1,4 +1,6 @@
-﻿namespace Code.Features.UI.Services
+﻿using Code.Features.UI.Views;
+
+namespace Code.Features.UI.Services
 {
     public interface IUIProvider
     {

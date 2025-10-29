@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Code.Common;
+﻿using Code.Common;
 using Code.Features.Board.Services;
 using Code.Features.Cards.Services;
 using Code.Features.Enemy.Services;
@@ -13,7 +12,6 @@ namespace Code.Features.Game.Systems
 {
     public class InitializeGameSystem : IInitializeSystem
     {
-        private readonly GameContext _game;
         private readonly IHeroFactory _heroFactory;
         private readonly IEnemyFactory _enemyFactory;
         private readonly ICardStackFactory _cardStackFactory;
@@ -21,16 +19,13 @@ namespace Code.Features.Game.Systems
         private readonly IHandLayoutService _handLayoutService;
         private readonly GameConfig _gameConfig;
 
-        public InitializeGameSystem(
-            GameContext game,
-            IHeroFactory heroFactory,
+        public InitializeGameSystem(IHeroFactory heroFactory,
             IEnemyFactory enemyFactory,
             ICardStackFactory cardStackFactory,
             IBoardFactory boardFactory,
             IHandLayoutService handLayoutService,
             IConfigService configService)
         {
-            _game = game;
             _heroFactory = heroFactory;
             _enemyFactory = enemyFactory;
             _cardStackFactory = cardStackFactory;
@@ -41,7 +36,6 @@ namespace Code.Features.Game.Systems
 
         public void Initialize()
         {
-            Debug.Log("[InitializeGameSystem] Starting game initialization...");
             if (_gameConfig == null)
             {
                 Debug.LogError("[InitializeGameSystem] GameConfig not found! Using default values.");
@@ -49,18 +43,14 @@ namespace Code.Features.Game.Systems
             }
 
             GameEntity hero = _heroFactory.CreateHero(_gameConfig.BaseHeroHealth);
-            Debug.Log($"[InitializeGameSystem] Hero created: ID={hero.Id}, HP={hero.Hp}");
             GameEntity enemy = _enemyFactory.CreateEnemy(_gameConfig.BaseEnemyHealth);
-            Debug.Log($"[InitializeGameSystem] Enemy created: ID={enemy.Id}, HP={enemy.Hp}");
-            List<GameEntity> slots = _boardFactory.CreateSlots(hero.Id, enemy.Id);
-            Debug.Log($"[InitializeGameSystem] Board created: {slots.Count} slots");
+           
+            _boardFactory.CreateSlots(hero.Id, enemy.Id);
+            
             GameEntity commonStack = CreateCardStack();
-            Debug.Log($"[InitializeGameSystem] Common card stack created: ID={commonStack.Id}");
 
             CreateDrawCardFromStackRequest(commonStack, hero);
             CreateDrawCardFromStackRequest(commonStack, enemy);
-
-            Debug.Log("[InitializeGameSystem] Game initialization complete. Hero's turn!");
         }
 
         private GameEntity CreateDrawCardFromStackRequest(GameEntity commonStack, GameEntity player)

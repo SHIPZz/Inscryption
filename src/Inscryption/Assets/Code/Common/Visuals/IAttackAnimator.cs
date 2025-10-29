@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Code.Features.Statuses.Services
+namespace Code.Common.Visuals
 {
     public interface IAttackAnimator
     {

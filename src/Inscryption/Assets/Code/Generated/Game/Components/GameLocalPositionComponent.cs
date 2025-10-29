@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Code.Common.Components;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherLocalPosition;
@@ -36,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public LocalPositionComponent localPosition { get { return (LocalPositionComponent)GetComponent(GameComponentsLookup.LocalPosition); } }
+    public Code.Common.Components.LocalPositionComponent localPosition { get { return (Code.Common.Components.LocalPositionComponent)GetComponent(GameComponentsLookup.LocalPosition); } }
     public UnityEngine.Vector3 LocalPosition { get { return localPosition.Value; } }
     public bool hasLocalPosition { get { return HasComponent(GameComponentsLookup.LocalPosition); } }
 
     public GameEntity AddLocalPosition(UnityEngine.Vector3 newValue) {
         var index = GameComponentsLookup.LocalPosition;
-        var component = (LocalPositionComponent)CreateComponent(index, typeof(LocalPositionComponent));
+        var component = (Code.Common.Components.LocalPositionComponent)CreateComponent(index, typeof(Code.Common.Components.LocalPositionComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -50,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceLocalPosition(UnityEngine.Vector3 newValue) {
         var index = GameComponentsLookup.LocalPosition;
-        var component = (LocalPositionComponent)CreateComponent(index, typeof(LocalPositionComponent));
+        var component = (Code.Common.Components.LocalPositionComponent)CreateComponent(index, typeof(Code.Common.Components.LocalPositionComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

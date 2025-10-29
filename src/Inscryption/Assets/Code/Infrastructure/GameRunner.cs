@@ -11,7 +11,7 @@ namespace Code.Infrastructure
     {
         private readonly ISystemFactory _systemFactory;
 
-        private GameRootFeature _gameRootFeature;
+        private ProjectRootFeature _projectRootFeature;
 
         public GameRunner(ISystemFactory systemFactory)
         {
@@ -22,23 +22,23 @@ namespace Code.Infrastructure
         {
             Debug.Log("=== Game Test Runner Started ===");
 
-            _gameRootFeature = _systemFactory.Create<GameRootFeature>();
-            _gameRootFeature.Initialize();
+            _projectRootFeature = _systemFactory.Create<ProjectRootFeature>();
+            _projectRootFeature.Initialize();
 
             Debug.Log("=== Game Initialized ===");
         }
 
         public void Tick()
         {
-            _gameRootFeature?.Execute();
-            _gameRootFeature?.Cleanup();
+            _projectRootFeature?.Execute();
+            _projectRootFeature?.Cleanup();
         }
 
         public void Dispose()
         {
-            _gameRootFeature?.DeactivateReactiveSystems();
-            _gameRootFeature?.TearDown();
-            _gameRootFeature = null;
+            _projectRootFeature?.DeactivateReactiveSystems();
+            _projectRootFeature?.TearDown();
+            _projectRootFeature = null;
 
             Debug.Log("=== Game Test Runner Destroyed ===");
         }

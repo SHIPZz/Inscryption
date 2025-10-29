@@ -7,32 +7,29 @@ namespace Code.Features.Game.Systems
 {
     public class ProcessGameEndRequestSystem : IExecuteSystem
     {
-        private readonly IGroup<GameEntity> _requests;
+        private readonly IGroup<GameEntity> _gameEndRequests;
         private readonly List<GameEntity> _buffer = new(1);
-        private readonly List<GameEntity> _gameRequestsBuffer = new(16);
+        private readonly List<GameEntity> _gameRequestsBuffer = new(32);
         private readonly IUIProvider _uiProvider;
         private readonly IGroup<GameEntity> _allRequests;
 
         public ProcessGameEndRequestSystem(GameContext game, IUIProvider uiProvider)
         {
             _uiProvider = uiProvider;
-            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.GameEndRequest, GameMatcher.ProcessingAvailable));
+            _gameEndRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.GameEndRequest, GameMatcher.ProcessingAvailable));
 
-            _allRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.Request)
-                .NoneOf(GameMatcher.GameEndRequest));
+            _allRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.Request));
         }
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests.GetEntities(_buffer))
+            foreach (GameEntity request in _gameEndRequests.GetEntities(_buffer))
             {
                 DestroyRequests();
 
                 Debug.Log("@@@ ProcessGameEndRequestSystem");
                 
                 UpdateUI(request);
-
-                request.Destroy();
             }
         }
 

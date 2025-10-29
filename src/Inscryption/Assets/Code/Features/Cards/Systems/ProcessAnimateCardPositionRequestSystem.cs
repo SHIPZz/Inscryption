@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
 using DG.Tweening;
@@ -11,7 +10,6 @@ namespace Code.Features.Cards.Systems
     {
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _requests;
-        private readonly List<GameEntity> _requestBuffer = new(1);
         private readonly GameConfig _gameConfig;
 
         public ProcessAnimateCardPositionRequestSystem(GameContext game, IConfigService configService)
@@ -23,7 +21,7 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests.GetEntities(_requestBuffer))
+            foreach (GameEntity request in _requests)
             {
                 int cardId = request.animateCardPositionRequest.CardId;
                 GameEntity card = _game.GetEntityWithId(cardId);
@@ -32,8 +30,6 @@ namespace Code.Features.Cards.Systems
                 {
                     AnimateCard(card, request.animateCardPositionRequest.Position, request.animateCardPositionRequest.Rotation);
                 }
-
-                request.isDestructed = true;
             }
         }
 

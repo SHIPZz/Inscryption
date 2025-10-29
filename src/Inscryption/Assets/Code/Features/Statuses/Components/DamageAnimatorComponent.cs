@@ -1,4 +1,4 @@
-using Code.Features.Statuses.Services;
+using Code.Common.Visuals;
 using Entitas;
 
 namespace Code.Features.Statuses.Components

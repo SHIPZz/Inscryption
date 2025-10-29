@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Code.Features.UI
+namespace Code.Features.UI.Views
 {
     public class EndTurnButton : MonoBehaviour
     {

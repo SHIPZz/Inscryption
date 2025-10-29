@@ -6,15 +6,15 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public sealed partial class InputMatcher {
+public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<InputEntity> _matcherSlotClickRequest;
+    static Entitas.IMatcher<GameEntity> _matcherSlotClickRequest;
 
-    public static Entitas.IMatcher<InputEntity> SlotClickRequest {
+    public static Entitas.IMatcher<GameEntity> SlotClickRequest {
         get {
             if (_matcherSlotClickRequest == null) {
-                var matcher = (Entitas.Matcher<InputEntity>)Entitas.Matcher<InputEntity>.AllOf(InputComponentsLookup.SlotClickRequest);
-                matcher.componentNames = InputComponentsLookup.componentNames;
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SlotClickRequest);
+                matcher.componentNames = GameComponentsLookup.componentNames;
                 _matcherSlotClickRequest = matcher;
             }
 
@@ -31,30 +31,30 @@ public sealed partial class InputMatcher {
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-public partial class InputEntity {
+public partial class GameEntity {
 
-    public Code.Common.Inputs.SlotClickRequest slotClickRequest { get { return (Code.Common.Inputs.SlotClickRequest)GetComponent(InputComponentsLookup.SlotClickRequest); } }
+    public Code.Features.Cards.SlotClickRequest slotClickRequest { get { return (Code.Features.Cards.SlotClickRequest)GetComponent(GameComponentsLookup.SlotClickRequest); } }
     public int SlotClickRequest { get { return slotClickRequest.Value; } }
-    public bool hasSlotClickRequest { get { return HasComponent(InputComponentsLookup.SlotClickRequest); } }
+    public bool hasSlotClickRequest { get { return HasComponent(GameComponentsLookup.SlotClickRequest); } }
 
-    public InputEntity AddSlotClickRequest(int newValue) {
-        var index = InputComponentsLookup.SlotClickRequest;
-        var component = (Code.Common.Inputs.SlotClickRequest)CreateComponent(index, typeof(Code.Common.Inputs.SlotClickRequest));
+    public GameEntity AddSlotClickRequest(int newValue) {
+        var index = GameComponentsLookup.SlotClickRequest;
+        var component = (Code.Features.Cards.SlotClickRequest)CreateComponent(index, typeof(Code.Features.Cards.SlotClickRequest));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
     }
 
-    public InputEntity ReplaceSlotClickRequest(int newValue) {
-        var index = InputComponentsLookup.SlotClickRequest;
-        var component = (Code.Common.Inputs.SlotClickRequest)CreateComponent(index, typeof(Code.Common.Inputs.SlotClickRequest));
+    public GameEntity ReplaceSlotClickRequest(int newValue) {
+        var index = GameComponentsLookup.SlotClickRequest;
+        var component = (Code.Features.Cards.SlotClickRequest)CreateComponent(index, typeof(Code.Features.Cards.SlotClickRequest));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;
     }
 
-    public InputEntity RemoveSlotClickRequest() {
-        RemoveComponent(InputComponentsLookup.SlotClickRequest);
+    public GameEntity RemoveSlotClickRequest() {
+        RemoveComponent(GameComponentsLookup.SlotClickRequest);
         return this;
     }
 }

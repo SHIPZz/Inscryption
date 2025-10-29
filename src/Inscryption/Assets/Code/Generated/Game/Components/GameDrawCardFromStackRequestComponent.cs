@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Code.Features.Cards.Components;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherDrawCardFromStackRequest;
@@ -36,12 +33,12 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public DrawCardFromStackRequest drawCardFromStackRequest { get { return (DrawCardFromStackRequest)GetComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
+    public Code.Features.Cards.Components.DrawCardFromStackRequest drawCardFromStackRequest { get { return (Code.Features.Cards.Components.DrawCardFromStackRequest)GetComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
     public bool hasDrawCardFromStackRequest { get { return HasComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
 
     public GameEntity AddDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, UnityEngine.Vector3 newTargetPosition, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
-        var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
+        var component = (Code.Features.Cards.Components.DrawCardFromStackRequest)CreateComponent(index, typeof(Code.Features.Cards.Components.DrawCardFromStackRequest));
         component.StackEntityId = newStackEntityId;
         component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;
@@ -55,7 +52,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, UnityEngine.Vector3 newTargetPosition, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
-        var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
+        var component = (Code.Features.Cards.Components.DrawCardFromStackRequest)CreateComponent(index, typeof(Code.Features.Cards.Components.DrawCardFromStackRequest));
         component.StackEntityId = newStackEntityId;
         component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;

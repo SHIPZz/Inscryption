@@ -6,18 +6,16 @@ namespace Code.Features.View.Registrars
 	{
 		[SerializeField] private Collider _targetCollider;
 
-		public Collider TargetCollider => _targetCollider;
-
 		public override void RegisterComponents()
 		{
 			if (_targetCollider != null && Entity != null)
-				Entity.AddColliderReference(_targetCollider);
+				Entity.AddCollider(_targetCollider);
 		}
 
 		public override void UnregisterComponents()
 		{
-			if (Entity != null && Entity.hasColliderReference)
-				Entity.RemoveColliderReference();
+			if (Entity != null && Entity.hasCollider)
+				Entity.RemoveCollider();
 		}
 
 		private void OnValidate()

@@ -4,6 +4,7 @@ using Code.Common.Random;
 using Code.Common.Services;
 using Code.Features.Cards.Data;
 using Code.Features.Stats;
+using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ namespace Code.Features.Cards.Services
         private readonly IRandomService _randomService;
         private readonly IInstantiateService _instantiateService;
         private readonly IAssetsService _assetsService;
-        private readonly IConfigService _configService;
+        private readonly GameConfig _gameConfig;
+        private readonly CardConfig _cardConfig;
 
         public CardFactory(
             GameContext game,
@@ -31,91 +33,138 @@ namespace Code.Features.Cards.Services
             _randomService = randomService;
             _instantiateService = instantiateService;
             _assetsService = assetsService;
-            _configService = configService;
+            _gameConfig = configService.GetConfig<GameConfig>();
+            _cardConfig = configService.GetConfig<CardConfig>();
         }
 
-        public GameEntity CreateCard(CardCreateData cardCreateData)
+        public GameEntity CreateCard(CardCreateData data)
         {
-            int clampedHp = Mathf.Clamp(cardCreateData.Hp, 1, 4);
-            int clampedDamage = Mathf.Clamp(cardCreateData.Damage, 1, 3);
-            GameEntity card = _game.CreateEntity()
-                    .AddId(_idService.Next())
-                    .With(x => x.isCard = true)
-                    .With(x => x.AddHp(clampedHp))
-                    .With(x => x.AddName("Card"))
-                    .With(x => x.AddMaxHp(clampedHp))
-                    .With(x => x.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, clampedHp } }))
-                    .With(x => x.AddStatsModifiers(new Dictionary<StatTypeId, int>()))
-                    .With(x => x.AddDamage(clampedDamage))
-                    .With(x => x.AddCardOwner(cardCreateData.OwnerId))
-                    .With(x => x.isInHand = cardCreateData.InHand)
-                    .With(x => x.AddParent(cardCreateData.Parent), when: cardCreateData.Parent != null)
-                    .With(x => x.AddCardIcon(cardCreateData.Icon), when: cardCreateData.Icon != null)
-                    .With(x => x.AddViewAddressableKey(cardCreateData.ViewKey),
-                        when: !string.IsNullOrEmpty(cardCreateData.ViewKey))
-                ;
-            GameEntity owner = _game.GetEntityWithId(cardCreateData.OwnerId);
-            if (owner != null && owner.isHero)
-            {
-                card.isTrackCameraRotation = true;
-            }
+            GameEntity card = CreateCardEntity(data);
 
-            if (cardCreateData.Icon != null)
-            {
-                CreateView(card, cardCreateData);
-            }
+            if (data.Icon != null)
+                CreateView(card, data);
 
             return card;
         }
 
-        public GameEntity CreateRandomCard(CardCreateData cardCreateData)
+        private GameEntity CreateCardEntity(CardCreateData data)
         {
-            CardConfig cardConfig = _configService.GetConfig<CardConfig>(nameof(CardConfig));
-            if (cardConfig == null || cardConfig.Cards == null || cardConfig.Cards.Count == 0)
+            int hp = Mathf.Clamp(data.Hp, _gameConfig.CardGeneration.HpRange.x, _gameConfig.CardGeneration.HpRange.y);
+            int damage = Mathf.Clamp(data.Damage, _gameConfig.CardGeneration.DamageRange.x, _gameConfig.CardGeneration.DamageRange.y);
+
+            GameEntity card = _game.CreateEntity()
+                .AddId(_idService.Next())
+                .With(x => x.isCard = true);
+
+            AddCardStats(card, hp, damage);
+            AddCardOwnership(card, data);
+            AddCardVisuals(card, data);
+
+            return card;
+        }
+
+        private void AddCardStats(GameEntity card, int hp, int damage)
+        {
+            card.AddHp(hp);
+            card.AddMaxHp(hp);
+            card.AddStats(new Dictionary<StatTypeId, int> { { StatTypeId.Hp, hp } });
+            card.AddStatsModifiers(new Dictionary<StatTypeId, int>());
+            card.AddDamage(damage);
+        }
+
+        private void AddCardOwnership(GameEntity card, CardCreateData data)
+        {
+            card.AddCardOwner(data.OwnerId);
+            card.isInHand = data.InHand;
+
+            if (data.Parent != null)
+                card.AddParent(data.Parent);
+        }
+
+        private void AddCardVisuals(GameEntity card, CardCreateData data)
+        {
+            card.AddName("Card");
+
+            if (data.Icon != null)
+                card.AddCardIcon(data.Icon);
+
+            if (!string.IsNullOrEmpty(data.ViewKey))
+                card.AddViewAddressableKey(data.ViewKey);
+        }
+
+        public GameEntity CreateRandomCard(CardCreateData data)
+        {
+            CardData randomData = GetRandomCardData();
+            return randomData == null ? null : CreateCard(MergeWithRandomData(data, randomData));
+        }
+
+        private CardData GetRandomCardData()
+        {
+            if (_cardConfig?.Cards == null || _cardConfig.Cards.Count == 0)
             {
                 Debug.LogError("[CardFactory] CardConfig or Cards list is empty!");
                 return null;
             }
 
-            CardData randomCardData = cardConfig.Cards[_randomService.Range(0, cardConfig.Cards.Count - 1)];
-            return CreateCard(new CardCreateData(
-                cardCreateData.OwnerId,
-                randomCardData.Hp,
-                randomCardData.Damage,
-                inHand: cardCreateData.InHand,
-                icon: cardCreateData.Icon ?? randomCardData.VisualData?.Icon,
-                viewKey: null,
-                position: cardCreateData.Position,
-                rotation: cardCreateData.Rotation,
-                parent: cardCreateData.Parent));
+            return _cardConfig.Cards[_randomService.Range(0, _cardConfig.Cards.Count - 1)];
         }
 
-        private void CreateView(GameEntity card, CardCreateData cardCreateData)
+        private CardCreateData MergeWithRandomData(CardCreateData original, CardData random)
         {
-            CardEntityView cardPrefab = _assetsService.LoadPrefabWithComponent<CardEntityView>(nameof(CardEntityView));
-            if (cardPrefab != null)
-            {
-                CardEntityView cardView = _instantiateService.Instantiate(cardPrefab, cardCreateData.Position, cardCreateData.Rotation);
-              
-                if (cardView != null && cardView.EntityBehaviour != null)
-                {
-                    cardView.EntityBehaviour.SetEntity(card);
-                    cardView.SetIcon(cardCreateData.Icon);
-                    card.ReplaceView(cardView.EntityBehaviour);
+            return new CardCreateData(
+                    original.OwnerId,
+                    random.Hp,
+                    random.Damage,
+                    inHand: original.InHand,
+                    icon: original.Icon ?? random.VisualData?.Icon,
+                    viewKey: null,
+                    position: original.Position,
+                    rotation: original.Rotation,
+                    parent: original.Parent);
+        }
 
-                    if (cardView.CardAnimator != null)
-                    {
-                        card.AddCardAnimator(cardView.CardAnimator);
-                        card.AddDamageAnimator(cardView.CardAnimator);
-                        card.AddAttackAnimator(cardView.CardAnimator);
-                        card.AddVisualTransform(cardView.CardAnimator.VisualTransform);
-                    }
-                }
-            }
-            else
+        private void CreateView(GameEntity card, CardCreateData data)
+        {
+            CardEntityView view = InstantiateCardView(data);
+            if (view == null)
+                return;
+
+            LinkViewToEntity(card, view, data.Icon);
+            SetupViewComponents(card, view);
+        }
+
+        private CardEntityView InstantiateCardView(CardCreateData data)
+        {
+            CardEntityView prefab = _assetsService.LoadPrefabWithComponent<CardEntityView>(nameof(CardEntityView));
+            
+            if (prefab == null)
             {
-                Debug.LogWarning($"[CardFactory] Card prefab not found in Addressables: {nameof(CardEntityView)}");
+                Debug.LogWarning($"[CardFactory] Card prefab not found: {nameof(CardEntityView)}");
+                return null;
             }
+
+            return _instantiateService.Instantiate(prefab, data.Position, data.Rotation);
+        }
+
+        private void LinkViewToEntity(GameEntity card, CardEntityView view, Sprite icon)
+        {
+            if (view.EntityBehaviour == null)
+                return;
+
+            view.EntityBehaviour.SetEntity(card);
+            view.SetIcon(icon);
+            card.ReplaceView(view.EntityBehaviour);
+        }
+
+        private void SetupViewComponents(GameEntity card, CardEntityView view)
+        {
+            if (view.CardAnimator == null)
+                return;
+
+            card.AddCardAnimator(view.CardAnimator);
+            card.AddDamageAnimator(view.CardAnimator);
+            card.AddAttackAnimator(view.CardAnimator);
+            card.AddVisualTransform(view.CardAnimator.VisualTransform);
         }
     }
 
