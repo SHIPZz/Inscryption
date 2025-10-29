@@ -15,7 +15,7 @@ namespace Code.Infrastructure.Services
 			_assetsService = assetsService;
 		}
 
-		public async UniTask Initialize(CancellationToken cancellationToken = default)
+		public async UniTask InitializeAsync(CancellationToken cancellationToken = default)
 		{
 			await UniTask.CompletedTask;
 			Debug.Log($"{nameof(ConfigService)} initialized");
@@ -52,6 +52,21 @@ namespace Code.Infrastructure.Services
 
 		public async UniTask<T> LoadConfigAsync<T>(string addressableKey, CancellationToken cancellationToken = default) where T : ScriptableObject
 		{
+			if (_loadedConfigs.TryGetValue(addressableKey, out ScriptableObject cached))
+				return cached as T;
+
+			T config = await _assetsService.LoadAsync<T>(addressableKey, "configs", cancellationToken);
+			
+			if (config != null)
+				_loadedConfigs[addressableKey] = config;
+
+			return config;
+		}
+		
+		public async UniTask<T> LoadConfigAsync<T>(CancellationToken cancellationToken = default) where T : ScriptableObject
+		{
+			string addressableKey = typeof(T).Name;
+			
 			if (_loadedConfigs.TryGetValue(addressableKey, out ScriptableObject cached))
 				return cached as T;
 

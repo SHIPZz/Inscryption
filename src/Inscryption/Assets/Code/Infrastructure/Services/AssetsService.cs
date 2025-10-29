@@ -16,9 +16,9 @@ namespace Code.Infrastructure.Services
 		
 		private readonly Dictionary<string, List<string>> _categories = new();
 
-		public async UniTask Initialize()
+		public async UniTask InitializeAsync(CancellationToken cancellationToken = default)
 		{
-			await Addressables.InitializeAsync().ToUniTask();
+			await Addressables.InitializeAsync().ToUniTask(cancellationToken: cancellationToken);
 			Debug.Log($"{nameof(Addressables)} initialized");
 		}
 

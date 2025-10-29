@@ -10,7 +10,7 @@ namespace Code.Infrastructure.Services
 {
 	public interface IAssetsService
 	{
-		UniTask Initialize();
+		UniTask InitializeAsync(CancellationToken cancellationToken = default);
 		void CleanUp();
 		void CleanUpCategory(string category);
 		TAsset Load<TAsset>(string key) where TAsset : class;

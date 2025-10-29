@@ -24,8 +24,6 @@ namespace Code.Infrastructure.Installers
             Container.Bind<ICardStackFactory>().To<CardStackFactory>().AsSingle();
             Container.Bind<IHandLayoutService>().To<HandLayoutService>().AsSingle();
 
-            Container.BindInterfacesAndSelfTo<EntryPoint>().AsSingle().NonLazy();
-            Container.BindInterfacesAndSelfTo<GameRunner>().AsSingle();
             Container.BindInterfacesAndSelfTo<InstantiatorSetter>().AsSingle();
 
             foreach (var initializable in Initializables)

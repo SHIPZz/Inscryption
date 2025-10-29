@@ -1,24 +1,25 @@
 using System;
+using System.Threading;
 using Code.Features;
+using Code.Infrastructure.States.StateInfrastructure;
 using Code.Infrastructure.Systems;
-using Entitas;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Zenject;
 
-namespace Code.Infrastructure
+namespace Code.Infrastructure.States.States
 {
-    public class GameRunner : ITickable, IDisposable
+    public class GameRunnerState : IEnterState, IUpdateable, IExitableState, IDisposable
     {
         private readonly ISystemFactory _systemFactory;
 
         private ProjectRootFeature _projectRootFeature;
 
-        public GameRunner(ISystemFactory systemFactory)
+        public GameRunnerState(ISystemFactory systemFactory)
         {
             _systemFactory = systemFactory;
         }
 
-        public void Initialize()
+        public async UniTask EnterAsync(CancellationToken cancellationToken = default)
         {
             Debug.Log("=== Game Test Runner Started ===");
 
@@ -26,9 +27,20 @@ namespace Code.Infrastructure
             _projectRootFeature.Initialize();
 
             Debug.Log("=== Game Initialized ===");
+            
+            await UniTask.CompletedTask;
         }
 
-        public void Tick()
+        public async UniTask ExitAsync(CancellationToken cancellationToken = default)
+        {
+            _projectRootFeature?.DeactivateReactiveSystems();
+            _projectRootFeature?.TearDown();
+            _projectRootFeature = null;
+            
+            await UniTask.CompletedTask;
+        }
+
+        public void Update()
         {
             _projectRootFeature?.Execute();
             _projectRootFeature?.Cleanup();
@@ -44,4 +56,3 @@ namespace Code.Infrastructure
         }
     }
 }
-

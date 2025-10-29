@@ -8,13 +8,17 @@ using Code.Features.Hero.Services;
 using Code.Features.Statuses.Services;
 using Code.Features.View.Factory;
 using Code.Features.View.Pool;
+using Code.Infrastructure.Loading;
 using Code.Infrastructure.Services;
+using Code.Infrastructure.States.Factory;
+using Code.Infrastructure.States.StateMachine;
+using Code.Infrastructure.States.States;
 using Code.Infrastructure.Systems;
 using Zenject;
 
 namespace Code.Infrastructure.Installers
 {
-    public class BootstrapInstaller : MonoInstaller
+    public class BootstrapInstaller : MonoInstaller, IInitializable
     {
         public override void InstallBindings()
         {
@@ -41,11 +45,22 @@ namespace Code.Infrastructure.Installers
             Container.Bind<IViewPool>().To<ViewPool>().AsSingle();
             Container.Bind<IEntityViewFactory>().To<EntityViewFactory>().AsSingle();
             Container.Bind<IViewFactory>().To<ViewFactory>().AsSingle();
+
+            Container.BindInterfacesTo<StateFactory>().AsSingle();
+            Container.BindInterfacesTo<SceneLoadService>().AsSingle();
+            Container.BindInterfacesTo<AppStateMachine>().AsSingle();
             
             Container.BindInstance(Contexts.sharedInstance).AsSingle();
             Container.BindInstance(Contexts.sharedInstance.game).AsSingle();
             Container.BindInstance(Contexts.sharedInstance.meta).AsSingle();
             Container.BindInstance(Contexts.sharedInstance.input).AsSingle();
+
+            Container.BindInterfacesTo(GetType()).FromInstance(this).AsSingle();
+        }
+
+        public void Initialize()
+        {
+            Container.Resolve<IStateMachine>().EnterAsync<StartupState>();
         }
     }
 }
