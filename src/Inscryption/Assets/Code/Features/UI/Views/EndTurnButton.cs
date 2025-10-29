@@ -8,7 +8,6 @@ namespace Code.Features.UI.Views
     public class EndTurnButton : MonoBehaviour
     {
         [SerializeField] private Button _button;
-        [SerializeField] private TextMeshProUGUI _buttonText;
 
         private Action _onEndTurnClicked;
         private bool _isLocked;

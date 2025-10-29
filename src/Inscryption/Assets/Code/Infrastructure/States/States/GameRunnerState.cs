@@ -33,9 +33,7 @@ namespace Code.Infrastructure.States.States
 
         public async UniTask ExitAsync(CancellationToken cancellationToken = default)
         {
-            _projectRootFeature?.DeactivateReactiveSystems();
-            _projectRootFeature?.TearDown();
-            _projectRootFeature = null;
+            Cleanup();
             
             await UniTask.CompletedTask;
         }
@@ -48,11 +46,16 @@ namespace Code.Infrastructure.States.States
 
         public void Dispose()
         {
+            Cleanup();
+
+            Debug.Log("=== Game Test Runner Destroyed ===");
+        }
+
+        private void Cleanup()
+        {
             _projectRootFeature?.DeactivateReactiveSystems();
             _projectRootFeature?.TearDown();
             _projectRootFeature = null;
-
-            Debug.Log("=== Game Test Runner Destroyed ===");
         }
     }
 }

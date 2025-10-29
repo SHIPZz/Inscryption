@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Code.Infrastructure.States.States
 {
-    public class StartupState : IEnterState, IExitableState
+    public class StartupState : IEnterState
     {
         private readonly IAssetsService _assetsService;
         private readonly IConfigService _configService;
@@ -44,12 +44,6 @@ namespace Code.Infrastructure.States.States
                 Debug.LogError($"[StartupState] Stack trace: {e.StackTrace}");
                 throw;
             }
-        }
-
-
-        public async UniTask ExitAsync(CancellationToken cancellationToken = default)
-        {
-            await UniTask.CompletedTask;
         }
     }
 }
