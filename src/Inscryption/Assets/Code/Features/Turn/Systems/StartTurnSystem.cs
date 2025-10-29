@@ -8,7 +8,6 @@ namespace Code.Features.Turn.Systems
 {
     public class StartTurnSystem : IExecuteSystem
     {
-        private readonly GameContext _game;
         private readonly IGroup<GameEntity> _heroes;
         private readonly IGroup<GameEntity> _enemies;
         private readonly IGroup<GameEntity> _switchTurnRequests;
@@ -16,7 +15,6 @@ namespace Code.Features.Turn.Systems
 
         public StartTurnSystem(GameContext game, IConfigService configService)
         {
-            _game = game;
             _heroes = game.GetGroup(GameMatcher.Hero);
             _enemies = game.GetGroup(GameMatcher.Enemy);
             _switchTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.SwitchTurnRequest, GameMatcher.ProcessingAvailable));

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Code.Features.Hero.Services;
 using Entitas;
 
 namespace Code.Features.Turn.Systems
@@ -24,11 +23,9 @@ namespace Code.Features.Turn.Systems
         {
             foreach (GameEntity request in _endTurnRequests)
             foreach (GameEntity hero in _heroes)
+            foreach (GameEntity card in _heroSelectedCards.GetEntities(_cardBuffer))
             {
-                foreach (GameEntity card in _heroSelectedCards.GetEntities(_cardBuffer))
-                {
-                    card.isSelected = false;
-                }
+                card.isSelected = false;
             }
         }
     }
