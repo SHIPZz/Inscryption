@@ -2,7 +2,7 @@
 using Entitas;
 using UnityEngine;
 
-namespace Code.Common.Systems.Destruct
+namespace Code.Common.Destruct
 {
     public class CleanupGameDestructedViewSystem : ICleanupSystem
     {

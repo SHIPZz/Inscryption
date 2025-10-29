@@ -6,6 +6,11 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
+using Code.Common.Components;
+using Code.Features.Cards.Components;
+using Code.Features.Common.Components;
+
 public static class GameComponentsLookup {
 
     public const int Active = 0;
@@ -37,70 +42,71 @@ public static class GameComponentsLookup {
     public const int CardIcon = 26;
     public const int CardOwner = 27;
     public const int CardStack = 28;
-    public const int UpdateHandLayoutRequest = 29;
-    public const int EnemyOwner = 30;
-    public const int HeroOwner = 31;
-    public const int InHand = 32;
-    public const int Lane = 33;
-    public const int OnBoard = 34;
-    public const int Placed = 35;
-    public const int PlacedCards = 36;
-    public const int Selected = 37;
-    public const int SelectionAvailable = 38;
-    public const int SlotId = 39;
-    public const int VisualTransform = 40;
-    public const int Cooldown = 41;
-    public const int CooldownLeft = 42;
-    public const int CooldownUp = 43;
-    public const int ProcessingAvailable = 44;
-    public const int Enemy = 45;
-    public const int EnemyTurn = 46;
-    public const int GameEndRequest = 47;
-    public const int CardHorizontalOffset = 48;
-    public const int CardsInHand = 49;
-    public const int HandPosition = 50;
-    public const int Hero = 51;
-    public const int HeroTurn = 52;
-    public const int Request = 53;
-    public const int Stats = 54;
-    public const int StatsModifiers = 55;
-    public const int AttackAnimator = 56;
-    public const int DamageAnimator = 57;
-    public const int Damaged = 58;
-    public const int DamageStatus = 59;
-    public const int Status = 60;
-    public const int StatusOwner = 61;
-    public const int StatusTarget = 62;
-    public const int StatusTypeId = 63;
-    public const int StatusValue = 64;
-    public const int Attacking = 65;
-    public const int AttackPhase = 66;
-    public const int AttackQueue = 67;
-    public const int AttackQueueTimer = 68;
-    public const int AttackRequest = 69;
-    public const int CardsPlacedThisTurn = 70;
-    public const int CurrentTurnPhase = 71;
-    public const int DelayedAttackPhase = 72;
-    public const int DrawCardRequest = 73;
-    public const int EndTurnRequest = 74;
-    public const int PhaseTimer = 75;
-    public const int PlaceCardRequest = 76;
-    public const int SwitchTurnRequest = 77;
-    public const int LoadingView = 78;
-    public const int SelfInitializedView = 79;
-    public const int SelfInitializeEntityViewRequest = 80;
-    public const int View = 81;
-    public const int ViewAddressableKey = 82;
-    public const int ViewAssetReference = 83;
-    public const int ViewPath = 84;
-    public const int ViewPrefab = 85;
-    public const int DrawCardFromStackRequest = 86;
-    public const int GameEndRequestListener = 87;
-    public const int LocalPosition = 88;
-    public const int Parent = 89;
-    public const int Static = 90;
+    public const int AnimateCardPositionRequest = 29;
+    public const int UpdateHandLayoutRequest = 30;
+    public const int EnemyOwner = 31;
+    public const int HeroOwner = 32;
+    public const int InHand = 33;
+    public const int Lane = 34;
+    public const int OnBoard = 35;
+    public const int Placed = 36;
+    public const int PlacedCards = 37;
+    public const int Selected = 38;
+    public const int SelectionAvailable = 39;
+    public const int SlotId = 40;
+    public const int VisualTransform = 41;
+    public const int Cooldown = 42;
+    public const int CooldownLeft = 43;
+    public const int CooldownUp = 44;
+    public const int ProcessingAvailable = 45;
+    public const int Enemy = 46;
+    public const int EnemyTurn = 47;
+    public const int GameEnd = 48;
+    public const int GameEndRequest = 49;
+    public const int CardHorizontalOffset = 50;
+    public const int CardsInHand = 51;
+    public const int HandPosition = 52;
+    public const int Hero = 53;
+    public const int HeroTurn = 54;
+    public const int Request = 55;
+    public const int Stats = 56;
+    public const int StatsModifiers = 57;
+    public const int AttackAnimator = 58;
+    public const int DamageAnimator = 59;
+    public const int Damaged = 60;
+    public const int DamageStatus = 61;
+    public const int Status = 62;
+    public const int StatusOwner = 63;
+    public const int StatusTarget = 64;
+    public const int StatusTypeId = 65;
+    public const int StatusValue = 66;
+    public const int Attacking = 67;
+    public const int AttackPhase = 68;
+    public const int AttackQueue = 69;
+    public const int AttackQueueTimer = 70;
+    public const int AttackRequest = 71;
+    public const int CardsPlacedThisTurn = 72;
+    public const int CurrentTurnPhase = 73;
+    public const int DelayedAttackPhase = 74;
+    public const int DrawCardRequest = 75;
+    public const int EndTurnRequest = 76;
+    public const int PhaseTimer = 77;
+    public const int PlaceCardRequest = 78;
+    public const int SwitchTurnRequest = 79;
+    public const int LoadingView = 80;
+    public const int SelfInitializedView = 81;
+    public const int SelfInitializeEntityViewRequest = 82;
+    public const int View = 83;
+    public const int ViewAddressableKey = 84;
+    public const int ViewAssetReference = 85;
+    public const int ViewPath = 86;
+    public const int ViewPrefab = 87;
+    public const int DrawCardFromStackRequest = 88;
+    public const int LocalPosition = 89;
+    public const int Parent = 90;
+    public const int Static = 91;
 
-    public const int TotalComponents = 91;
+    public const int TotalComponents = 92;
 
     public static readonly string[] componentNames = {
         "Active",
@@ -132,6 +138,7 @@ public static class GameComponentsLookup {
         "CardIcon",
         "CardOwner",
         "CardStack",
+        "AnimateCardPositionRequest",
         "UpdateHandLayoutRequest",
         "EnemyOwner",
         "HeroOwner",
@@ -150,6 +157,7 @@ public static class GameComponentsLookup {
         "ProcessingAvailable",
         "Enemy",
         "EnemyTurn",
+        "GameEnd",
         "GameEndRequest",
         "CardHorizontalOffset",
         "CardsInHand",
@@ -190,7 +198,6 @@ public static class GameComponentsLookup {
         "ViewPath",
         "ViewPrefab",
         "DrawCardFromStackRequest",
-        "GameEndRequestListener",
         "LocalPosition",
         "Parent",
         "Static"
@@ -226,6 +233,7 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Cards.CardIcon),
         typeof(Code.Features.Cards.CardOwner),
         typeof(Code.Features.Cards.CardStack),
+        typeof(Code.Features.Cards.Components.AnimateCardPositionRequest),
         typeof(Code.Features.Cards.Components.UpdateHandLayoutRequest),
         typeof(Code.Features.Cards.EnemyOwner),
         typeof(Code.Features.Cards.HeroOwner),
@@ -244,6 +252,7 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Cooldowns.ProcessingAvailable),
         typeof(Code.Features.Enemy.Enemy),
         typeof(Code.Features.Enemy.EnemyTurn),
+        typeof(Code.Features.Game.GameEnd),
         typeof(Code.Features.Game.GameEndRequest),
         typeof(Code.Features.Hero.CardHorizontalOffset),
         typeof(Code.Features.Hero.CardsInHand),
@@ -284,7 +293,6 @@ public static class GameComponentsLookup {
         typeof(Code.Features.View.ViewPath),
         typeof(Code.Features.View.ViewPrefab),
         typeof(DrawCardFromStackRequest),
-        typeof(GameEndRequestListenerComponent),
         typeof(LocalPositionComponent),
         typeof(ParentComponent),
         typeof(StaticComponent)

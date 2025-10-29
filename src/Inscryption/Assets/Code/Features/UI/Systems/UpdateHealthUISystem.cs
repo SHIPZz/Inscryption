@@ -1,22 +1,19 @@
-using Code.Features.Enemy.Services;
-using Code.Features.Hero.Services;
 using Code.Features.UI.Services;
 using Entitas;
 
 namespace Code.Features.UI.Systems
 {
-    // todo refactor this
     public class UpdateHealthUISystem : IExecuteSystem
     {
-        private readonly IHeroProvider _heroProvider;
-        private readonly IEnemyProvider _enemyProvider;
         private readonly IUIProvider _uiProvider;
+        private readonly IGroup<GameEntity> _heroes;
+        private readonly IGroup<GameEntity> _enemies;
 
-        public UpdateHealthUISystem(IHeroProvider heroProvider, IEnemyProvider enemyProvider, IUIProvider uiProvider)
+        public UpdateHealthUISystem(GameContext game, IUIProvider uiProvider)
         {
             _uiProvider = uiProvider;
-            _heroProvider = heroProvider;
-            _enemyProvider = enemyProvider;
+           _heroes = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.Hp));
+           _enemies = game.GetGroup(GameMatcher.AllOf(GameMatcher.Enemy, GameMatcher.Hp));
         }
 
         public void Execute()
@@ -26,12 +23,13 @@ namespace Code.Features.UI.Systems
             if (hud == null)
                 return;
 
-            GameEntity hero = _heroProvider.GetHero();
-            GameEntity enemy = _enemyProvider.GetEnemy();
+            foreach (GameEntity hero in _heroes)
+            foreach (GameEntity enemy in _enemies)
+            {
+                hud.UpdateHeroHealth(hero?.Hp ?? 0,hero?.MaxHp ?? 0 );
 
-            hud.UpdateHeroHealth(hero?.Hp ?? 0,hero?.MaxHp ?? 0 );
-
-            hud.UpdateEnemyHealth(enemy?.Hp ?? 0,enemy?.MaxHp ?? 0 );
+                hud.UpdateEnemyHealth(enemy?.Hp ?? 0,enemy?.MaxHp ?? 0 );
+            }
         }
     }
 }

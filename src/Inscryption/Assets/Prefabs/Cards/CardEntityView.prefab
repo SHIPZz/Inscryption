@@ -113,11 +113,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Features.Cards.CardAnimator
-  _visualTransform: {fileID: 0}
+  _visualTransform: {fileID: 2406669108142270871}
+  _renderer: {fileID: 3514911424808404866}
+  _damageColor: {r: 1, g: 0, b: 0, a: 1}
+  _damageFlashDuration: 0.1
+  _damageShakeStrength: 10
+  _damageShakeVibrato: 15
+  _damageShakeDuration: 0.2
   _selectedScale: 1.2
   _normalScale: 1
+  _selectedYOffset: 0.2
   _selectionDuration: 0.2
   _selectionEase: 27
+  _attackColor: {r: 1, g: 0, b: 0, a: 1}
+  _attackColorDuration: 0.15
+  _attackDistanceMultiplier: 2
+  _attackMoveDuration: 0.35
+  _attackReturnDelay: 0.5
+  _attackReturnDuration: 0.5
+  _attackMoveEase: 6
+  _attackReturnEase: 27
 --- !u!114 &5533383756946273682
 MonoBehaviour:
   m_ObjectHideFlags: 0

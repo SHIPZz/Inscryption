@@ -3,6 +3,7 @@ using Code.Features.Battle;
 using Code.Features.Board;
 using Code.Features.Camera;
 using Code.Features.Cards;
+using Code.Features.Cheats;
 using Code.Features.Cooldowns;
 using Code.Features.Enemy;
 using Code.Features.Game;
@@ -27,6 +28,7 @@ namespace Code.Features
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CameraFeature>());
             Add(systemFactory.Create<CooldownFeature>());
+            Add(systemFactory.Create<CheatFeature>());
             Add(systemFactory.Create<RequestFeature>());
             Add(systemFactory.Create<MovementFeature>());
             Add(systemFactory.Create<CardFeature>());

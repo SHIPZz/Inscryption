@@ -1,8 +1,11 @@
 using Entitas;
 using UnityEngine;
 
-[Game]
-public class ParentComponent : IComponent
+namespace Code.Common.Components
 {
-    public Transform Value;
+    [Game]
+    public class ParentComponent : IComponent
+    {
+        public Transform Value;
+    }
 }

@@ -1,5 +1,3 @@
-using Entitas;
-
 namespace Code.Features.Hero.Services
 {
     public interface IHeroProvider

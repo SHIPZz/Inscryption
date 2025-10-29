@@ -1,6 +1,9 @@
 using Entitas;
 
-[Game]
-public class StaticComponent : IComponent
+namespace Code.Features.Common.Components
 {
+    [Game]
+    public class StaticComponent : IComponent
+    {
+    }
 }

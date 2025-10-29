@@ -487,8 +487,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 390938791}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.000000014504815, y: 0.7702911, z: -0.6376924, w: -0.000000041234653}
-  m_LocalPosition: {x: 0, y: 0.71, z: 1.541}
+  m_LocalRotation: {x: 0.0000000136961, y: 0.8824553, z: -0.47039637, w: -0.000000041510372}
+  m_LocalPosition: {x: 0, y: -0.75, z: 1.541}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -509,7 +509,7 @@ MonoBehaviour:
   _target: {fileID: 390938792}
   _ignoreY: 1
   _smoothTime: 0.15
-  _xRotationLimit: -54
+  _xRotationLimit: -9.8
 --- !u!1 &421171757
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,8 +523,10 @@ GameObject:
   - component: {fileID: 421171760}
   - component: {fileID: 421171759}
   - component: {fileID: 421171758}
+  - component: {fileID: 421171764}
+  - component: {fileID: 421171763}
   m_Layer: 0
-  m_Name: GameCanvas
+  m_Name: GameHud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -542,13 +544,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9732525ee2f4d0d4bb63e654ebd12ea0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Features.UI.GameHUD
-  _heroHealthText: {fileID: 1935426401}
-  _enemyHealthText: {fileID: 1648165499}
-  _turnIndicatorText: {fileID: 242041395}
-  _heroTurnIndicator: {fileID: 258452016}
-  _enemyTurnIndicator: {fileID: 2064230741}
-  _endTurnButton: {fileID: 947346956}
-  _endTurnButtonText: {fileID: 1738841620}
+  _healthDisplay: {fileID: 421171764}
+  _turnIndicator: {fileID: 421171763}
+  _endTurnButton: {fileID: 947346957}
 --- !u!114 &421171759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -632,6 +630,39 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &421171763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421171757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00941695eb1cb164a93bc1bd9984ad9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Features.UI.TurnIndicator
+  _turnText: {fileID: 242041395}
+  _heroIndicator: {fileID: 258452016}
+  _enemyIndicator: {fileID: 2064230741}
+  _heroTurnText: YOUR TURN
+  _enemyTurnText: ENEMY TURN
+  _victoryText: VICTORY!
+  _defeatText: DEFEAT!
+--- !u!114 &421171764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 421171757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 678e77d167dd174449717a7572891af7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Features.UI.HealthDisplay
+  _heroHealthText: {fileID: 1935426401}
+  _enemyHealthText: {fileID: 1648165499}
 --- !u!1 &469207281
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,14 +749,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 469207281}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.17571041, y: 0, z: 0, w: 0.98444194}
-  m_LocalPosition: {x: -10.57, y: 3.86, z: -3.97}
+  m_LocalRotation: {x: 0.39330015, y: 0, z: 0, w: 0.91941017}
+  m_LocalPosition: {x: -10.57, y: 4.49, z: -3.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 390938792}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 20.24, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 46.32, y: 0, z: 0}
 --- !u!114 &469207285
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -934,6 +965,7 @@ GameObject:
   - component: {fileID: 947346955}
   - component: {fileID: 947346954}
   - component: {fileID: 947346956}
+  - component: {fileID: 947346957}
   m_Layer: 0
   m_Name: EndTurnButton
   m_TagString: Untagged
@@ -1043,6 +1075,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &947346957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 947346952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 444cee70fbb280647b0c2aa64f550c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Features.UI.EndTurnButton
+  _button: {fileID: 947346956}
+  _buttonText: {fileID: 1738841620}
 --- !u!1 &992294964
 GameObject:
   m_ObjectHideFlags: 0

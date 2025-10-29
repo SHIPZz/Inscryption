@@ -9,6 +9,7 @@ namespace Code.Features.Input.Systems
         private readonly InputContext _input;
         private readonly GameContext _game;
         private readonly IGroup<InputEntity> _requests;
+        private readonly IGroup<GameEntity> _selectedCards;
         private readonly List<InputEntity> _buffer = new();
         private readonly IHeroProvider _heroProvider;
 
@@ -18,6 +19,7 @@ namespace Code.Features.Input.Systems
             _input = input;
             _game = game;
             _requests = _input.GetGroup(InputMatcher.CardClickRequest);
+            _selectedCards = _game.GetGroup(GameMatcher.AllOf(GameMatcher.Card, GameMatcher.Selected));
         }
 
         public void Execute()
@@ -30,10 +32,23 @@ namespace Code.Features.Input.Systems
                 GameEntity activeHero = _heroProvider.GetActiveHero();
                 if (card != null && card.isCard && card.hasCardOwner && activeHero != null && card.CardOwner == activeHero.Id)
                 {
-                    card.isSelected = !card.isSelected;
+                    bool wasSelected = card.isSelected;
+
+                    DeselectAllCards();
+
+                    if (!wasSelected)
+                        card.isSelected = true;
                 }
 
                 request.Destroy();
+            }
+        }
+
+        private void DeselectAllCards()
+        {
+            foreach (GameEntity selectedCard in _selectedCards.GetEntities())
+            {
+                selectedCard.isSelected = false;
             }
         }
     }

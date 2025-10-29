@@ -6,6 +6,9 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
+
+using Code.Features.Cards.Components;
+
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherDrawCardFromStackRequest;
@@ -36,13 +39,13 @@ public partial class GameEntity {
     public DrawCardFromStackRequest drawCardFromStackRequest { get { return (DrawCardFromStackRequest)GetComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
     public bool hasDrawCardFromStackRequest { get { return HasComponent(GameComponentsLookup.DrawCardFromStackRequest); } }
 
-    public GameEntity AddDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3> newTargetPositions, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
+    public GameEntity AddDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, UnityEngine.Vector3 newTargetPosition, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
         var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
         component.StackEntityId = newStackEntityId;
         component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;
-        component.TargetPositions = newTargetPositions;
+        component.TargetPosition = newTargetPosition;
         component.DelayBetweenCards = newDelayBetweenCards;
         component.MoveDuration = newMoveDuration;
         component.Parent = newParent;
@@ -50,13 +53,13 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, System.Collections.Generic.IReadOnlyList<UnityEngine.Vector3> newTargetPositions, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
+    public GameEntity ReplaceDrawCardFromStackRequest(int newStackEntityId, int newCardsToDraw, int newOwnerId, UnityEngine.Vector3 newTargetPosition, float newDelayBetweenCards, float newMoveDuration, UnityEngine.Transform newParent) {
         var index = GameComponentsLookup.DrawCardFromStackRequest;
         var component = (DrawCardFromStackRequest)CreateComponent(index, typeof(DrawCardFromStackRequest));
         component.StackEntityId = newStackEntityId;
         component.CardsToDraw = newCardsToDraw;
         component.OwnerId = newOwnerId;
-        component.TargetPositions = newTargetPositions;
+        component.TargetPosition = newTargetPosition;
         component.DelayBetweenCards = newDelayBetweenCards;
         component.MoveDuration = newMoveDuration;
         component.Parent = newParent;

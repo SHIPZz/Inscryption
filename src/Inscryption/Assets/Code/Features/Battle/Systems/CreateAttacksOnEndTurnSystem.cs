@@ -13,7 +13,6 @@ using UnityEngine;
 
 namespace Code.Features.Battle.Systems
 {
-    //todo refactor this
     public class CreateAttacksOnEndTurnSystem : IExecuteSystem
     {
         private readonly GameContext _game;
@@ -23,8 +22,6 @@ namespace Code.Features.Battle.Systems
         private readonly IGroup<GameEntity> _slots;
         private readonly List<GameEntity> _requestBuffer = new(1);
         private readonly GameConfig _gameConfig;
-        private readonly IGroup<GameEntity> _heroPlacedCards;
-        private readonly IGroup<GameEntity> _enemyPlacedCards;
 
         public CreateAttacksOnEndTurnSystem(GameContext game, IHeroProvider heroProvider, IEnemyProvider enemyProvider,
             IConfigService configService)
@@ -34,8 +31,6 @@ namespace Code.Features.Battle.Systems
             _enemyProvider = enemyProvider;
             _endTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
             _slots = game.GetGroup(GameMatcher.BoardSlot);
-            _heroPlacedCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card,GameMatcher.PlacedCards,GameMatcher.HeroOwner));
-            _enemyPlacedCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card,GameMatcher.PlacedCards,GameMatcher.EnemyOwner));
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 

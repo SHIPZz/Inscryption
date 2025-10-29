@@ -1,30 +1,33 @@
+using Code.Common.Services;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
+using Entitas;
 using UnityEngine;
-using Zenject;
 
-namespace Code.Infrastructure.Cheats
+namespace Code.Features.Cheats.Systems
 {
-    public class CheatService : ICheatService, ITickable
+    public class CheatSystem : IExecuteSystem
     {
         private readonly IHeroProvider _heroProvider;
         private readonly IEnemyProvider _enemyProvider;
+        private readonly IInputService _inputService;
 
-        public CheatService(IHeroProvider heroProvider, IEnemyProvider enemyProvider)
+        public CheatSystem(IHeroProvider heroProvider, IEnemyProvider enemyProvider, IInputService inputService)
         {
             _heroProvider = heroProvider;
             _enemyProvider = enemyProvider;
+            _inputService = inputService;
         }
 
-        public void Tick()
+        public void Execute()
         {
-            if (Input.GetKeyDown(KeyCode.F1))
+            if (_inputService.GetKeyDown(KeyCode.F1))
             {
                 Debug.Log("[CheatService] F1 pressed - Killing Hero");
                 KillHero();
             }
 
-            if (Input.GetKeyDown(KeyCode.F2))
+            if (_inputService.GetKeyDown(KeyCode.F2))
             {
                 Debug.Log("[CheatService] F2 pressed - Killing Enemy");
                 KillEnemy();
@@ -38,7 +41,6 @@ namespace Code.Infrastructure.Cheats
             {
                 Debug.Log("[CheatService] Killing hero via cheat");
                 hero.ReplaceHp(0);
-                hero.isDestructed = true;
             }
         }
 
@@ -49,7 +51,6 @@ namespace Code.Infrastructure.Cheats
             {
                 Debug.Log("[CheatService] Killing enemy via cheat");
                 enemy.ReplaceHp(0);
-                enemy.isDestructed = true;
             }
         }
     }

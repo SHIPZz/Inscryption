@@ -4,58 +4,37 @@ using UnityEngine;
 
 namespace Code.Features.Game.Systems
 {
-    //todo refactor this
     public class CheckVictorySystem : IExecuteSystem
     {
         private readonly GameContext _game;
+        private readonly IGroup<GameEntity> _gameEnds;
         private readonly IGroup<GameEntity> _heroes;
         private readonly IGroup<GameEntity> _enemies;
-        private bool _gameEnded = false;
 
         public CheckVictorySystem(GameContext game)
         {
             _game = game;
-            _heroes = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.Hp));
-            _enemies = game.GetGroup(GameMatcher.AllOf(GameMatcher.Enemy, GameMatcher.Hp));
+            _gameEnds = game.GetGroup(GameMatcher.GameEnd);
+            _heroes = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero,GameMatcher.Hp));
+            _enemies =game.GetGroup(GameMatcher.AllOf(GameMatcher.Enemy,GameMatcher.Hp));
         }
 
         public void Execute()
         {
-            if (_gameEnded)
+            if (_gameEnds.count > 0)
                 return;
 
-            foreach (GameEntity hero in _heroes)
+            foreach (var hero in _heroes)
+            foreach (var enemy in _enemies)
             {
-                if (hero.isDestructed)
-                {
-                    _gameEnded = true;
-                    Debug.Log($"[CheckVictorySystem] Hero died! HP: {hero.Hp} - DEFEAT");
+                if (hero == null || hero.isDestructed || enemy == null || enemy.isDestructed) 
+                    _game.CreateEntity().isGameEnd = true;
 
-                    foreach (GameEntity enemy in _enemies)
-                    {
-                        _game.CreateEntity().AddGameEndRequest(false, hero.Hp, enemy.Hp)
-                            .With(x => x.isRequest = true)
-                            ;
-                    }
-                    return;
-                }
-
-                foreach (GameEntity enemy in _enemies)
-                {
-                    if (enemy.isDestructed)
-                    {
-                        _gameEnded = true;
-                        Debug.Log($"[CheckVictorySystem] Enemy died! HP: {enemy.Hp} - VICTORY");
-
-                        var request = _game.CreateEntity();
-                        request.AddGameEndRequest(true, hero.Hp, enemy.Hp);
-                        request.isRequest = true;
-
-                        return;
-                    }
-                }
+                if (_gameEnds.count > 0)
+                    _game.CreateEntity().AddGameEndRequest(newHeroWon: hero.Hp > 0, hero.Hp, enemy.Hp)
+                        .With(x => x.isRequest = true)
+                        ;
             }
         }
     }
 }
-

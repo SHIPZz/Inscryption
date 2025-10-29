@@ -1,8 +1,11 @@
 using Entitas;
 using UnityEngine;
 
-[Game]
-public class LocalPositionComponent : IComponent
+namespace Code.Common.Components
 {
-    public Vector3 Value;
+    [Game]
+    public class LocalPositionComponent : IComponent
+    {
+        public Vector3 Value;
+    }
 }

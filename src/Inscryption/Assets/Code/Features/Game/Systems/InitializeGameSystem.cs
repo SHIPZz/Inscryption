@@ -1,20 +1,16 @@
 ﻿using System.Collections.Generic;
+using Code.Common;
 using Code.Features.Board.Services;
 using Code.Features.Cards.Services;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
-using Code.Features.Layout.Services;
 using Code.Infrastructure.Data;
-using Code.Infrastructure.Level;
 using Code.Infrastructure.Services;
-using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using Entitas;
 using UnityEngine;
 
 namespace Code.Features.Game.Systems
 {
-    //todo refactor this
     public class InitializeGameSystem : IInitializeSystem
     {
         private readonly GameContext _game;
@@ -22,11 +18,8 @@ namespace Code.Features.Game.Systems
         private readonly IEnemyFactory _enemyFactory;
         private readonly ICardStackFactory _cardStackFactory;
         private readonly IBoardFactory _boardFactory;
-        private readonly IConfigService _configService;
-        private readonly ILevelProvider _levelProvider;
-        private GameConfig _gameConfig;
-        private IReadOnlyList<Vector3> _heroHandPositions;
-        private IReadOnlyList<Vector3> _enemyHandPositions;
+        private readonly IHandLayoutService _handLayoutService;
+        private readonly GameConfig _gameConfig;
 
         public InitializeGameSystem(
             GameContext game,
@@ -34,29 +27,27 @@ namespace Code.Features.Game.Systems
             IEnemyFactory enemyFactory,
             ICardStackFactory cardStackFactory,
             IBoardFactory boardFactory,
-            IConfigService configService,
-            ILevelProvider levelProvider)
+            IHandLayoutService handLayoutService,
+            IConfigService configService)
         {
             _game = game;
             _heroFactory = heroFactory;
             _enemyFactory = enemyFactory;
             _cardStackFactory = cardStackFactory;
             _boardFactory = boardFactory;
-            _configService = configService;
-            _levelProvider = levelProvider;
+            _handLayoutService = handLayoutService;
+            _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public void Initialize()
         {
             Debug.Log("[InitializeGameSystem] Starting game initialization...");
-            _gameConfig = _configService.GetConfig<GameConfig>();
             if (_gameConfig == null)
             {
                 Debug.LogError("[InitializeGameSystem] GameConfig not found! Using default values.");
                 return;
             }
 
-            CalculateHandPositions();
             GameEntity hero = _heroFactory.CreateHero(_gameConfig.BaseHeroHealth);
             Debug.Log($"[InitializeGameSystem] Hero created: ID={hero.Id}, HP={hero.Hp}");
             GameEntity enemy = _enemyFactory.CreateEnemy(_gameConfig.BaseEnemyHealth);
@@ -65,45 +56,28 @@ namespace Code.Features.Game.Systems
             Debug.Log($"[InitializeGameSystem] Board created: {slots.Count} slots");
             GameEntity commonStack = CreateCardStack();
             Debug.Log($"[InitializeGameSystem] Common card stack created: ID={commonStack.Id}");
-            var animTiming = _gameConfig.AnimationTiming;
-           
-            _game.CreateEntity().AddDrawCardFromStackRequest(
-                commonStack.Id,
-                3,
-                hero.Id,
-                _heroHandPositions,
-                animTiming.DelayBetweenCards,
-                animTiming.CardMoveDuration,
-                _levelProvider.HeroCardParent);
-            
-            _game.CreateEntity().AddDrawCardFromStackRequest(
-                commonStack.Id,
-                3,
-                enemy.Id,
-                _enemyHandPositions,
-                animTiming.DelayBetweenCards,
-                animTiming.CardMoveDuration,
-                _levelProvider.EnemyCardParent);
+
+            CreateDrawCardFromStackRequest(commonStack, hero);
+            CreateDrawCardFromStackRequest(commonStack, enemy);
+
             Debug.Log("[InitializeGameSystem] Game initialization complete. Hero's turn!");
         }
 
-        private void CalculateHandPositions()
+        private GameEntity CreateDrawCardFromStackRequest(GameEntity commonStack, GameEntity player)
         {
-            var handLayout = _gameConfig.HandLayout;
-            var arcLayoutParams = new ArcLayoutParams
-            {
-                Count = _gameConfig.StartingHandSize,
-                Origin = _levelProvider.HeroCardParent.position,
-                HorizontalSpacing = handLayout.HorizontalSpacing,
-                VerticalCurve = handLayout.VerticalCurve,
-                DepthSpacing = handLayout.DepthSpacing,
-                AnglePerCard = handLayout.AnglePerCard
-            };
-            CardLayoutData[] heroLayout = PositionCalculator.CalculateArcLayout(arcLayoutParams);
-            _heroHandPositions = System.Array.ConvertAll(heroLayout, data => data.Position);
-            arcLayoutParams.Origin = _levelProvider.EnemyCardParent.position;
-            CardLayoutData[] enemyLayout = PositionCalculator.CalculateArcLayout(arcLayoutParams);
-            _enemyHandPositions = System.Array.ConvertAll(enemyLayout, data => data.Position);
+            var animTiming = _gameConfig.AnimationTiming;
+            var parentTransform = _handLayoutService.GetCardParent(player);
+            var targetPosition = parentTransform.position;
+
+            return CreateEntity.Request()
+                .AddDrawCardFromStackRequest(
+                    commonStack.Id,
+                    newCardsToDraw: _gameConfig.StartingHandSize,
+                    player.Id,
+                    targetPosition,
+                    animTiming.DelayBetweenCards,
+                    animTiming.CardMoveDuration,
+                    parentTransform);
         }
 
         private GameEntity CreateCardStack()

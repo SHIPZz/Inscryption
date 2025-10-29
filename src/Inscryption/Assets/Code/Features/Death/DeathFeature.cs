@@ -8,7 +8,7 @@ namespace Code.Features.Death
         public DeathFeature(ISystemFactory systemFactory)
         {
             Add(systemFactory.Create<MarkDestructedSystem>());
-            Add(systemFactory.Create<ClearSlotOnCardDestroyedSystem>());
+            Add(systemFactory.Create<ClearCardOnDestructedSystem>());
         }
     }
 }

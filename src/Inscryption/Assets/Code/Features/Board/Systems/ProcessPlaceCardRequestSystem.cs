@@ -94,6 +94,12 @@ namespace Code.Features.Board.Systems
             card.ReplaceSlotLane(slot.SlotLane);
             card.ReplaceSlotId(slot.Id);
 
+            if (card.hasVisualTransform && card.VisualTransform != null)
+            {
+                card.VisualTransform.localPosition = Vector3.zero;
+                card.VisualTransform.localRotation = Quaternion.identity;
+            }
+
             slot.isOccupied = true;
             slot.ReplaceOccupiedBy(card.Id);
         }

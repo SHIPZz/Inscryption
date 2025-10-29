@@ -1,5 +1,4 @@
-﻿using Code.Common.Systems.Destruct;
-using Code.Features.Death;
+﻿using Code.Features.Death;
 using Code.Infrastructure.Systems;
 
 namespace Code.Common.Destruct

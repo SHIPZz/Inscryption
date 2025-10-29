@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
+using Code.Common;
 using Code.Common.Extensions;
 using Entitas;
 using UnityEngine;
 
 namespace Code.Features.Enemy.Systems
 {
-    //todo refactor this: _enemyTurnCooldowns, enemyprovider
     public class ProcessEnemyTurnOnCooldownSystem : IExecuteSystem
     {
-        private readonly GameContext _game;
         private readonly IGroup<GameEntity> _enemyTurnCooldowns;
         private readonly IGroup<GameEntity> _enemySlots;
         private readonly List<GameEntity> _buffer = new(2);
 
         public ProcessEnemyTurnOnCooldownSystem(GameContext game)
         {
-            _game = game;
             _enemyTurnCooldowns = game.GetGroup(GameMatcher
                 .AllOf(GameMatcher.EnemyTurn, 
                 GameMatcher.CooldownUp,
@@ -49,8 +47,7 @@ namespace Code.Features.Enemy.Systems
             if (CanPlaceCard(enemy))
                 PlaceEnemyCard(enemy);
 
-            _game.CreateEntity()
-                .With(x => x.isRequest = true)
+            CreateEntity.Request()
                 .With(x => x.isEndTurnRequest = true);
         }
 
@@ -61,8 +58,12 @@ namespace Code.Features.Enemy.Systems
         {
             var randomSlot = _enemySlots.AsEnumerable().PickRandom();
             var cardId = enemy.CardsInHand[0];
-            _game.CreateEntity().AddPlaceCardRequest(cardId, randomSlot.Id)
-                .With(x => x.isRequest = true);
+            
+            CreateEntity
+                .Request()
+                .AddPlaceCardRequest(cardId, randomSlot.Id)
+                ;
+            
             Debug.Log($"[ProcessEnemyTurnSystem] Enemy placing card {cardId} on slot {randomSlot.Id}");
         }
     }

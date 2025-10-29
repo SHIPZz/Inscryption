@@ -1,7 +1,9 @@
+using UnityEngine;
+
 namespace Code.Features.Statuses.Services
 {
     public interface IAttackAnimator
     {
-        void PlayAttackAnimation(int targetId);
+        void PlayAttackAnimation(Transform target);
     }
 }

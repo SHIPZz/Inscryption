@@ -4,39 +4,31 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
-    //todo refactor this
     public class ClearSelectionOnTurnEndSystem : IExecuteSystem
     {
-        private readonly IHeroProvider _heroProvider;
         private readonly IGroup<GameEntity> _endTurnRequests;
-        private readonly IGroup<GameEntity> _heroCards;
-        private readonly List<GameEntity> _reqBuffer = new(4);
+        private readonly IGroup<GameEntity> _heroSelectedCards;
         private readonly List<GameEntity> _cardBuffer = new(16);
+        private readonly IGroup<GameEntity> _heroes;
 
-        public ClearSelectionOnTurnEndSystem(GameContext game, IHeroProvider heroProvider)
+        public ClearSelectionOnTurnEndSystem(GameContext game)
         {
-            _heroProvider = heroProvider;
-            _endTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
-            _heroCards = game.GetGroup(GameMatcher.AllOf(GameMatcher.Card, GameMatcher.Selected));
+            _endTurnRequests =
+                game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
+            _heroSelectedCards =
+                game.GetGroup(GameMatcher.AllOf(GameMatcher.Card, GameMatcher.Selected, GameMatcher.HeroOwner));
+            _heroes = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.HeroTurn));
         }
 
         public void Execute()
         {
-            foreach (GameEntity req in _endTurnRequests.GetEntities(_reqBuffer))
+            foreach (GameEntity request in _endTurnRequests)
+            foreach (GameEntity hero in _heroes)
             {
-                GameEntity hero = _heroProvider.GetHero();
-                
-                if (hero == null || !hero.isHeroTurn)
-                    continue;
-
-                foreach (GameEntity card in _heroCards.GetEntities(_cardBuffer))
+                foreach (GameEntity card in _heroSelectedCards.GetEntities(_cardBuffer))
                 {
-                    if (card.CardOwner == hero.Id)
-                    {
-                        card.isSelected = false;
-                    }
+                    card.isSelected = false;
                 }
-                // Important: do not destruct EndTurnRequest here; CreateAttacksOnEndTurnSystem will consume it
             }
         }
     }
