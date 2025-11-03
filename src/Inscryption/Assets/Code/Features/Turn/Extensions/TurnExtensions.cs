@@ -1,3 +1,4 @@
+using Code.Common.Extensions;
 using Entitas;
 
 namespace Code.Features.Turn.Extensions
@@ -5,7 +6,6 @@ namespace Code.Features.Turn.Extensions
   public static class TurnExtensions
   {
     public static (GameEntity attacker, GameEntity defender) GetBattleParticipants(
-      this GameContext game,
       IGroup<GameEntity> heroes,
       IGroup<GameEntity> enemies)
     {

@@ -13,35 +13,36 @@ namespace Code.Features.Board.Extensions
         .OrderBy(s => s.SlotLane);
     }
 
-    public static bool TryGetOccupyingCard(this GameEntity slot, GameContext game, out GameEntity card)
+    public static bool TryGetOccupyingCard(this GameEntity slot, out GameEntity card)
     {
       card = null;
 
       if (!slot.isOccupied || slot.OccupiedBy < 0)
         return false;
 
-      card = game.GetEntityWithId(slot.OccupiedBy);
+      card = Contexts.sharedInstance.game.GetEntityWithId(slot.OccupiedBy);
       return card is { isDestructed: false, hasDamage: true };
     }
 
-    public static GameEntity FindOppositeTarget(this GameEntity slot, GameContext game, GameEntity fallbackTarget)
+    public static GameEntity FindOppositeTarget(this GameEntity slot, GameEntity fallbackTarget)
     {
+      GameContext game = Contexts.sharedInstance.game;
       GameEntity oppositeSlot = BoardHelpers.FindOppositeSlot(game, slot);
 
-      if (oppositeSlot.TryGetDefendingCard(game, out GameEntity defenderCard))
+      if (oppositeSlot.TryGetDefendingCard(out GameEntity defenderCard))
         return defenderCard;
 
       return fallbackTarget;
     }
 
-    public static bool TryGetDefendingCard(this GameEntity slot, GameContext game, out GameEntity card)
+    public static bool TryGetDefendingCard(this GameEntity slot, out GameEntity card)
     {
       card = null;
 
       if (slot is not { isOccupied: true, OccupiedBy: >= 0 })
         return false;
 
-      card = game.GetEntityWithId(slot.OccupiedBy);
+      card = Contexts.sharedInstance.game.GetEntityWithId(slot.OccupiedBy);
       return card is { isDestructed: false };
     }
   }
