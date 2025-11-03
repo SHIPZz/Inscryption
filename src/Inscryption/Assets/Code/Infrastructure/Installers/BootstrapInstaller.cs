@@ -25,6 +25,7 @@ namespace Code.Infrastructure.Installers
             Container.Bind<ISystemFactory>().To<SystemFactory>().AsSingle();
             Container.BindInterfacesTo<UnityTimeService>().AsSingle();
             Container.BindInterfacesTo<UnityRandomService>().AsSingle();
+            Container.BindInterfacesTo<TimerService>().AsSingle();
             
             Container.Bind<IIdService>().To<IdService>().AsSingle();
             Container.Bind<ICameraProvider>().To<CameraProvider>().AsSingle();

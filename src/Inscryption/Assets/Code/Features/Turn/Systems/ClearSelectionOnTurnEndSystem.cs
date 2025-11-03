@@ -12,8 +12,7 @@ namespace Code.Features.Turn.Systems
 
         public ClearSelectionOnTurnEndSystem(GameContext game)
         {
-            _endTurnRequests =
-                game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
+            _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
             _heroSelectedCards =
                 game.GetGroup(GameMatcher.AllOf(GameMatcher.Card, GameMatcher.Selected, GameMatcher.HeroOwner));
             _heroes = game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.HeroTurn));

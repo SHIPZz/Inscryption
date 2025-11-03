@@ -1,3 +1,5 @@
+using System.Linq;
+using Code.Features.Board;
 using Code.Features.Statuses.Components;
 using Code.Features.Statuses.Services;
 using Entitas;
@@ -10,14 +12,15 @@ namespace Code.Features.Battle.Systems
         private readonly GameContext _game;
         private readonly IStatusFactory _statusFactory;
         private readonly IGroup<GameEntity> _attackRequests;
+        private readonly IGroup<GameEntity> _slots;
 
         public ProcessAttackRequestSystem(GameContext game, IStatusFactory statusFactory)
         {
             _game = game;
             _statusFactory = statusFactory;
 
-            _attackRequests = game.GetGroup(GameMatcher
-                .AllOf(GameMatcher.AttackRequest, GameMatcher.ProcessingAvailable));
+            _attackRequests = game.GetGroup(GameMatcher.AttackRequest);
+            _slots = game.GetGroup(GameMatcher.BoardSlot);
         }
 
         public void Execute()
@@ -38,10 +41,42 @@ namespace Code.Features.Battle.Systems
                     continue;
                 }
 
+                if (attacker.hasAttackAnimator && TryGetTargetTransform(attacker, target, out Transform targetTransform))
+                {
+                    attacker.AttackAnimator.PlayAttackAnimation(targetTransform);
+                }
+
                 _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
 
                 Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
             }
+        }
+
+        private bool TryGetTargetTransform(GameEntity attacker, GameEntity target, out Transform targetTransform)
+        {
+            targetTransform = null;
+
+            if (target.hasView)
+            {
+                targetTransform = target.Transform;
+                return targetTransform != null;
+            }
+
+            GameEntity attackerSlot = _slots.GetEntities()
+                .FirstOrDefault(s => s.isOccupied && s.OccupiedBy == attacker.Id);
+
+            if (attackerSlot == null)
+                return false;
+
+            GameEntity oppositeSlot = BoardHelpers.FindOppositeSlot(_game, attackerSlot);
+
+            if (oppositeSlot != null && oppositeSlot.hasView)
+            {
+                targetTransform = oppositeSlot.Transform;
+                return targetTransform != null;
+            }
+
+            return false;
         }
     }
 }

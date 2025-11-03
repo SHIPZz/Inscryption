@@ -58,52 +58,51 @@ public static class GameComponentsLookup {
     public const int Cooldown = 47;
     public const int CooldownLeft = 48;
     public const int CooldownUp = 49;
-    public const int ProcessingAvailable = 50;
-    public const int Enemy = 51;
-    public const int EnemyTurn = 52;
-    public const int GameEnd = 53;
-    public const int GameEndRequest = 54;
-    public const int CardHorizontalOffset = 55;
-    public const int CardsInHand = 56;
-    public const int HandPosition = 57;
-    public const int Hero = 58;
-    public const int HeroTurn = 59;
-    public const int LocalPosition = 60;
-    public const int Request = 61;
-    public const int Stats = 62;
-    public const int StatsModifiers = 63;
-    public const int AttackAnimator = 64;
-    public const int DamageAnimator = 65;
-    public const int Damaged = 66;
-    public const int DamageStatus = 67;
-    public const int Status = 68;
-    public const int StatusOwner = 69;
-    public const int StatusTarget = 70;
-    public const int StatusTypeId = 71;
-    public const int StatusValue = 72;
-    public const int Attacking = 73;
-    public const int AttackPhase = 74;
-    public const int AttackQueue = 75;
-    public const int AttackQueueTimer = 76;
-    public const int AttackRequest = 77;
-    public const int CardsPlacedThisTurn = 78;
-    public const int CurrentTurnPhase = 79;
-    public const int DelayedAttackPhase = 80;
-    public const int DrawCardRequest = 81;
-    public const int EndTurnRequest = 82;
-    public const int PhaseTimer = 83;
-    public const int PlaceCardRequest = 84;
-    public const int SwitchTurnRequest = 85;
-    public const int LoadingView = 86;
-    public const int SelfInitializedView = 87;
-    public const int SelfInitializeEntityViewRequest = 88;
-    public const int View = 89;
-    public const int ViewAddressableKey = 90;
-    public const int ViewAssetReference = 91;
-    public const int ViewPath = 92;
-    public const int ViewPrefab = 93;
+    public const int Enemy = 50;
+    public const int EnemyTurn = 51;
+    public const int GameEnd = 52;
+    public const int GameEndRequest = 53;
+    public const int CardHorizontalOffset = 54;
+    public const int CardsInHand = 55;
+    public const int HandPosition = 56;
+    public const int Hero = 57;
+    public const int HeroTurn = 58;
+    public const int LocalPosition = 59;
+    public const int Request = 60;
+    public const int Stats = 61;
+    public const int StatsModifiers = 62;
+    public const int AttackAnimator = 63;
+    public const int DamageAnimator = 64;
+    public const int Damaged = 65;
+    public const int DamageStatus = 66;
+    public const int Status = 67;
+    public const int StatusOwner = 68;
+    public const int StatusTarget = 69;
+    public const int StatusTypeId = 70;
+    public const int StatusValue = 71;
+    public const int Attacking = 72;
+    public const int AttackPhase = 73;
+    public const int AttackQueue = 74;
+    public const int AttackQueueTimer = 75;
+    public const int AttackRequest = 76;
+    public const int CardsPlacedThisTurn = 77;
+    public const int CurrentTurnPhase = 78;
+    public const int DelayedAttackPhase = 79;
+    public const int DrawCardRequest = 80;
+    public const int EndTurnRequest = 81;
+    public const int PhaseTimer = 82;
+    public const int PlaceCardRequest = 83;
+    public const int SwitchTurnRequest = 84;
+    public const int LoadingView = 85;
+    public const int SelfInitializedView = 86;
+    public const int SelfInitializeEntityViewRequest = 87;
+    public const int View = 88;
+    public const int ViewAddressableKey = 89;
+    public const int ViewAssetReference = 90;
+    public const int ViewPath = 91;
+    public const int ViewPrefab = 92;
 
-    public const int TotalComponents = 94;
+    public const int TotalComponents = 93;
 
     public static readonly string[] componentNames = {
         "Active",
@@ -156,7 +155,6 @@ public static class GameComponentsLookup {
         "Cooldown",
         "CooldownLeft",
         "CooldownUp",
-        "ProcessingAvailable",
         "Enemy",
         "EnemyTurn",
         "GameEnd",
@@ -253,7 +251,6 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Cooldowns.Cooldown),
         typeof(Code.Features.Cooldowns.CooldownLeft),
         typeof(Code.Features.Cooldowns.CooldownUp),
-        typeof(Code.Features.Cooldowns.ProcessingAvailable),
         typeof(Code.Features.Enemy.Enemy),
         typeof(Code.Features.Enemy.EnemyTurn),
         typeof(Code.Features.Game.GameEnd),

@@ -18,7 +18,7 @@ namespace Code.Features.Cards.Systems
         {
             _game = game;
             _handLayoutService = handLayoutService;
-            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.DrawCardRequest, GameMatcher.ProcessingAvailable));
+            _requests = game.GetGroup(GameMatcher.DrawCardRequest);
             _stacks = game.GetGroup(GameMatcher.CardStack);
             _gameConfig = configService.GetConfig<GameConfig>();
         }

@@ -16,9 +16,9 @@ namespace Code.Features.Game.Systems
         public ProcessGameEndRequestSystem(GameContext game, IUIProvider uiProvider)
         {
             _uiProvider = uiProvider;
-            _gameEndRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.GameEndRequest, GameMatcher.ProcessingAvailable));
+            _gameEndRequests = game.GetGroup(GameMatcher.GameEndRequest);
 
-            _allRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.Request));
+            _allRequests = game.GetGroup(GameMatcher.Request);
         }
 
         public void Execute()

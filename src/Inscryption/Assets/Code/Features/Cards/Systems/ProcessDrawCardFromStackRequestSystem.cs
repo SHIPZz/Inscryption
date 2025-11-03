@@ -17,9 +17,7 @@ namespace Code.Features.Cards.Systems
         public ProcessDrawCardFromStackRequestSystem(GameContext gameContext)
         {
             _gameContext = gameContext;
-            _requests = gameContext.GetGroup(GameMatcher.AllOf(
-                GameMatcher.DrawCardFromStackRequest,
-                GameMatcher.ProcessingAvailable));
+            _requests = gameContext.GetGroup(GameMatcher.DrawCardFromStackRequest);
         }
 
         public void Execute()

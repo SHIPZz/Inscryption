@@ -9,7 +9,6 @@ namespace Code.Features.Battle
         {
             Add(systemFactory.Create<CreateAttacksOnEndTurnSystem>());
             Add(systemFactory.Create<ProcessAttackRequestSystem>());
-            Add(systemFactory.Create<AnimateOnAttackSystem>());
         }
     }
 }

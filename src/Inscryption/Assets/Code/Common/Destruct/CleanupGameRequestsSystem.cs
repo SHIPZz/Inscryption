@@ -10,7 +10,7 @@ namespace Code.Common.Destruct
 
         public CleanupGameRequestsSystem(GameContext game)
         {
-            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.Request, GameMatcher.ProcessingAvailable));
+            _requests = game.GetGroup(GameMatcher.Request);
         }
 
         public void Cleanup()

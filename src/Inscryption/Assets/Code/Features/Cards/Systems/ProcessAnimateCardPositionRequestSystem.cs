@@ -15,7 +15,7 @@ namespace Code.Features.Cards.Systems
         public ProcessAnimateCardPositionRequestSystem(GameContext game, IConfigService configService)
         {
             _game = game;
-            _requests = game.GetGroup(GameMatcher.AllOf(GameMatcher.AnimateCardPositionRequest, GameMatcher.ProcessingAvailable));
+            _requests = game.GetGroup(GameMatcher.AnimateCardPositionRequest);
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 

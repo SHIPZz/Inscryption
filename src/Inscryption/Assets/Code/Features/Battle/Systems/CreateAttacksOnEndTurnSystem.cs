@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Common;
 using Code.Common.Extensions;
+using Code.Common.Time;
 using Code.Features.Board;
-using Code.Features.Cooldowns.Extensions;
 using Code.Features.Turn;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
@@ -20,15 +20,17 @@ namespace Code.Features.Battle.Systems
         private readonly IGroup<GameEntity> _endTurnRequests;
         private readonly IGroup<GameEntity> _slots;
         private readonly GameConfig _gameConfig;
+        private readonly ITimerService _timerService;
 
-        public CreateAttacksOnEndTurnSystem(GameContext game, IConfigService configService)
+        public CreateAttacksOnEndTurnSystem(GameContext game, IConfigService configService, ITimerService timerService)
         {
             _game = game;
             _heroes = game.GetGroup(GameMatcher.Hero);
             _enemies = game.GetGroup(GameMatcher.Enemy);
-            _endTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.EndTurnRequest, GameMatcher.ProcessingAvailable));
+            _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
             _slots = game.GetGroup(GameMatcher.BoardSlot);
             _gameConfig = configService.GetConfig<GameConfig>();
+            _timerService = timerService;
         }
 
         public void Execute()
@@ -52,11 +54,9 @@ namespace Code.Features.Battle.Systems
             float delay = 0f;
 
             IEnumerable<GameEntity> attackerSlots = GetAttackerSlots(attacker);
-            
-            for (int i = 0; i < attackerSlots.Count(); i++)
+
+            foreach (GameEntity slot in attackerSlots)
             {
-                GameEntity slot = attackerSlots.ElementAt(i);
-                
                 if (!IsValidAttacker(slot, out GameEntity attackerCard))
                     continue;
 
@@ -66,21 +66,24 @@ namespace Code.Features.Battle.Systems
                 {
                     delay += _gameConfig.AnimationTiming.DelayBetweenAttacks;
 
-                    var delay1 = delay;
-                    
-                    CreateEntity
-                        .Request()
-                        .AddAttackRequest(attackerCard.Id,target.Id,attackerCard.Damage)
-                        .With(x => x.PutOnCooldown(delay1))
-                        ;
+                    int attackerId = attackerCard.Id;
+                    int targetId = target.Id;
+                    int damage = attackerCard.Damage;
+                    float currentDelay = delay;
+
+                    _timerService.Schedule(currentDelay, () =>
+                        CreateEntity
+                            .Request()
+                            .AddAttackRequest(attackerId, targetId, damage));
                 }
             }
-            
-            CreateEntity
-                .Request()
-                .With(x => x.isSwitchTurnRequest = true)
-                .With(x => x.PutOnCooldown(delay + _gameConfig.AnimationTiming.PostAttackDelay))
-                ;
+
+            float switchTurnDelay = delay + _gameConfig.AnimationTiming.PostAttackDelay;
+
+            _timerService.Schedule(switchTurnDelay, () =>
+                CreateEntity
+                    .Request()
+                    .With(x => x.isSwitchTurnRequest = true));
         }
 
 

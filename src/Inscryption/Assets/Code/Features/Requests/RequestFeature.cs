@@ -1,4 +1,3 @@
-using Code.Features.Requests.Systems;
 using Code.Infrastructure.Systems;
 
 namespace Code.Features.Requests
@@ -7,7 +6,6 @@ namespace Code.Features.Requests
     {
         public RequestFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<MarkAvailableRequestSystem>());
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Code.Features.Turn.Systems
         {
             _heroes = game.GetGroup(GameMatcher.Hero);
             _enemies = game.GetGroup(GameMatcher.Enemy);
-            _switchTurnRequests = game.GetGroup(GameMatcher.AllOf(GameMatcher.SwitchTurnRequest, GameMatcher.ProcessingAvailable));
+            _switchTurnRequests = game.GetGroup(GameMatcher.SwitchTurnRequest);
             _gameConfig = configService.GetConfig<GameConfig>();
         }
 
