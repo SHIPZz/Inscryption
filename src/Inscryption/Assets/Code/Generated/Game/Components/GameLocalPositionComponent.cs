@@ -33,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Code.Common.Components.LocalPositionComponent localPosition { get { return (Code.Common.Components.LocalPositionComponent)GetComponent(GameComponentsLookup.LocalPosition); } }
+    public Code.Features.Movement.LocalPositionComponent localPosition { get { return (Code.Features.Movement.LocalPositionComponent)GetComponent(GameComponentsLookup.LocalPosition); } }
     public UnityEngine.Vector3 LocalPosition { get { return localPosition.Value; } }
     public bool hasLocalPosition { get { return HasComponent(GameComponentsLookup.LocalPosition); } }
 
     public GameEntity AddLocalPosition(UnityEngine.Vector3 newValue) {
         var index = GameComponentsLookup.LocalPosition;
-        var component = (Code.Common.Components.LocalPositionComponent)CreateComponent(index, typeof(Code.Common.Components.LocalPositionComponent));
+        var component = (Code.Features.Movement.LocalPositionComponent)CreateComponent(index, typeof(Code.Features.Movement.LocalPositionComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -47,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceLocalPosition(UnityEngine.Vector3 newValue) {
         var index = GameComponentsLookup.LocalPosition;
-        var component = (Code.Common.Components.LocalPositionComponent)CreateComponent(index, typeof(Code.Common.Components.LocalPositionComponent));
+        var component = (Code.Features.Movement.LocalPositionComponent)CreateComponent(index, typeof(Code.Features.Movement.LocalPositionComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

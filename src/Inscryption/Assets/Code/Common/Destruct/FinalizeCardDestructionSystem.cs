@@ -13,8 +13,12 @@ namespace Code.Common.Destruct
         public FinalizeCardDestructionSystem(GameContext game)
         {
             _cardsToFinalize = game.GetGroup(GameMatcher
-                .AllOf(GameMatcher.Card, GameMatcher.Destructed));
-            _boardSlots = game.GetGroup(GameMatcher.AllOf(GameMatcher.BoardSlot));
+                .AllOf(
+                    GameMatcher.Card,
+                    GameMatcher.Destructed
+                    ));
+            
+            _boardSlots = game.GetGroup(GameMatcher.BoardSlot);
         }
 
         public void Execute()

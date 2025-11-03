@@ -26,8 +26,6 @@ namespace Code.Infrastructure.Installers
             Container.BindInterfacesTo<UnityTimeService>().AsSingle();
             Container.BindInterfacesTo<UnityRandomService>().AsSingle();
             
-            Container.BindInterfacesTo<DiContainerService>().AsSingle();
-            
             Container.Bind<IIdService>().To<IdService>().AsSingle();
             Container.Bind<ICameraProvider>().To<CameraProvider>().AsSingle();
             Container.Bind<IRaycastService>().To<RaycastService>().AsSingle();

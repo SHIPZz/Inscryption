@@ -4,11 +4,9 @@ namespace Code.Infrastructure.Services
 {
     public class InstantiatorSetter : IInitializable
     {
-        public InstantiatorSetter(DiContainer diContainer, IInstantiateService instantiateService,
-            IDiContainerService diContainerService)
+        public InstantiatorSetter(DiContainer diContainer, IInstantiateService instantiateService)
         {
             instantiateService.SetInstantiator(diContainer);
-            diContainerService.SetDIContainer(diContainer);
         }
 
         public void Initialize()

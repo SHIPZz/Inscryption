@@ -10,65 +10,65 @@ public static class GameComponentsLookup {
 
     public const int Active = 0;
     public const int Collider = 1;
-    public const int LocalPosition = 2;
-    public const int Parent = 3;
-    public const int Damage = 4;
-    public const int Destructed = 5;
-    public const int Hp = 6;
-    public const int Id = 7;
-    public const int LayerMask = 8;
-    public const int LocalRotation = 9;
-    public const int MaxHp = 10;
-    public const int Name = 11;
-    public const int Renderer = 12;
-    public const int SelectedCards = 13;
-    public const int SelfDestructTimer = 14;
-    public const int SpriteRenderer = 15;
-    public const int TrackCameraRotation = 16;
-    public const int Transform = 17;
-    public const int WorldPosition = 18;
-    public const int WorldRotation = 19;
-    public const int BoardSlot = 20;
-    public const int Occupied = 21;
-    public const int OccupiedBy = 22;
-    public const int SlotLane = 23;
-    public const int SlotOwner = 24;
-    public const int AllCardDelivered = 25;
-    public const int Card = 26;
-    public const int CardAnimator = 27;
-    public const int CardClickRequest = 28;
-    public const int CardIcon = 29;
-    public const int CardOwner = 30;
-    public const int CardStack = 31;
-    public const int AnimateCardPositionRequest = 32;
-    public const int DrawCardFromStackRequest = 33;
-    public const int UpdateHandLayoutRequest = 34;
-    public const int EnemyOwner = 35;
-    public const int HeroOwner = 36;
-    public const int InHand = 37;
-    public const int Lane = 38;
-    public const int OnBoard = 39;
-    public const int Placed = 40;
-    public const int PlacedCards = 41;
-    public const int Selected = 42;
-    public const int SelectionAvailable = 43;
-    public const int SlotClickRequest = 44;
-    public const int SlotId = 45;
-    public const int VisualTransform = 46;
-    public const int Static = 47;
-    public const int Cooldown = 48;
-    public const int CooldownLeft = 49;
-    public const int CooldownUp = 50;
-    public const int ProcessingAvailable = 51;
-    public const int Enemy = 52;
-    public const int EnemyTurn = 53;
-    public const int GameEnd = 54;
-    public const int GameEndRequest = 55;
-    public const int CardHorizontalOffset = 56;
-    public const int CardsInHand = 57;
-    public const int HandPosition = 58;
-    public const int Hero = 59;
-    public const int HeroTurn = 60;
+    public const int Damage = 2;
+    public const int Destructed = 3;
+    public const int Hp = 4;
+    public const int Id = 5;
+    public const int LayerMask = 6;
+    public const int LocalRotation = 7;
+    public const int MaxHp = 8;
+    public const int Name = 9;
+    public const int Parent = 10;
+    public const int Renderer = 11;
+    public const int SelectedCards = 12;
+    public const int SelfDestructTimer = 13;
+    public const int SpriteRenderer = 14;
+    public const int TrackCameraRotation = 15;
+    public const int Transform = 16;
+    public const int WorldPosition = 17;
+    public const int WorldRotation = 18;
+    public const int BoardSlot = 19;
+    public const int Occupied = 20;
+    public const int OccupiedBy = 21;
+    public const int SlotLane = 22;
+    public const int SlotOwner = 23;
+    public const int AllCardDelivered = 24;
+    public const int Card = 25;
+    public const int CardAnimator = 26;
+    public const int CardClickRequest = 27;
+    public const int CardIcon = 28;
+    public const int CardOwner = 29;
+    public const int CardStack = 30;
+    public const int AnimateCardPositionRequest = 31;
+    public const int DrawCardFromStackRequest = 32;
+    public const int UpdateHandLayoutRequest = 33;
+    public const int EnemyOwner = 34;
+    public const int HeroOwner = 35;
+    public const int InHand = 36;
+    public const int Lane = 37;
+    public const int OnBoard = 38;
+    public const int Placed = 39;
+    public const int PlacedCards = 40;
+    public const int Selected = 41;
+    public const int SelectionAvailable = 42;
+    public const int SlotClickRequest = 43;
+    public const int SlotId = 44;
+    public const int VisualTransform = 45;
+    public const int Static = 46;
+    public const int Cooldown = 47;
+    public const int CooldownLeft = 48;
+    public const int CooldownUp = 49;
+    public const int ProcessingAvailable = 50;
+    public const int Enemy = 51;
+    public const int EnemyTurn = 52;
+    public const int GameEnd = 53;
+    public const int GameEndRequest = 54;
+    public const int CardHorizontalOffset = 55;
+    public const int CardsInHand = 56;
+    public const int HandPosition = 57;
+    public const int Hero = 58;
+    public const int HeroTurn = 59;
+    public const int LocalPosition = 60;
     public const int Request = 61;
     public const int Stats = 62;
     public const int StatsModifiers = 63;
@@ -108,8 +108,6 @@ public static class GameComponentsLookup {
     public static readonly string[] componentNames = {
         "Active",
         "Collider",
-        "LocalPosition",
-        "Parent",
         "Damage",
         "Destructed",
         "Hp",
@@ -118,6 +116,7 @@ public static class GameComponentsLookup {
         "LocalRotation",
         "MaxHp",
         "Name",
+        "Parent",
         "Renderer",
         "SelectedCards",
         "SelfDestructTimer",
@@ -167,6 +166,7 @@ public static class GameComponentsLookup {
         "HandPosition",
         "Hero",
         "HeroTurn",
+        "LocalPosition",
         "Request",
         "Stats",
         "StatsModifiers",
@@ -205,8 +205,6 @@ public static class GameComponentsLookup {
     public static readonly System.Type[] componentTypes = {
         typeof(Code.Common.Active),
         typeof(Code.Common.ColliderComponent),
-        typeof(Code.Common.Components.LocalPositionComponent),
-        typeof(Code.Common.Components.ParentComponent),
         typeof(Code.Common.Damage),
         typeof(Code.Common.Destructed),
         typeof(Code.Common.Hp),
@@ -215,6 +213,7 @@ public static class GameComponentsLookup {
         typeof(Code.Common.LocalRotation),
         typeof(Code.Common.MaxHp),
         typeof(Code.Common.NameComponent),
+        typeof(Code.Common.ParentComponent),
         typeof(Code.Common.RendererComponent),
         typeof(Code.Common.SelectedCards),
         typeof(Code.Common.SelfDestructTimer),
@@ -264,6 +263,7 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Hero.HandPosition),
         typeof(Code.Features.Hero.Hero),
         typeof(Code.Features.Hero.HeroTurn),
+        typeof(Code.Features.Movement.LocalPositionComponent),
         typeof(Code.Features.Requests.Request),
         typeof(Code.Features.Stats.Stats),
         typeof(Code.Features.Stats.StatsModifiers),

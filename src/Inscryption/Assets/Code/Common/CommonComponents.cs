@@ -31,6 +31,8 @@ namespace Code.Common
     
     [Game] public class TrackCameraRotation : IComponent { }
     
+    [Game] public class ParentComponent : IComponent { public Transform Value; }
+    
     [Game, Unique] public class SelectedCards : IComponent { public System.Collections.Generic.List<int> Value; }
     
     [Game] public class WorldPosition : IComponent { public UnityEngine.Vector3 Value; }

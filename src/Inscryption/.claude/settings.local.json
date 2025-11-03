@@ -7,7 +7,9 @@
       "mcp__UnityMCP__manage_editor",
       "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Hero\\Services\\IHeroProvider.cs\")",
       "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Hero\\Services\\HeroProvider.cs\")",
-      "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Enemy\\Services\\IEnemyProvider.cs\")"
+      "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Enemy\\Services\\IEnemyProvider.cs\")",
+      "Bash(dir /b C:ProjectsInscryptionsrcInscryptionAssetsCode)",
+      "Bash(cmd /c dir /b C:ProjectsInscryptionsrcInscryptionAssetsCode)"
     ],
     "deny": [],
     "ask": []

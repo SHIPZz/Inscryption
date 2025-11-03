@@ -21,13 +21,9 @@ namespace Code.Infrastructure.States.States
 
         public async UniTask EnterAsync(CancellationToken cancellationToken = default)
         {
-            Debug.Log("=== Game Test Runner Started ===");
-
             _projectRootFeature = _systemFactory.Create<ProjectRootFeature>();
             _projectRootFeature.Initialize();
 
-            Debug.Log("=== Game Initialized ===");
-            
             await UniTask.CompletedTask;
         }
 
@@ -47,8 +43,6 @@ namespace Code.Infrastructure.States.States
         public void Dispose()
         {
             Cleanup();
-
-            Debug.Log("=== Game Test Runner Destroyed ===");
         }
 
         private void Cleanup()

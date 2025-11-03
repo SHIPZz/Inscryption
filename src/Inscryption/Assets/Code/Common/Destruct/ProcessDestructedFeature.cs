@@ -7,7 +7,6 @@ namespace Code.Common.Destruct
     {
         public ProcessDestructedFeature(ISystemFactory system)
         {
-            Add(system.Create<DeathFeature>());
             Add(system.Create<SelfDestructTimerSystem>());
             Add(system.Create<CleanupGameDestructedViewSystem>());
             Add(system.Create<CleanupMetaDestructedSystem>());

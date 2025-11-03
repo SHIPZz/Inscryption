@@ -5,6 +5,7 @@ using Code.Features.Camera;
 using Code.Features.Cards;
 using Code.Features.Cheats;
 using Code.Features.Cooldowns;
+using Code.Features.Death;
 using Code.Features.Enemy;
 using Code.Features.Hero;
 using Code.Features.Movement;
@@ -36,6 +37,7 @@ namespace Code.Features
 
             Add(systemFactory.Create<StatusFeature>());
             Add(systemFactory.Create<StatsFeature>());
+            Add(systemFactory.Create<DeathFeature>());
             Add(systemFactory.Create<ProcessDestructedFeature>());
         }
     }
