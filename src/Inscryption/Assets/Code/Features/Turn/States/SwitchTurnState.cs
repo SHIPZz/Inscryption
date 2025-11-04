@@ -29,6 +29,12 @@ namespace Code.Features.Turn.States
 
       var (currentPlayer, nextPlayer) = TurnExtensions.GetBattleParticipants(_heroes, _enemies);
 
+      if (currentPlayer == null || nextPlayer == null)
+      {
+        Debug.LogError($"[SwitchTurnState] Invalid participants: currentPlayer={currentPlayer?.Id.ToString() ?? "null"}, nextPlayer={nextPlayer?.Id.ToString() ?? "null"}");
+        return;
+      }
+
       if (currentPlayer.isHero)
         currentPlayer.isHeroTurn = false;
       else
@@ -39,13 +45,13 @@ namespace Code.Features.Turn.States
         nextPlayer.isHeroTurn = true;
         nextPlayer.ReplaceCardsPlacedThisTurn(0);
         _gameStateMachine.EnterAsync<HeroTurnState>(cancellationToken).Forget();
-
-        return;
       }
-
-      nextPlayer.isEnemyTurn = true;
-      nextPlayer.ReplaceCardsPlacedThisTurn(0);
-      _gameStateMachine.EnterAsync<EnemyTurnState>(cancellationToken).Forget();
+      else if (nextPlayer.isEnemy)
+      {
+        nextPlayer.isEnemyTurn = true;
+        nextPlayer.ReplaceCardsPlacedThisTurn(0);
+        _gameStateMachine.EnterAsync<EnemyTurnState>(cancellationToken).Forget();
+      }
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)

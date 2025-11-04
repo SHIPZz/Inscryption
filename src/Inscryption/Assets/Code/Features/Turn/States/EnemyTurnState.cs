@@ -30,6 +30,7 @@ namespace Code.Features.Turn.States
       if (enemy == null)
         return;
 
+      enemy.isEnemyTurn = true;
       _gameStateMachine.EnterAsync<DrawState, int>(enemy.Id, cancellationToken).Forget();
     }
 

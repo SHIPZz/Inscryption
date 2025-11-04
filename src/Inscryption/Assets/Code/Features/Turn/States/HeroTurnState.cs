@@ -30,6 +30,7 @@ namespace Code.Features.Turn.States
       if (hero == null)
         return;
 
+      hero.isHeroTurn = true;
       _gameStateMachine.EnterAsync<DrawState, int>(hero.Id, cancellationToken).Forget();
     }
 

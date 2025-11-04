@@ -45,7 +45,14 @@ namespace Code.Features.Turn.States
         await UniTask.Delay(System.TimeSpan.FromSeconds(_gameConfig.AnimationTiming.CardMoveDuration * cardsToDraw), cancellationToken: cancellationToken);
       }
 
-      _gameStateMachine.EnterAsync<PlacementState, int>(playerId, cancellationToken).Forget();
+      if (player.isHero)
+      {
+        _gameStateMachine.EnterAsync<PlacementState, int>(playerId, cancellationToken).Forget();
+      }
+      else if (player.isEnemy)
+      {
+        _gameStateMachine.EnterAsync<EnemyPlaceCardsState, int>(playerId, cancellationToken).Forget();
+      }
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
