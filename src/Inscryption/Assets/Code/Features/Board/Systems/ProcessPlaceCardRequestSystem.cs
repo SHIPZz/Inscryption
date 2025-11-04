@@ -10,6 +10,7 @@ namespace Code.Features.Board.Systems
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _requests;
         private readonly GameConfig _gameConfig;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public ProcessPlaceCardRequestSystem(GameContext game, IConfigService configService)
         {
@@ -20,7 +21,7 @@ namespace Code.Features.Board.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests)
+            foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
                 int cardId = request.placeCardRequest.CardId;
                 int slotId = request.placeCardRequest.SlotId;
@@ -30,6 +31,7 @@ namespace Code.Features.Board.Systems
 
                 if (!IsPlacementAllowed(card, slot))
                 {
+                    request.Destroy();
                     continue;
                 }
 
@@ -40,6 +42,8 @@ namespace Code.Features.Board.Systems
                 owner.CardsInHand.Remove(cardId);
                 owner.PlacedCards.Add(cardId);
                 owner.ReplaceCardsPlacedThisTurn(owner.CardsPlacedThisTurn + 1);
+
+                request.Destroy();
             }
         }
 

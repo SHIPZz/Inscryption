@@ -1,4 +1,5 @@
-﻿using Code.Common.Collisions;
+﻿using System;
+using Code.Common.Collisions;
 using Code.Common.Physics;
 using Code.Common.Random;
 using Code.Common.Services;
@@ -6,6 +7,7 @@ using Code.Common.Time;
 using Code.Features.Enemy.Services;
 using Code.Features.Hero.Services;
 using Code.Features.Statuses.Services;
+using Code.Features.Turn.StateMachine;
 using Code.Features.View.Factory;
 using Code.Features.View.Pool;
 using Code.Infrastructure.Loading;
@@ -26,6 +28,8 @@ namespace Code.Infrastructure.Installers
             Container.BindInterfacesTo<UnityTimeService>().AsSingle();
             Container.BindInterfacesTo<UnityRandomService>().AsSingle();
             Container.BindInterfacesTo<TimerService>().AsSingle();
+            
+            Container.Bind(typeof(IGameStateMachine), typeof(ITickable), typeof(IDisposable)).To<GameStateMachine>().AsSingle();
             
             Container.Bind<IIdService>().To<IdService>().AsSingle();
             Container.Bind<ICameraProvider>().To<CameraProvider>().AsSingle();

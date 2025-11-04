@@ -33,6 +33,9 @@ namespace Code.Infrastructure.Data
 		[Header("Card Generation")]
 		[SerializeField] private CardGenerationData _cardGeneration = new();
 
+		[Header("Enemy AI")]
+		[SerializeField] private EnemyAIData _enemyAI = new();
+
 		[Header("Other")]
 		public float StackVerticalOffset = 0.025f;
 		public LayerMask InputMask;
@@ -46,6 +49,7 @@ namespace Code.Infrastructure.Data
 		public AnimationTimingData AnimationTiming => _animationTiming;
 		public GameBalanceData GameBalance => _gameBalance;
 		public CardGenerationData CardGeneration => _cardGeneration;
+		public EnemyAIData EnemyAI => _enemyAI;
 	}
 
 	[Serializable]
@@ -132,6 +136,13 @@ namespace Code.Infrastructure.Data
 
 		[Tooltip("Диапазон случайного поворота карт в стопке")]
 		public Vector2 RotationRange = new(-25f, 25f);
+	}
+
+	[Serializable]
+	public class EnemyAIData
+	{
+		[Tooltip("Задержка перед действиями врага")]
+		public float ThinkDelay = 1f;
 	}
 }
 

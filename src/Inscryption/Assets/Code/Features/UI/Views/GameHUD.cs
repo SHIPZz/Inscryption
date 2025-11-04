@@ -1,4 +1,4 @@
-﻿using Code.Common;
+using Code.Common;
 using Code.Common.Extensions;
 using UnityEngine;
 using Zenject;
@@ -23,10 +23,13 @@ namespace Code.Features.UI.Views
 
         private void OnEndTurnRequested()
         {
+            Debug.Log("[GameHUD] EndTurn button pressed");
             var heroGroup = _game.GetGroup(GameMatcher.AllOf(GameMatcher.Hero, GameMatcher.HeroTurn));
+            Debug.Log($"[GameHUD] Heroes with turn: {heroGroup.count}");
 
             foreach (var hero in heroGroup)
             {
+                Debug.Log($"[GameHUD] Creating EndTurnRequest for hero {hero.Id}");
                 CreateEntity.Request()
                     .With(x => x.isEndTurnRequest = true);
                 return;

@@ -12,6 +12,7 @@ namespace Code.Features.Cards.Systems
         private readonly GameContext _game;
         private readonly IHandLayoutService _handLayoutService;
         private readonly IGroup<GameEntity> _requests;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public CalculateHandLayoutOnRequestSystem(GameContext game, IHandLayoutService handLayoutService)
         {
@@ -22,7 +23,7 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests)
+            foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
                 int playerId = request.updateHandLayoutRequest.PlayerId;
                 GameEntity player = _game.GetEntityWithId(playerId);
@@ -31,6 +32,8 @@ namespace Code.Features.Cards.Systems
                 {
                     CreateCardLayoutRequests(player);
                 }
+
+                request.Destroy();
             }
         }
 

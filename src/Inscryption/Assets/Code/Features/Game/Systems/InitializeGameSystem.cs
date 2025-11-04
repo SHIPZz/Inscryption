@@ -44,9 +44,9 @@ namespace Code.Features.Game.Systems
 
             GameEntity hero = _heroFactory.CreateHero(_gameConfig.BaseHeroHealth);
             GameEntity enemy = _enemyFactory.CreateEnemy(_gameConfig.BaseEnemyHealth);
-           
+
             _boardFactory.CreateSlots(hero.Id, enemy.Id);
-            
+
             GameEntity commonStack = CreateCardStack();
 
             CreateDrawCardFromStackRequest(commonStack, hero);

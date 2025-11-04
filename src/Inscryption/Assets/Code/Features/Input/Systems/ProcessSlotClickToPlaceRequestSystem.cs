@@ -9,6 +9,7 @@ namespace Code.Features.Input.Systems
         private readonly GameContext _game;
         private readonly IGroup<GameEntity> _requests;
         private readonly IGroup<GameEntity> _selectedCards;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public ProcessSlotClickToPlaceRequestSystem(GameContext game)
         {
@@ -20,22 +21,26 @@ namespace Code.Features.Input.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests)
-            foreach (GameEntity selectedCard in _selectedCards)
+            foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
-                int slotId = request.SlotClickRequest;
-
-                GameEntity slot = _game.GetEntityWithId(slotId);
-
-                if (slot != null && slot.isBoardSlot)
+                foreach (GameEntity selectedCard in _selectedCards)
                 {
-                    CreateEntity
-                        .Request()
-                        .AddPlaceCardRequest(selectedCard.Id, slotId)
-                        ;
-                    
-                    Debug.Log($"[ProcessSlotClickToPlaceRequest] Created PlaceCardRequest card={selectedCard.Id} slot={slotId}");
+                    int slotId = request.SlotClickRequest;
+
+                    GameEntity slot = _game.GetEntityWithId(slotId);
+
+                    if (slot != null && slot.isBoardSlot)
+                    {
+                        CreateEntity
+                            .Request()
+                            .AddPlaceCardRequest(selectedCard.Id, slotId)
+                            ;
+
+                        Debug.Log($"[ProcessSlotClickToPlaceRequest] Created PlaceCardRequest card={selectedCard.Id} slot={slotId}");
+                    }
                 }
+
+                request.Destroy();
             }
         }
     }

@@ -8,6 +8,7 @@ namespace Code.Features.Input.Systems
         private readonly IGroup<GameEntity> _requests;
         private readonly IGroup<GameEntity> _selectedCards;
         private readonly IGroup<GameEntity> _activeHeroes;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public ProcessCardClickRequestSystem(GameContext game)
         {
@@ -19,7 +20,7 @@ namespace Code.Features.Input.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests)
+            foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
                 int cardId = request.CardClickRequest;
                 GameEntity card = _game.GetEntityWithId(cardId);
@@ -36,6 +37,8 @@ namespace Code.Features.Input.Systems
                             card.isSelected = true;
                     }
                 }
+
+                request.Destroy();
             }
         }
 

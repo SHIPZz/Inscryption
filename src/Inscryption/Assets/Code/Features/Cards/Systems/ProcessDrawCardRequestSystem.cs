@@ -13,6 +13,7 @@ namespace Code.Features.Cards.Systems
         private readonly IGroup<GameEntity> _requests;
         private readonly IGroup<GameEntity> _stacks;
         private readonly GameConfig _gameConfig;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public ProcessDrawCardRequestSystem(GameContext game, IHandLayoutService handLayoutService, IConfigService configService)
         {
@@ -25,9 +26,10 @@ namespace Code.Features.Cards.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _requests)
+            foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
                 ProcessDrawCardRequest(request);
+                request.Destroy();
             }
         }
 

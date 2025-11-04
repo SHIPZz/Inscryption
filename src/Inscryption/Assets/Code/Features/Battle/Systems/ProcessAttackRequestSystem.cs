@@ -13,6 +13,7 @@ namespace Code.Features.Battle.Systems
         private readonly IStatusFactory _statusFactory;
         private readonly IGroup<GameEntity> _attackRequests;
         private readonly IGroup<GameEntity> _slots;
+        private readonly System.Collections.Generic.List<GameEntity> _buffer = new(32);
 
         public ProcessAttackRequestSystem(GameContext game, IStatusFactory statusFactory)
         {
@@ -25,7 +26,7 @@ namespace Code.Features.Battle.Systems
 
         public void Execute()
         {
-            foreach (GameEntity request in _attackRequests)
+            foreach (GameEntity request in _attackRequests.GetEntities(_buffer))
             {
                 Debug.Log("@@@ request created");
                 int attackerId = request.attackRequest.AttackerId;
@@ -38,6 +39,7 @@ namespace Code.Features.Battle.Systems
                 if (attacker == null || target == null)
                 {
                     Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
+                    request.Destroy();
                     continue;
                 }
 
@@ -49,6 +51,8 @@ namespace Code.Features.Battle.Systems
                 _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
 
                 Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
+
+                request.Destroy();
             }
         }
 

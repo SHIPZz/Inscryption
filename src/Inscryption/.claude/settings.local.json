@@ -13,7 +13,8 @@
       "Bash(dir:*)",
       "Bash(cmd /c dir /b C:ProjectsInscryptionsrcInscryptionAssetsCodeFeaturesTurn)",
       "Bash(del \"C:\\Projects\\Inscryption\\src\\Inscryption\\Assets\\Code\\Features\\Battle\\Systems\\EnemyAttackSystem.cs\")",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "mcp__UnityMCP__read_console"
     ],
     "deny": [],
     "ask": []
