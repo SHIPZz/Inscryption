@@ -7,7 +7,6 @@ namespace Code.Features.Turn
     {
         public TurnFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<ProcessTurnTransitionSystem>());
             Add(systemFactory.Create<StartTurnSystem>());
             Add(systemFactory.Create<ClearSelectionOnTurnEndSystem>());
         }

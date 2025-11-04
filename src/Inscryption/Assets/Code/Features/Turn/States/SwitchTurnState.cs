@@ -35,22 +35,29 @@ namespace Code.Features.Turn.States
         return;
       }
 
+      Debug.Log($"[SwitchTurnState] currentPlayer={currentPlayer.Id} (isHero={currentPlayer.isHero}, isHeroTurn={currentPlayer.isHeroTurn}, isEnemy={currentPlayer.isEnemy}, isEnemyTurn={currentPlayer.isEnemyTurn})");
+      Debug.Log($"[SwitchTurnState] nextPlayer={nextPlayer.Id} (isHero={nextPlayer.isHero}, isHeroTurn={nextPlayer.isHeroTurn}, isEnemy={nextPlayer.isEnemy}, isEnemyTurn={nextPlayer.isEnemyTurn})");
+
       if (currentPlayer.isHero)
         currentPlayer.isHeroTurn = false;
       else
         currentPlayer.isEnemyTurn = false;
 
+      nextPlayer.ReplaceCardsPlacedThisTurn(0);
+
       if (nextPlayer.isHero)
       {
-        nextPlayer.isHeroTurn = true;
-        nextPlayer.ReplaceCardsPlacedThisTurn(0);
+        Debug.Log("[SwitchTurnState] Switching to HeroTurnState");
         _gameStateMachine.EnterAsync<HeroTurnState>(cancellationToken).Forget();
       }
       else if (nextPlayer.isEnemy)
       {
-        nextPlayer.isEnemyTurn = true;
-        nextPlayer.ReplaceCardsPlacedThisTurn(0);
+        Debug.Log("[SwitchTurnState] Switching to EnemyTurnState");
         _gameStateMachine.EnterAsync<EnemyTurnState>(cancellationToken).Forget();
+      }
+      else
+      {
+        Debug.LogError($"[SwitchTurnState] nextPlayer {nextPlayer.Id} is neither Hero nor Enemy!");
       }
     }
 

@@ -28,8 +28,12 @@ namespace Code.Features.Turn.States
       GameEntity hero = _heroes.GetSingleEntity();
 
       if (hero == null)
+      {
+        Debug.LogError("[HeroTurnState] Hero is null!");
         return;
+      }
 
+      Debug.Log($"[HeroTurnState] Setting hero {hero.Id} isHeroTurn = true (was {hero.isHeroTurn})");
       hero.isHeroTurn = true;
       _gameStateMachine.EnterAsync<DrawState, int>(hero.Id, cancellationToken).Forget();
     }

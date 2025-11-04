@@ -28,8 +28,12 @@ namespace Code.Features.Turn.States
       GameEntity enemy = _enemies.GetSingleEntity();
 
       if (enemy == null)
+      {
+        Debug.LogError("[EnemyTurnState] Enemy is null!");
         return;
+      }
 
+      Debug.Log($"[EnemyTurnState] Setting enemy {enemy.Id} isEnemyTurn = true (was {enemy.isEnemyTurn})");
       enemy.isEnemyTurn = true;
       _gameStateMachine.EnterAsync<DrawState, int>(enemy.Id, cancellationToken).Forget();
     }

@@ -41,9 +41,15 @@ namespace Code.Features.Turn.States
 
     public async UniTask EnterAsync(int attackerId, CancellationToken cancellationToken = default)
     {
-      Debug.Log($"[AttackState] Player {attackerId} attacks");
+      Debug.Log($"[AttackState] EnterAsync with attackerId={attackerId}");
+
+      GameEntity hero = _heroes.GetSingleEntity();
+      GameEntity enemy = _enemies.GetSingleEntity();
+      Debug.Log($"[AttackState] Hero: id={hero?.Id}, isHeroTurn={hero?.isHeroTurn}");
+      Debug.Log($"[AttackState] Enemy: id={enemy?.Id}, isEnemyTurn={enemy?.isEnemyTurn}");
 
       var (attacker, defender) = TurnExtensions.GetBattleParticipants(_heroes, _enemies);
+      Debug.Log($"[AttackState] GetBattleParticipants returned: attacker={attacker.Id}, defender={defender.Id}");
 
       float totalDelay = ScheduleAttacks(attacker, defender);
 
