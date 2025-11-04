@@ -28,7 +28,6 @@ namespace Code.Features.Turn.States
     {
       _playerId = playerId;
       _isTransitioning = false;
-      Debug.Log($"[PlacementState] Player {playerId} can place cards. Waiting for EndTurn...");
 
       await UniTask.CompletedTask;
     }
@@ -40,7 +39,6 @@ namespace Code.Features.Turn.States
 
       if (_endTurnRequests.count > 0)
       {
-        Debug.Log($"[PlacementState] EndTurnRequest detected for player {_playerId}, transitioning to AttackState");
         _isTransitioning = true;
 
         foreach (GameEntity request in _endTurnRequests.GetEntities(_buffer))
@@ -52,7 +50,6 @@ namespace Code.Features.Turn.States
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
-      Debug.Log("[PlacementState] Exiting");
       await UniTask.CompletedTask;
     }
   }

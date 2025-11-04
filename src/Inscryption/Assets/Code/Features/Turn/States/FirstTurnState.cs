@@ -23,8 +23,6 @@ namespace Code.Features.Turn.States
 
     public async UniTask EnterAsync(CancellationToken cancellationToken = default)
     {
-      Debug.Log("[FirstTurnState] Starting first turn");
-
       GameEntity hero = _heroes.GetSingleEntity();
 
       if (hero != null)
@@ -36,7 +34,6 @@ namespace Code.Features.Turn.States
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
-      Debug.Log("[FirstTurnState] Exiting");
       await UniTask.CompletedTask;
     }
   }

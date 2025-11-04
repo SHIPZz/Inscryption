@@ -26,8 +26,6 @@ namespace Code.Features.Turn.States
 
     public async UniTask EnterAsync(int playerId, CancellationToken cancellationToken = default)
     {
-      Debug.Log($"[DrawState] Player {playerId} draws cards");
-
       GameEntity player = _game.GetEntityWithId(playerId);
 
       int maxHandSize = _gameConfig.GameBalance.MaxHandSize;
@@ -57,7 +55,6 @@ namespace Code.Features.Turn.States
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
-      Debug.Log("[DrawState] Exiting");
       await UniTask.CompletedTask;
     }
   }

@@ -41,15 +41,7 @@ namespace Code.Features.Turn.States
 
     public async UniTask EnterAsync(int attackerId, CancellationToken cancellationToken = default)
     {
-      Debug.Log($"[AttackState] EnterAsync with attackerId={attackerId}");
-
-      GameEntity hero = _heroes.GetSingleEntity();
-      GameEntity enemy = _enemies.GetSingleEntity();
-      Debug.Log($"[AttackState] Hero: id={hero?.Id}, isHeroTurn={hero?.isHeroTurn}");
-      Debug.Log($"[AttackState] Enemy: id={enemy?.Id}, isEnemyTurn={enemy?.isEnemyTurn}");
-
       var (attacker, defender) = TurnExtensions.GetBattleParticipants(_heroes, _enemies);
-      Debug.Log($"[AttackState] GetBattleParticipants returned: attacker={attacker.Id}, defender={defender.Id}");
 
       float totalDelay = ScheduleAttacks(attacker, defender);
 
@@ -68,9 +60,6 @@ namespace Code.Features.Turn.States
     private float ScheduleAttacks(GameEntity attacker, GameEntity defender)
     {
       float delay = 0f;
-      int attackCount = 0;
-
-      Debug.Log($"[AttackState] ScheduleAttacks called for attacker {attacker.Id}");
 
       foreach (GameEntity slot in _slots.GetOwnedSlots(attacker.Id))
       {
@@ -89,24 +78,18 @@ namespace Code.Features.Turn.States
         int damage = attackerCard.Damage;
         float currentDelay = delay;
 
-        attackCount++;
-        Debug.Log($"[AttackState] Scheduling attack #{attackCount}: card {attackerId} -> target {targetId}, damage {damage}, delay {currentDelay}s");
-
         _timerService.Schedule(currentDelay, () => {
-          Debug.Log($"[AttackState] Creating AttackRequest: {attackerId} -> {targetId}");
           CreateEntity
             .Request()
             .AddAttackRequest(attackerId, targetId, damage);
         });
       }
 
-      Debug.Log($"[AttackState] Total attacks scheduled: {attackCount}, total delay: {delay}");
       return delay;
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
-      Debug.Log("[AttackState] Exiting");
       await UniTask.CompletedTask;
     }
   }
