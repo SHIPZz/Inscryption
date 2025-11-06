@@ -7,14 +7,13 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
-    public class TransitionToAttackAfterPlacementSystem : IExecuteSystem
+    public class TransitionToAttackAfterPlacementSystem : IInitializeSystem
     {
         private readonly IGameStateMachine _gameStateMachine;
         private readonly ITimerService _timerService;
         private readonly GameConfig _gameConfig;
         private readonly IGroup<GameEntity> _enemies;
         private readonly IGroup<GameEntity> _placeCardRequests;
-        private bool _transitionScheduled;
 
         public TransitionToAttackAfterPlacementSystem(
             GameContext game,
@@ -29,11 +28,8 @@ namespace Code.Features.Turn.Systems
             _placeCardRequests = game.GetGroup(GameMatcher.PlaceCardRequest);
         }
 
-        public void Execute()
+        public void Initialize()
         {
-            if (_transitionScheduled)
-                return;
-
             foreach (GameEntity enemy in _enemies)
             {
                 if (!enemy.isEnemyTurn)
@@ -44,7 +40,6 @@ namespace Code.Features.Turn.Systems
                     return;
 
                 // Переходим к атаке после размещения карты
-                _transitionScheduled = true;
                 float delay = _gameConfig.AnimationTiming.CardMoveDuration + _gameConfig.AnimationTiming.PostAttackDelay;
                 _timerService.Schedule(delay, () =>
                 {

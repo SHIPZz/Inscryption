@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Code.Features.Turn.States
 {
-  public class DrawState : IState, IPayloadState<int>, IExitableState, IDisposable
+  public class DrawState : IState, IPayloadState<int>, IUpdateable, IExitableState, IDisposable
   {
     private readonly ISystemFactory _systemFactory;
 
@@ -24,6 +24,12 @@ namespace Code.Features.Turn.States
       _drawFeature.Initialize();
 
       await UniTask.CompletedTask;
+    }
+
+    public void Update()
+    {
+      _drawFeature?.Execute();
+      _drawFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)

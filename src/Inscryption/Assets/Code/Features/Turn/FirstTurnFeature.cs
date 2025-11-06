@@ -1,3 +1,4 @@
+using Code.Features.Cards;
 using Code.Features.Turn.Systems;
 using Code.Infrastructure.Systems;
 
@@ -9,6 +10,7 @@ namespace Code.Features.Turn
         {
             Add(systemFactory.Create<SetHeroTurnSystem>());
             Add(systemFactory.Create<TransitionToPlacementSystem>());
+            Add(systemFactory.Create<CardFeature>());
         }
     }
 }

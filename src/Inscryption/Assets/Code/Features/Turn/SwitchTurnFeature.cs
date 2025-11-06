@@ -7,6 +7,8 @@ namespace Code.Features.Turn
     {
         public SwitchTurnFeature(ISystemFactory systemFactory)
         {
+            Add(systemFactory.Create<TurnFeature>());
+            Add(systemFactory.Create<ProcessTurnTransitionSystem>());
             Add(systemFactory.Create<TransitionToNextTurnSystem>());
             Add(systemFactory.Create<ClearCurrentPlayerTurnSystem>());
         }

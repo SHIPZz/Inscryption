@@ -22,40 +22,64 @@ namespace Code.Features.Turn.Systems
 
         public void Execute()
         {
-            // Если есть запросы на размещение, ждем их обработки
-            if (_placeCardRequests.count > 0)
+            if (HasPendingPlaceCardRequests())
                 return;
 
+            GameEntity enemy = FindEnemyInTurn();
+            if (enemy == null || !CanEnemyPlaceCard(enemy))
+                return;
+
+            GameEntity freeSlot = FindFreeSlotForEnemy(enemy.Id);
+            if (freeSlot == null)
+                return;
+
+            CreatePlaceCardRequest(enemy, freeSlot);
+        }
+
+        private bool HasPendingPlaceCardRequests()
+        {
+            return _placeCardRequests.count > 0;
+        }
+
+        private GameEntity FindEnemyInTurn()
+        {
             foreach (GameEntity enemy in _enemies)
             {
-                if (!enemy.isEnemyTurn)
-                    continue;
-
-                // Если уже разместил карту в этом ходу - не размещаем еще
-                if (enemy.hasCardsPlacedThisTurn && enemy.CardsPlacedThisTurn > 0)
-                    return;
-
-                // Если нет карт в руке - не размещаем
-                if (enemy.CardsInHand.Count == 0)
-                    return;
-
-                // Ищем свободный слот
-                var enemySlots = _slots.GetOwnedSlots(enemy.Id);
-                foreach (var slot in enemySlots)
-                {
-                    bool isOccupied = slot.isOccupied || (slot.hasOccupiedBy && slot.OccupiedBy >= 0);
-                    if (isOccupied)
-                        continue;
-
-                    // Размещаем первую карту из руки в первый свободный слот
-                    int cardId = enemy.CardsInHand.First();
-                    CreateEntity
-                        .Request()
-                        .AddPlaceCardRequest(cardId, slot.Id);
-                    
-                    return;
-                }
+                if (enemy.isEnemyTurn)
+                    return enemy;
             }
+            return null;
+        }
+
+        private bool CanEnemyPlaceCard(GameEntity enemy)
+        {
+            if (enemy.hasCardsPlacedThisTurn && enemy.CardsPlacedThisTurn > 0)
+                return false;
+
+            if (enemy.CardsInHand.Count == 0)
+                return false;
+
+            return true;
+        }
+
+        private GameEntity FindFreeSlotForEnemy(int enemyId)
+        {
+            var enemySlots = _slots.GetOwnedSlots(enemyId);
+            foreach (var slot in enemySlots)
+            {
+                bool isOccupied = slot.isOccupied || (slot.hasOccupiedBy && slot.OccupiedBy >= 0);
+                if (!isOccupied)
+                    return slot;
+            }
+            return null;
+        }
+
+        private void CreatePlaceCardRequest(GameEntity enemy, GameEntity slot)
+        {
+            int cardId = enemy.CardsInHand.First();
+            CreateEntity
+                .Request()
+                .AddPlaceCardRequest(cardId, slot.Id);
         }
     }
 }

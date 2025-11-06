@@ -33,8 +33,11 @@ namespace Code.Features.Turn.Systems
         public void Initialize()
         {
             var (attacker, defender) = TurnExtensions.GetBattleParticipants(_heroes, _enemies);
+            if (attacker == null)
+                return;
 
             float delay = 0f;
+            int attackCount = 0;
 
             foreach (var slot in _slots.GetOwnedSlots(attacker.Id))
             {
@@ -46,6 +49,7 @@ namespace Code.Features.Turn.Systems
                     continue;
 
                 delay += _gameConfig.AnimationTiming.DelayBetweenAttacks;
+                attackCount++;
 
                 int attackerId = attackerCard.Id;
                 int targetId = target.Id;
@@ -57,6 +61,17 @@ namespace Code.Features.Turn.Systems
                     CreateEntity
                         .Request()
                         .AddAttackRequest(attackerId, targetId, damage);
+                });
+            }
+
+            if (attackCount > 0)
+            {
+                float maxDelay = delay + _gameConfig.AnimationTiming.PostAttackDelay;
+                _timerService.Schedule(maxDelay, () =>
+                {
+                    CreateEntity
+                        .Request()
+                        .isAllAttacksComplete = true;
                 });
             }
         }

@@ -80,30 +80,31 @@ public static class GameComponentsLookup {
     public const int StatusTarget = 69;
     public const int StatusTypeId = 70;
     public const int StatusValue = 71;
-    public const int Attacking = 72;
-    public const int AttackPhase = 73;
-    public const int AttackQueue = 74;
-    public const int AttackQueueTimer = 75;
-    public const int AttackRequest = 76;
-    public const int CardsPlacedThisTurn = 77;
-    public const int CurrentTurnPhase = 78;
-    public const int DelayedAttackPhase = 79;
-    public const int DrawCardRequest = 80;
-    public const int EndTurnRequest = 81;
-    public const int EnemyCanPlaceCards = 82;
-    public const int PhaseTimer = 83;
-    public const int PlaceCardRequest = 84;
-    public const int SwitchTurnRequest = 85;
-    public const int LoadingView = 86;
-    public const int SelfInitializedView = 87;
-    public const int SelfInitializeEntityViewRequest = 88;
-    public const int View = 89;
-    public const int ViewAddressableKey = 90;
-    public const int ViewAssetReference = 91;
-    public const int ViewPath = 92;
-    public const int ViewPrefab = 93;
+    public const int AllAttacksComplete = 72;
+    public const int Attacking = 73;
+    public const int AttackPhase = 74;
+    public const int AttackQueue = 75;
+    public const int AttackQueueTimer = 76;
+    public const int AttackRequest = 77;
+    public const int CardsPlacedThisTurn = 78;
+    public const int CurrentTurnPhase = 79;
+    public const int DelayedAttackPhase = 80;
+    public const int DrawCardRequest = 81;
+    public const int EndTurnRequest = 82;
+    public const int EnemyCanPlaceCards = 83;
+    public const int PhaseTimer = 84;
+    public const int PlaceCardRequest = 85;
+    public const int SwitchTurnRequest = 86;
+    public const int LoadingView = 87;
+    public const int SelfInitializedView = 88;
+    public const int SelfInitializeEntityViewRequest = 89;
+    public const int View = 90;
+    public const int ViewAddressableKey = 91;
+    public const int ViewAssetReference = 92;
+    public const int ViewPath = 93;
+    public const int ViewPrefab = 94;
 
-    public const int TotalComponents = 94;
+    public const int TotalComponents = 95;
 
     public static readonly string[] componentNames = {
         "Active",
@@ -178,6 +179,7 @@ public static class GameComponentsLookup {
         "StatusTarget",
         "StatusTypeId",
         "StatusValue",
+        "AllAttacksComplete",
         "Attacking",
         "AttackPhase",
         "AttackQueue",
@@ -275,6 +277,7 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Statuses.Components.StatusTarget),
         typeof(Code.Features.Statuses.Components.StatusTypeIdComponent),
         typeof(Code.Features.Statuses.Components.StatusValue),
+        typeof(Code.Features.Turn.AllAttacksComplete),
         typeof(Code.Features.Turn.Attacking),
         typeof(Code.Features.Turn.AttackPhase),
         typeof(Code.Features.Turn.AttackQueue),

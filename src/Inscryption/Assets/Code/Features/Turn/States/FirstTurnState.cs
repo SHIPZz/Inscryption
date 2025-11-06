@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 
 namespace Code.Features.Turn.States
 {
-  public class FirstTurnState : IEnterState, IExitableState, IDisposable
+  public class FirstTurnState : IEnterState, IExitableState, IDisposable, IUpdateable
   {
     private readonly ISystemFactory _systemFactory;
 
@@ -24,6 +24,12 @@ namespace Code.Features.Turn.States
       _firstTurnFeature.Initialize();
 
       await UniTask.CompletedTask;
+    }
+
+    public void Update()
+    {
+      _firstTurnFeature?.Execute();
+      _firstTurnFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)

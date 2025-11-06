@@ -76,6 +76,11 @@ namespace Code.Features.Turn
     {
     }
 
+    [Game]
+    public class AllAttacksComplete : IComponent
+    {
+    }
+
     public enum TurnPhase
     {
         PlayerPlacement,

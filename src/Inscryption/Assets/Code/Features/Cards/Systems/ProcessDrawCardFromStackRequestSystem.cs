@@ -24,42 +24,69 @@ namespace Code.Features.Cards.Systems
         {
             foreach (GameEntity requestEntity in _requests.GetEntities(_buffer))
             {
-                DrawCardFromStackRequest request = requestEntity.drawCardFromStackRequest;
-                GameEntity stackEntity = _gameContext.GetEntityWithId(request.StackEntityId);
-                GameEntity owner = _gameContext.GetEntityWithId(request.OwnerId);
-
-                if (!ValidateRequest(stackEntity, owner))
-                {
-                    requestEntity.Destroy();
-                    continue;
-                }
-
-                int cardsToDrawCount = Mathf.Min(request.CardsToDraw, stackEntity.CardStack.Count);
-
-                for (int i = 0; i < cardsToDrawCount; i++)
-                {
-                    DrawCard(i, stackEntity, owner, request);
-                }
-
-                requestEntity.Destroy();
+                ProcessDrawCardFromStackRequest(requestEntity);
             }
+        }
+
+        private void ProcessDrawCardFromStackRequest(GameEntity requestEntity)
+        {
+            DrawCardFromStackRequest request = requestEntity.drawCardFromStackRequest;
+            GameEntity stackEntity = _gameContext.GetEntityWithId(request.StackEntityId);
+            GameEntity owner = _gameContext.GetEntityWithId(request.OwnerId);
+
+            if (!ValidateRequest(stackEntity, owner))
+            {
+                requestEntity.Destroy();
+                return;
+            }
+
+            int cardsToDrawCount = CalculateCardsToDraw(request, stackEntity);
+            DrawCardsFromStack(cardsToDrawCount, stackEntity, owner, request);
+            requestEntity.Destroy();
         }
 
         private bool ValidateRequest(GameEntity stackEntity, GameEntity owner)
         {
-            if (stackEntity?.hasCardStack != true)
-            {
-                Debug.LogWarning("[DrawCardFromStackAnimatedSystem] Stack entity is invalid or has no CardStack");
+            if (!ValidateStackEntity(stackEntity))
                 return false;
-            }
 
-            if (owner?.hasCardsInHand != true)
-            {
-                Debug.LogWarning("[DrawCardFromStackAnimatedSystem] Owner entity is invalid or has no CardsInHand");
+            if (!ValidateOwner(owner))
                 return false;
-            }
 
             return true;
+        }
+
+        private bool ValidateStackEntity(GameEntity stackEntity)
+        {
+            if (stackEntity?.hasCardStack != true)
+            {
+                Debug.LogWarning("[ProcessDrawCardFromStackRequestSystem] Stack entity is invalid or has no CardStack");
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateOwner(GameEntity owner)
+        {
+            if (owner?.hasCardsInHand != true)
+            {
+                Debug.LogWarning("[ProcessDrawCardFromStackRequestSystem] Owner entity is invalid or has no CardsInHand");
+                return false;
+            }
+            return true;
+        }
+
+        private int CalculateCardsToDraw(DrawCardFromStackRequest request, GameEntity stackEntity)
+        {
+            return Mathf.Min(request.CardsToDraw, stackEntity.CardStack.Count);
+        }
+
+        private void DrawCardsFromStack(int cardsToDrawCount, GameEntity stackEntity, GameEntity owner, DrawCardFromStackRequest request)
+        {
+            for (int i = 0; i < cardsToDrawCount; i++)
+            {
+                DrawCard(i, stackEntity, owner, request);
+            }
         }
 
         private void DrawCard(int index, GameEntity stackEntity, GameEntity owner, DrawCardFromStackRequest request)
@@ -69,44 +96,57 @@ namespace Code.Features.Cards.Systems
 
             if (card == null)
             {
-                Debug.LogWarning($"[DrawCardFromStackAnimatedSystem] Card with id {cardId} not found");
+                Debug.LogWarning($"[ProcessDrawCardFromStackRequestSystem] Card with id {cardId} not found");
                 return;
             }
 
-            PrepareCard(card, owner);
-            AnimateCard(card, owner, index, request);
+            PrepareCardForDrawing(card, owner);
+            AnimateCardDrawing(card, owner, index, request);
         }
 
-        private void PrepareCard(GameEntity card, GameEntity owner)
+        private void PrepareCardForDrawing(GameEntity card, GameEntity owner)
         {
             card.isStatic = true;
             owner.CardsInHand.Add(card.Id);
             card.ReplaceCardOwner(owner.Id);
         }
 
-        private void AnimateCard(GameEntity card, GameEntity owner, int index, DrawCardFromStackRequest request)
+        private void AnimateCardDrawing(GameEntity card, GameEntity owner, int index, DrawCardFromStackRequest request)
         {
             float delay = index * request.DelayBetweenCards;
 
             DOTween.Sequence()
                 .AppendInterval(delay)
                 .Append(card.Transform.DOMove(request.TargetPosition, request.MoveDuration))
-                .OnComplete(() => FinalizeCard(card, owner, request.Parent));
+                .OnComplete(() => FinalizeCardDrawing(card, owner, request.Parent));
         }
 
-        private void FinalizeCard(GameEntity card, GameEntity owner, Transform parent)
+        private void FinalizeCardDrawing(GameEntity card, GameEntity owner, Transform parent)
         {
             if (card == null || owner == null)
                 return;
 
+            UpdateCardHandState(card, parent);
+            SetCardSelectionAvailability(card, owner);
+            RequestHandLayoutUpdate(owner);
+        }
+
+        private void UpdateCardHandState(GameEntity card, Transform parent)
+        {
             card.isInHand = true;
             card.ReplaceParent(parent);
             card.ReplaceLocalPosition(card.Transform.localPosition);
             card.ReplaceLocalRotation(card.Transform.localRotation);
+        }
 
+        private void SetCardSelectionAvailability(GameEntity card, GameEntity owner)
+        {
             if (owner.isHero)
                 card.isSelectionAvailable = true;
+        }
 
+        private void RequestHandLayoutUpdate(GameEntity owner)
+        {
             CreateEntity.Request()
                 .AddUpdateHandLayoutRequest(owner.Id);
         }

@@ -38,7 +38,7 @@ namespace Code.Features.Turn.StateMachine
 
       IEnterState enterState = (IEnterState)state;
 
-      if (_activeState is IUpdateable updateableState)
+      if (state is IUpdateable updateableState)
         _updateableState = updateableState;
 
       await enterState.EnterAsync(cancellationToken);
@@ -52,7 +52,7 @@ namespace Code.Features.Turn.StateMachine
 
       TState state = await ChangeStateAsync<TState>(cancellationToken);
 
-      if (_activeState is IUpdateable updateableState)
+      if (state is IUpdateable updateableState)
         _updateableState = updateableState;
 
       await state.EnterAsync(payload, cancellationToken);

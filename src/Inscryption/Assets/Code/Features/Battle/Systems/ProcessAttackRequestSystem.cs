@@ -28,32 +28,58 @@ namespace Code.Features.Battle.Systems
         {
             foreach (GameEntity request in _attackRequests.GetEntities(_buffer))
             {
-                Debug.Log("@@@ request created");
-                int attackerId = request.attackRequest.AttackerId;
-                int targetId = request.attackRequest.TargetId;
-                int damage = request.attackRequest.Damage;
-
-                GameEntity attacker = _game.GetEntityWithId(attackerId);
-                GameEntity target = _game.GetEntityWithId(targetId);
-
-                if (attacker == null || target == null)
-                {
-                    Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
-                    request.Destroy();
-                    continue;
-                }
-
-                if (attacker.hasAttackAnimator && TryGetTargetTransform(attacker, target, out Transform targetTransform))
-                {
-                    attacker.AttackAnimator.PlayAttackAnimation(targetTransform);
-                }
-
-                _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
-
-                Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
-
-                request.Destroy();
+                ProcessAttackRequest(request);
             }
+        }
+
+        private void ProcessAttackRequest(GameEntity request)
+        {
+            int attackerId = request.attackRequest.AttackerId;
+            int targetId = request.attackRequest.TargetId;
+            int damage = request.attackRequest.Damage;
+
+            GameEntity attacker = _game.GetEntityWithId(attackerId);
+            GameEntity target = _game.GetEntityWithId(targetId);
+
+            if (!ValidateAttackRequest(attacker, target, attackerId, targetId, request))
+                return;
+
+            PlayAttackAnimation(attacker, target);
+            CreateDamageStatus(attackerId, targetId, damage);
+            DestroyAttackRequest(request);
+        }
+
+        private bool ValidateAttackRequest(GameEntity attacker, GameEntity target, int attackerId, int targetId, GameEntity request)
+        {
+            if (attacker == null || target == null)
+            {
+                Debug.LogWarning($"[ProcessAttackRequestSystem] Invalid attack: attacker={attackerId}, target={targetId}");
+                request.Destroy();
+                return false;
+            }
+            return true;
+        }
+
+        private void PlayAttackAnimation(GameEntity attacker, GameEntity target)
+        {
+            if (!attacker.hasAttackAnimator)
+                return;
+
+            if (!TryGetTargetTransform(attacker, target, out Transform targetTransform))
+                return;
+
+            attacker.AttackAnimator.PlayAttackAnimation(targetTransform);
+        }
+
+        private void CreateDamageStatus(int attackerId, int targetId, int damage)
+        {
+            _statusFactory.CreateStatus(StatusTypeId.Damage, attackerId, targetId, damage);
+            Debug.Log($"[ProcessAttackRequestSystem] Attack request: {attackerId} -> {targetId}, Damage: {damage}");
+        }
+
+        private void DestroyAttackRequest(GameEntity request)
+        {
+            request.Destroy();
         }
 
         private bool TryGetTargetTransform(GameEntity attacker, GameEntity target, out Transform targetTransform)

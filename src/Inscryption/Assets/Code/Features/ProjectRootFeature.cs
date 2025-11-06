@@ -9,7 +9,6 @@ namespace Code.Features
     {
         public ProjectRootFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<GameplayCoreFeature>());
             Add(systemFactory.Create<UIFeature>());
             Add(systemFactory.Create<GameStateFeature>());

@@ -2,21 +2,17 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
-    public class SetEnemyTurnSystem : IExecuteSystem
+    public class SetEnemyTurnSystem : IInitializeSystem
     {
         private readonly IGroup<GameEntity> _enemies;
-        private bool _set;
 
         public SetEnemyTurnSystem(GameContext game)
         {
             _enemies = game.GetGroup(GameMatcher.Enemy);
         }
 
-        public void Execute()
+        public void Initialize()
         {
-            if (_set)
-                return;
-
             foreach (GameEntity enemy in _enemies)
             {
                 if (enemy.isEnemyTurn)
@@ -30,7 +26,6 @@ namespace Code.Features.Turn.Systems
                     enemy.AddCardsPlacedThisTurn(0);
                 
                 UnityEngine.Debug.Log($"[SetEnemyTurnSystem] Set enemy {enemy.Id} turn, cardsInHand: {enemy.CardsInHand.Count}");
-                _set = true;
                 break;
             }
         }

@@ -4,6 +4,7 @@ using Code.Features.Turn;
 using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
@@ -30,6 +31,8 @@ namespace Code.Features.Turn.States
     {
       _placementFeature?.Execute();
       _placementFeature?.Cleanup();
+
+      Debug.Log($"@@@ current state - {GetType().Name}");
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
