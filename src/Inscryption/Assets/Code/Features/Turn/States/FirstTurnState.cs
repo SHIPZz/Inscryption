@@ -1,40 +1,49 @@
+using System;
 using System.Threading;
-using Code.Common.Extensions;
-using Code.Features.Turn.StateMachine;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class FirstTurnState : IState, IEnterState, IExitableState
+  public class FirstTurnState : IState, IEnterState, IExitableState, IDisposable
   {
     private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly IGroup<GameEntity> _heroes;
+    private readonly ISystemFactory _systemFactory;
 
-    public FirstTurnState(GameContext game, IGameStateMachine gameStateMachine)
+    private FirstTurnFeature _firstTurnFeature;
+
+    public FirstTurnState(GameContext game, ISystemFactory systemFactory)
     {
       _game = game;
-      _gameStateMachine = gameStateMachine;
-      _heroes = game.GetGroup(GameMatcher.Hero);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(CancellationToken cancellationToken = default)
     {
-      GameEntity hero = _heroes.GetSingleEntity();
+      _firstTurnFeature = _systemFactory.Create<FirstTurnFeature>();
+      _firstTurnFeature.Initialize();
 
-      if (hero != null)
-      {
-        hero.isHeroTurn = true;
-        _gameStateMachine.EnterAsync<PlacementState, int>(hero.Id, cancellationToken).Forget();
-      }
+      await UniTask.CompletedTask;
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _firstTurnFeature?.DeactivateReactiveSystems();
+      _firstTurnFeature?.TearDown();
+      _firstTurnFeature = null;
     }
   }
 }

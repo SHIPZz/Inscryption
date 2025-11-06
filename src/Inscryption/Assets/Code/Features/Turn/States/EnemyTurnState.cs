@@ -1,40 +1,55 @@
+using System;
 using System.Threading;
-using Code.Common.Extensions;
-using Code.Features.Turn.StateMachine;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class EnemyTurnState : IState, IEnterState, IExitableState
+  public class EnemyTurnState : IState, IEnterState, IUpdateable, IExitableState, IDisposable
   {
     private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly IGroup<GameEntity> _enemies;
+    private readonly ISystemFactory _systemFactory;
 
-    public EnemyTurnState(GameContext game, IGameStateMachine gameStateMachine)
+    private EnemyTurnFeature _enemyTurnFeature;
+
+    public EnemyTurnState(GameContext game, ISystemFactory systemFactory)
     {
       _game = game;
-      _gameStateMachine = gameStateMachine;
-      _enemies = game.GetGroup(GameMatcher.Enemy);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(CancellationToken cancellationToken = default)
     {
-      GameEntity enemy = _enemies.GetSingleEntity();
+      _enemyTurnFeature = _systemFactory.Create<EnemyTurnFeature>();
+      _enemyTurnFeature.Initialize();
 
-      if (enemy == null)
-        return;
+      await UniTask.CompletedTask;
+    }
 
-      enemy.isEnemyTurn = true;
-      _gameStateMachine.EnterAsync<DrawState, int>(enemy.Id, cancellationToken).Forget();
+    public void Update()
+    {
+      _enemyTurnFeature?.Execute();
+      _enemyTurnFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _enemyTurnFeature?.DeactivateReactiveSystems();
+      _enemyTurnFeature?.TearDown();
+      _enemyTurnFeature = null;
     }
   }
 }

@@ -1,56 +1,53 @@
+using System;
 using System.Threading;
-using Code.Features.Turn.StateMachine;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class PlacementState : IState, IPayloadState<int>, IUpdateable, IExitableState
+  public class PlacementState : IState, IPayloadState<int>, IUpdateable, IExitableState, IDisposable
   {
-    private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly IGroup<GameEntity> _endTurnRequests;
-    private readonly System.Collections.Generic.List<GameEntity> _buffer = new(4);
+    private readonly ISystemFactory _systemFactory;
 
-    private int _playerId;
-    private bool _isTransitioning;
+    private PlacementFeature _placementFeature;
 
-    public PlacementState(GameContext game, IGameStateMachine gameStateMachine)
+    public PlacementState(ISystemFactory systemFactory)
     {
-      _game = game;
-      _gameStateMachine = gameStateMachine;
-      _endTurnRequests = game.GetGroup(GameMatcher.EndTurnRequest);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(int playerId, CancellationToken cancellationToken = default)
     {
-      _playerId = playerId;
-      _isTransitioning = false;
+      _placementFeature = _systemFactory.Create<PlacementFeature>();
+      _placementFeature.Initialize();
 
       await UniTask.CompletedTask;
     }
 
     public void Update()
     {
-      if (_isTransitioning)
-        return;
-
-      if (_endTurnRequests.count > 0)
-      {
-        _isTransitioning = true;
-
-        foreach (GameEntity request in _endTurnRequests.GetEntities(_buffer))
-          request.Destroy();
-
-        _gameStateMachine.EnterAsync<AttackState, int>(_playerId).Forget();
-      }
+      _placementFeature?.Execute();
+      _placementFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _placementFeature?.DeactivateReactiveSystems();
+      _placementFeature?.TearDown();
+      _placementFeature = null;
     }
   }
 }

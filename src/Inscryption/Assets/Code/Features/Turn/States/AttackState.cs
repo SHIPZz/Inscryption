@@ -1,96 +1,53 @@
+using System;
 using System.Threading;
-using Code.Common;
-using Code.Common.Extensions;
-using Code.Common.Time;
-using Code.Features.Board.Extensions;
-using Code.Features.Turn.Extensions;
-using Code.Features.Turn.StateMachine;
-using Code.Infrastructure.Data;
-using Code.Infrastructure.Services;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class AttackState : IState, IPayloadState<int>, IExitableState
+  public class AttackState : IState, IPayloadState<int>, IUpdateable, IExitableState, IDisposable
   {
-    private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly ITimerService _timerService;
-    private readonly GameConfig _gameConfig;
-    private readonly IGroup<GameEntity> _heroes;
-    private readonly IGroup<GameEntity> _enemies;
-    private readonly IGroup<GameEntity> _slots;
+    private readonly ISystemFactory _systemFactory;
 
-    public AttackState(
-      GameContext game,
-      IGameStateMachine gameStateMachine,
-      ITimerService timerService,
-      IConfigService configService)
+    private AttackFeature _attackFeature;
+
+    public AttackState(ISystemFactory systemFactory)
     {
-      _game = game;
-      _gameStateMachine = gameStateMachine;
-      _timerService = timerService;
-      _gameConfig = configService.GetConfig<GameConfig>();
-      _heroes = game.GetGroup(GameMatcher.Hero);
-      _enemies = game.GetGroup(GameMatcher.Enemy);
-      _slots = game.GetGroup(GameMatcher.BoardSlot);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(int attackerId, CancellationToken cancellationToken = default)
     {
-      var (attacker, defender) = TurnExtensions.GetBattleParticipants(_heroes, _enemies);
+      _attackFeature = _systemFactory.Create<AttackFeature>();
+      _attackFeature.Initialize();
 
-      float totalDelay = ScheduleAttacks(attacker, defender);
-
-      if (totalDelay > 0)
-      {
-        await UniTask.Delay(System.TimeSpan.FromSeconds(totalDelay + _gameConfig.AnimationTiming.PostAttackDelay), cancellationToken: cancellationToken);
-      }
-      else
-      {
-        await UniTask.Delay(System.TimeSpan.FromSeconds(_gameConfig.AnimationTiming.PostAttackDelay), cancellationToken: cancellationToken);
-      }
-
-      _gameStateMachine.EnterAsync<SwitchTurnState>(cancellationToken).Forget();
+      await UniTask.CompletedTask;
     }
 
-    private float ScheduleAttacks(GameEntity attacker, GameEntity defender)
+    public void Update()
     {
-      float delay = 0f;
-
-      foreach (GameEntity slot in _slots.GetOwnedSlots(attacker.Id))
-      {
-        if (!slot.TryGetOccupyingCard(out GameEntity attackerCard))
-          continue;
-
-        GameEntity target = slot.FindOppositeTarget(defender);
-
-        if (target == null)
-          continue;
-
-        delay += _gameConfig.AnimationTiming.DelayBetweenAttacks;
-
-        int attackerId = attackerCard.Id;
-        int targetId = target.Id;
-        int damage = attackerCard.Damage;
-        float currentDelay = delay;
-
-        _timerService.Schedule(currentDelay, () => {
-          CreateEntity
-            .Request()
-            .AddAttackRequest(attackerId, targetId, damage);
-        });
-      }
-
-      return delay;
+      _attackFeature?.Execute();
+      _attackFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _attackFeature?.DeactivateReactiveSystems();
+      _attackFeature?.TearDown();
+      _attackFeature = null;
     }
   }
 }

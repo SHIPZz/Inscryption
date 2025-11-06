@@ -1,40 +1,55 @@
+using System;
 using System.Threading;
-using Code.Common.Extensions;
-using Code.Features.Turn.StateMachine;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class HeroTurnState : IState, IEnterState, IExitableState
+  public class HeroTurnState : IState, IEnterState, IUpdateable, IExitableState, IDisposable
   {
     private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly IGroup<GameEntity> _heroes;
+    private readonly ISystemFactory _systemFactory;
 
-    public HeroTurnState(GameContext game, IGameStateMachine gameStateMachine)
+    private HeroTurnFeature _heroTurnFeature;
+
+    public HeroTurnState(GameContext game, ISystemFactory systemFactory)
     {
       _game = game;
-      _gameStateMachine = gameStateMachine;
-      _heroes = game.GetGroup(GameMatcher.Hero);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(CancellationToken cancellationToken = default)
     {
-      GameEntity hero = _heroes.GetSingleEntity();
+      _heroTurnFeature = _systemFactory.Create<HeroTurnFeature>();
+      _heroTurnFeature.Initialize();
 
-      if (hero == null)
-        return;
+      await UniTask.CompletedTask;
+    }
 
-      hero.isHeroTurn = true;
-      _gameStateMachine.EnterAsync<DrawState, int>(hero.Id, cancellationToken).Forget();
+    public void Update()
+    {
+      _heroTurnFeature?.Execute();
+      _heroTurnFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _heroTurnFeature?.DeactivateReactiveSystems();
+      _heroTurnFeature?.TearDown();
+      _heroTurnFeature = null;
     }
   }
 }

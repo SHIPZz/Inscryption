@@ -26,7 +26,7 @@ namespace Code.Features
             Add(systemFactory.Create<CameraFeature>());
             Add(systemFactory.Create<CooldownFeature>());
             Add(systemFactory.Create<CheatFeature>());
-            Add(systemFactory.Create<RequestFeature>());
+            // Add(systemFactory.Create<RequestFeature>());
             Add(systemFactory.Create<MovementFeature>());
             Add(systemFactory.Create<CardFeature>());
             Add(systemFactory.Create<HeroFeature>());

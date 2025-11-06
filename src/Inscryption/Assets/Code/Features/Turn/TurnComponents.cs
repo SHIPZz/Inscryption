@@ -71,6 +71,11 @@ namespace Code.Features.Turn
         public int Value;
     }
 
+    [Game]
+    public class EnemyCanPlaceCards : IComponent
+    {
+    }
+
     public enum TurnPhase
     {
         PlayerPlacement,

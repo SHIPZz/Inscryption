@@ -1,4 +1,3 @@
-using Code.Features.Enemy.Systems;
 using Code.Infrastructure.Systems;
 
 namespace Code.Features.Enemy
@@ -7,7 +6,6 @@ namespace Code.Features.Enemy
     {
         public EnemyFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<ProcessEnemyTurnSystem>());
         }
     }
 }

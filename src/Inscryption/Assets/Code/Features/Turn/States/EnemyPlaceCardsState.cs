@@ -1,27 +1,23 @@
-using System.Linq;
+using System;
 using System.Threading;
-using Code.Common;
-using Code.Common.Extensions;
-using Code.Features.Board.Extensions;
-using Code.Features.Turn.StateMachine;
+using Code.Features.Turn;
+using Code.Infrastructure.Systems;
 using Code.Infrastructure.States.StateInfrastructure;
 using Cysharp.Threading.Tasks;
-using Entitas;
-using UnityEngine;
 
 namespace Code.Features.Turn.States
 {
-  public class EnemyPlaceCardsState : IState, IPayloadState<int>, IExitableState
+  public class EnemyPlaceCardsState : IState, IPayloadState<int>, IUpdateable, IExitableState, IDisposable
   {
     private readonly GameContext _game;
-    private readonly IGameStateMachine _gameStateMachine;
-    private readonly IGroup<GameEntity> _slots;
+    private readonly ISystemFactory _systemFactory;
 
-    public EnemyPlaceCardsState(GameContext game, IGameStateMachine gameStateMachine)
+    private EnemyPlaceCardsFeature _enemyPlaceCardsFeature;
+
+    public EnemyPlaceCardsState(GameContext game, ISystemFactory systemFactory)
     {
       _game = game;
-      _gameStateMachine = gameStateMachine;
-      _slots = game.GetGroup(GameMatcher.BoardSlot);
+      _systemFactory = systemFactory;
     }
 
     public async UniTask EnterAsync(int enemyId, CancellationToken cancellationToken = default)
@@ -29,45 +25,40 @@ namespace Code.Features.Turn.States
       GameEntity enemy = _game.GetEntityWithId(enemyId);
       if (enemy == null)
       {
-        _gameStateMachine.EnterAsync<AttackState, int>(enemyId, cancellationToken).Forget();
+        UnityEngine.Debug.LogWarning($"[EnemyPlaceCardsState] Enemy with id {enemyId} not found");
         return;
       }
 
-      PlaceEnemyCards(enemy);
+      UnityEngine.Debug.Log($"[EnemyPlaceCardsState] Entering for enemy {enemyId}, isEnemyTurn: {enemy.isEnemyTurn}, cardsInHand: {enemy.CardsInHand.Count}");
 
-      await UniTask.Delay(System.TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+      _enemyPlaceCardsFeature = _systemFactory.Create<EnemyPlaceCardsFeature>();
+      _enemyPlaceCardsFeature.Initialize();
 
-      _gameStateMachine.EnterAsync<AttackState, int>(enemyId, cancellationToken).Forget();
+      await UniTask.CompletedTask;
     }
 
-    private void PlaceEnemyCards(GameEntity enemy)
+    public void Update()
     {
-      var enemySlots = _slots.GetOwnedSlots(enemy.Id).ToList();
-      var cardsInHand = enemy.CardsInHand.ToList();
-
-      if (!cardsInHand.Any() || !enemySlots.Any())
-        return;
-
-      foreach (var slot in enemySlots)
-      {
-        if (!cardsInHand.Any())
-          break;
-
-        if (slot.hasOccupiedBy)
-          continue;
-
-        int cardId = cardsInHand.First();
-        cardsInHand.Remove(cardId);
-
-        CreateEntity
-          .Request()
-          .AddPlaceCardRequest(cardId, slot.Id);
-      }
+      _enemyPlaceCardsFeature?.Execute();
+      _enemyPlaceCardsFeature?.Cleanup();
     }
 
     public async UniTask ExitAsync(CancellationToken cancellationToken = default)
     {
+      Cleanup();
       await UniTask.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+      Cleanup();
+    }
+
+    private void Cleanup()
+    {
+      _enemyPlaceCardsFeature?.DeactivateReactiveSystems();
+      _enemyPlaceCardsFeature?.TearDown();
+      _enemyPlaceCardsFeature = null;
     }
   }
 }

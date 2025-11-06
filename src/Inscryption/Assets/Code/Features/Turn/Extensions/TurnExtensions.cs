@@ -1,4 +1,3 @@
-using Code.Common.Extensions;
 using Entitas;
 
 namespace Code.Features.Turn.Extensions
@@ -9,8 +8,20 @@ namespace Code.Features.Turn.Extensions
       IGroup<GameEntity> heroes,
       IGroup<GameEntity> enemies)
     {
-      GameEntity hero = heroes.GetSingleEntity();
-      GameEntity enemy = enemies.GetSingleEntity();
+      GameEntity hero = null;
+      GameEntity enemy = null;
+
+      foreach (GameEntity h in heroes)
+      {
+        hero = h;
+        break;
+      }
+
+      foreach (GameEntity e in enemies)
+      {
+        enemy = e;
+        break;
+      }
 
       if (enemy?.isEnemyTurn == true)
         return (enemy, hero);
@@ -24,6 +35,25 @@ namespace Code.Features.Turn.Extensions
         return false;
 
       return entity.isHero ? entity.isHeroTurn : entity.isEnemyTurn;
+    }
+
+    public static GameEntity GetCurrentPlayer(
+      IGroup<GameEntity> heroes,
+      IGroup<GameEntity> enemies)
+    {
+      foreach (GameEntity hero in heroes)
+      {
+        if (hero.isHeroTurn)
+          return hero;
+      }
+
+      foreach (GameEntity enemy in enemies)
+      {
+        if (enemy.isEnemyTurn)
+          return enemy;
+      }
+
+      return null;
     }
   }
 }

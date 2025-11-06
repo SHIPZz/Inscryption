@@ -90,19 +90,20 @@ public static class GameComponentsLookup {
     public const int DelayedAttackPhase = 79;
     public const int DrawCardRequest = 80;
     public const int EndTurnRequest = 81;
-    public const int PhaseTimer = 82;
-    public const int PlaceCardRequest = 83;
-    public const int SwitchTurnRequest = 84;
-    public const int LoadingView = 85;
-    public const int SelfInitializedView = 86;
-    public const int SelfInitializeEntityViewRequest = 87;
-    public const int View = 88;
-    public const int ViewAddressableKey = 89;
-    public const int ViewAssetReference = 90;
-    public const int ViewPath = 91;
-    public const int ViewPrefab = 92;
+    public const int EnemyCanPlaceCards = 82;
+    public const int PhaseTimer = 83;
+    public const int PlaceCardRequest = 84;
+    public const int SwitchTurnRequest = 85;
+    public const int LoadingView = 86;
+    public const int SelfInitializedView = 87;
+    public const int SelfInitializeEntityViewRequest = 88;
+    public const int View = 89;
+    public const int ViewAddressableKey = 90;
+    public const int ViewAssetReference = 91;
+    public const int ViewPath = 92;
+    public const int ViewPrefab = 93;
 
-    public const int TotalComponents = 93;
+    public const int TotalComponents = 94;
 
     public static readonly string[] componentNames = {
         "Active",
@@ -187,6 +188,7 @@ public static class GameComponentsLookup {
         "DelayedAttackPhase",
         "DrawCardRequest",
         "EndTurnRequest",
+        "EnemyCanPlaceCards",
         "PhaseTimer",
         "PlaceCardRequest",
         "SwitchTurnRequest",
@@ -283,6 +285,7 @@ public static class GameComponentsLookup {
         typeof(Code.Features.Turn.DelayedAttackPhase),
         typeof(Code.Features.Turn.DrawCardRequest),
         typeof(Code.Features.Turn.EndTurnRequest),
+        typeof(Code.Features.Turn.EnemyCanPlaceCards),
         typeof(Code.Features.Turn.PhaseTimer),
         typeof(Code.Features.Turn.PlaceCardRequest),
         typeof(Code.Features.Turn.SwitchTurnRequest),
