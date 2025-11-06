@@ -17,7 +17,7 @@ namespace Code.Common.Destruct
         {
             foreach (GameEntity request in _requests.GetEntities(_buffer))
             {
-                // request.Destroy();
+                //request.Destroy();
             }
         }
     }

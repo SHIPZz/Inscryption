@@ -100,8 +100,17 @@ namespace Code.Features.Cards.Systems
                 return;
             }
 
+            EnsureCardPositionApplied(card);
             PrepareCardForDrawing(card, owner);
             AnimateCardDrawing(card, owner, index, request);
+        }
+
+        private void EnsureCardPositionApplied(GameEntity card)
+        {
+            if (card.hasLocalPosition && card.hasTransform && card.Transform != null)
+            {
+                card.Transform.localPosition = card.localPosition.Value;
+            }
         }
 
         private void PrepareCardForDrawing(GameEntity card, GameEntity owner)
@@ -134,9 +143,11 @@ namespace Code.Features.Cards.Systems
         private void UpdateCardHandState(GameEntity card, Transform parent)
         {
             card.isInHand = true;
-            card.ReplaceParent(parent);
-            card.ReplaceLocalPosition(card.Transform.localPosition);
-            card.ReplaceLocalRotation(card.Transform.localRotation);
+            card.SetParent(parent, true);
+            Vector3 localPos = card.Transform.localPosition;
+            Vector3 localRot = card.Transform.localRotation.eulerAngles;
+            card.ReplaceLocalPosition(localPos);
+            card.ReplaceLocalRotation(Quaternion.Euler(localRot));
         }
 
         private void SetCardSelectionAvailability(GameEntity card, GameEntity owner)

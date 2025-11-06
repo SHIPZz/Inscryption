@@ -7,7 +7,6 @@ namespace Code.Features.Game
     {
         public GameStateFeature(ISystemFactory systemFactory)
         {
-            Add(systemFactory.Create<InitializeGameSystem>());
             Add(systemFactory.Create<CheckVictorySystem>());
             Add(systemFactory.Create<ProcessGameEndRequestSystem>());
         }

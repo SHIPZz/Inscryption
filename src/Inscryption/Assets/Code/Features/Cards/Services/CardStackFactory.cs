@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Common.Extensions;
 using Code.Common.Random;
 using Code.Common.Services;
 using Code.Features.Layout.Services;
@@ -16,8 +17,7 @@ namespace Code.Features.Cards.Services
         private readonly ICardFactory _cardFactory;
         private readonly IRandomService _randomService;
         private readonly ILevelProvider _levelProvider;
-        private readonly IConfigService _configService;
-        private GameConfig _gameConfig;
+        private readonly GameConfig _gameConfig;
 
         public CardStackFactory(GameContext game, IIdService idService, ICardFactory cardFactory,
             IRandomService randomService, ILevelProvider levelProvider, IConfigService configService)
@@ -27,8 +27,7 @@ namespace Code.Features.Cards.Services
             _cardFactory = cardFactory;
             _randomService = randomService;
             _levelProvider = levelProvider;
-            _configService = configService;
-            _gameConfig = _configService.GetConfig<GameConfig>();
+            _gameConfig = configService.GetConfig<GameConfig>();
         }
 
         public GameEntity CreateCardStack(CardStackCreateData createData)
@@ -64,6 +63,10 @@ namespace Code.Features.Cards.Services
                 float randomYRotation = _randomService.Range(rotationRange.x, rotationRange.y);
                 Quaternion cardRotation = Quaternion.Euler(90f, randomYRotation, 0f);
 
+                Vector3 cardWorldPosition = _levelProvider.DeckStackParent != null
+                    ? _levelProvider.DeckStackParent.TransformPoint(cardLocalPositions[i])
+                    : cardLocalPositions[i];
+
                 GameEntity card = _cardFactory.CreateRandomCard(new CardCreateData(
                     ownerId: stack.Id,
                     hp: 0,
@@ -71,10 +74,16 @@ namespace Code.Features.Cards.Services
                     inHand: false,
                     icon: null,
                     viewKey: null,
-                    position: createData.Position,
+                    position: cardWorldPosition,
                     rotation: cardRotation,
-                    parent: _levelProvider.DeckStackParent
+                    parent: null
                 ));
+
+                if (_levelProvider.DeckStackParent != null && card.hasTransform && card.Transform != null)
+                {
+                    card.SetParent(_levelProvider.DeckStackParent, false);
+                    card.Transform.localPosition = cardLocalPositions[i];
+                }
 
                 card.AddLocalPosition(cardLocalPositions[i]);
 

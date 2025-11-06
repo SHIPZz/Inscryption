@@ -1,5 +1,6 @@
 using Code.Features.Cards;
 using Code.Features.Input;
+using Code.Features.Movement;
 using Code.Features.Turn.Systems;
 using Code.Infrastructure.Systems;
 
@@ -11,6 +12,7 @@ namespace Code.Features.Turn
         {
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CardFeature>());
+            Add(systemFactory.Create<MovementFeature>());
             Add(systemFactory.Create<TransitionToAttackSystem>());
             Add(systemFactory.Create<ProcessEndTurnRequestSystem>());
         }

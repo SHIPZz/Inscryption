@@ -76,9 +76,6 @@ namespace Code.Features.Cards.Services
         {
             card.AddCardOwner(data.OwnerId);
             card.isInHand = data.InHand;
-
-            if (data.Parent != null)
-                card.AddParent(data.Parent);
         }
 
         private void AddCardVisuals(GameEntity card, CardCreateData data)
@@ -131,6 +128,9 @@ namespace Code.Features.Cards.Services
 
             LinkViewToEntity(card, view, data.Icon);
             SetupViewComponents(card, view);
+
+            if (data.Parent != null)
+                card.ReplaceParent(data.Parent);
         }
 
         private CardEntityView InstantiateCardView(CardCreateData data)

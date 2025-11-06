@@ -42,6 +42,7 @@ namespace Code.Features.Cards
         private Tween _currentTween;
         private Tween _currentPositionTween;
         private Color _originalColor;
+        private Vector3 _originalLocalPosition;
 
         public Transform VisualTransform => _visualTransform;
 
@@ -53,6 +54,8 @@ namespace Code.Features.Cards
                 _renderer = GetComponentInChildren<Renderer>();
             if (_renderer != null && _renderer.material != null)
                 _originalColor = _renderer.material.color;
+            
+            _originalLocalPosition = _visualTransform.localPosition;
         }
 
         public void Select()
@@ -63,10 +66,15 @@ namespace Code.Features.Cards
             _currentTween?.Kill();
             _currentPositionTween?.Kill();
 
+            _originalLocalPosition = _visualTransform.localPosition;
+
             _currentTween = _visualTransform.DOScale(_selectedScale, _selectionDuration)
                 .SetEase(_selectionEase);
 
-            Vector3 targetPosition = _visualTransform.localPosition + _visualTransform.up * _selectedYOffset;
+            Vector3 worldUp = _visualTransform.parent != null 
+                ? _visualTransform.parent.InverseTransformDirection(Vector3.up) 
+                : Vector3.up;
+            Vector3 targetPosition = _originalLocalPosition + worldUp * _selectedYOffset;
             _currentPositionTween = _visualTransform.DOLocalMove(targetPosition, _selectionDuration)
                 .SetEase(_selectionEase);
         }
@@ -82,9 +90,10 @@ namespace Code.Features.Cards
             _currentTween = _visualTransform.DOScale(_normalScale, _selectionDuration)
                 .SetEase(_selectionEase);
 
-            Vector3 targetPosition = _visualTransform.localPosition - _visualTransform.up * _selectedYOffset;
+            Vector3 targetPosition = _originalLocalPosition;
             _currentPositionTween = _visualTransform.DOLocalMove(targetPosition, _selectionDuration)
-                .SetEase(_selectionEase);
+                .SetEase(_selectionEase)
+                .OnComplete(() => _originalLocalPosition = _visualTransform.localPosition);
         }
 
         public void PlayDamageAnimation()
@@ -121,6 +130,19 @@ namespace Code.Features.Cards
 
             seq.Append(_visualTransform.DOMove(originalPosition, _attackReturnDuration).SetEase(_attackReturnEase));
             seq.Join(_renderer.material.DOColor(_originalColor, _attackReturnDuration));
+        }
+
+        public void ResetToBaseState()
+        {
+            _currentTween?.Kill();
+            _currentPositionTween?.Kill();
+
+            if (_visualTransform != null)
+            {
+                _visualTransform.localPosition = Vector3.zero;
+                _visualTransform.localScale = Vector3.one * _normalScale;
+                _originalLocalPosition = Vector3.zero;
+            }
         }
 
         private void OnDestroy()

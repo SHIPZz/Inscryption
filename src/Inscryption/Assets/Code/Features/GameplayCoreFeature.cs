@@ -19,7 +19,7 @@ namespace Code.Features
             Add(systemFactory.Create<CameraFeature>());
             Add(systemFactory.Create<CooldownFeature>());
             Add(systemFactory.Create<CheatFeature>());
-            Add(systemFactory.Create<MovementFeature>());
+            // Add(systemFactory.Create<MovementFeature>());
 
             Add(systemFactory.Create<StatusFeature>());
             Add(systemFactory.Create<StatsFeature>());

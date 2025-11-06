@@ -1,3 +1,4 @@
+using Code.Common.Extensions;
 using Code.Infrastructure.Data;
 using Code.Infrastructure.Services;
 using Entitas;
@@ -165,8 +166,12 @@ namespace Code.Features.Board.Systems
 
         private void UpdateCardTransform(GameEntity card, GameEntity slot)
         {
-            card.ReplaceParent(slot.Transform);
+            card.SetParent(slot.Transform, false);
             card.ReplaceLocalPosition(Vector3.zero);
+            if (card.hasTransform && card.Transform != null)
+            {
+                card.Transform.localPosition = Vector3.zero;
+            }
             card.ReplaceWorldPosition(slot.WorldPosition);
             card.ReplaceWorldRotation(slot.WorldRotation);
             card.ReplaceLocalRotation(Quaternion.identity);
@@ -176,6 +181,11 @@ namespace Code.Features.Board.Systems
 
         private void UpdateCardVisualTransform(GameEntity card)
         {
+            if (card.hasCardAnimator && card.CardAnimator != null)
+            {
+                card.CardAnimator.ResetToBaseState();
+            }
+
             if (card.hasVisualTransform && card.VisualTransform != null)
             {
                 card.VisualTransform.localPosition = Vector3.zero;

@@ -45,12 +45,24 @@ namespace Code.Features.Cards.Systems
         {
             float animDuration = _gameConfig.AnimationTiming.LayoutUpdateDuration;
 
-            card.Transform.DOMove(position, animDuration).SetEase(Ease.OutQuad);
+            if (card.hasParent && card.parent.Value != null)
+            {
+                Vector3 localPosition = card.parent.Value.InverseTransformPoint(position);
+                card.Transform.DOLocalMove(localPosition, animDuration).SetEase(Ease.OutQuad)
+                    .OnComplete(() =>
+                    {
+                        if (card.hasLocalPosition)
+                            card.ReplaceLocalPosition(card.Transform.localPosition);
+                    });
+            }
+            else
+            {
+                card.Transform.DOMove(position, animDuration).SetEase(Ease.OutQuad);
+            }
 
             if (card.hasVisualTransform && card.VisualTransform != null)
             {
                 card.VisualTransform.localRotation = rotation;
-                Debug.Log($"[ProcessAnimateCardPositionRequestSystem] Set local rotation for card {card.Id} to {rotation.eulerAngles}");
             }
         }
     }

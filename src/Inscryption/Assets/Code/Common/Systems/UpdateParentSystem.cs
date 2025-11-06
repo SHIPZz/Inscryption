@@ -1,5 +1,5 @@
+using Code.Common.Extensions;
 using Entitas;
-using UnityEngine;
 
 namespace Code.Common.Systems
 {
@@ -23,8 +23,10 @@ namespace Code.Common.Systems
         {
             foreach (GameEntity entity in entities)
             {
-                entity.Transform.SetParent(entity.parent.Value, true);
+                bool worldPositionStays = !entity.hasLocalPosition;
+                entity.SetParent(entity.parent.Value, worldPositionStays);
             }
         }
     }
 }
+
