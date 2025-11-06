@@ -22,7 +22,6 @@ namespace Code.Features.Turn.Systems
                 if (hero.isHeroTurn)
                 {
                     _gameStateMachine.EnterAsync<States.PlacementState, int>(hero.Id).Forget();
-                    break;
                 }
             }
         }

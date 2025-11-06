@@ -7,16 +7,14 @@ using Cysharp.Threading.Tasks;
 
 namespace Code.Features.Turn.States
 {
-  public class FirstTurnState : IState, IEnterState, IExitableState, IDisposable
+  public class FirstTurnState : IEnterState, IExitableState, IDisposable
   {
-    private readonly GameContext _game;
     private readonly ISystemFactory _systemFactory;
 
     private FirstTurnFeature _firstTurnFeature;
 
-    public FirstTurnState(GameContext game, ISystemFactory systemFactory)
+    public FirstTurnState(ISystemFactory systemFactory)
     {
-      _game = game;
       _systemFactory = systemFactory;
     }
 

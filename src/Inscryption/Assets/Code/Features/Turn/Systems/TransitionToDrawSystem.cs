@@ -7,7 +7,6 @@ namespace Code.Features.Turn.Systems
 {
     public class TransitionToDrawSystem : IExecuteSystem
     {
-        private readonly GameContext _game;
         private readonly IGameStateMachine _gameStateMachine;
         private readonly IGroup<GameEntity> _heroes;
         private readonly IGroup<GameEntity> _enemies;
@@ -15,7 +14,6 @@ namespace Code.Features.Turn.Systems
 
         public TransitionToDrawSystem(GameContext game, IGameStateMachine gameStateMachine)
         {
-            _game = game;
             _gameStateMachine = gameStateMachine;
             _heroes = game.GetGroup(GameMatcher.Hero);
             _enemies = game.GetGroup(GameMatcher.Enemy);

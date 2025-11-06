@@ -2,21 +2,17 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
-    public class SetHeroTurnSystem : IExecuteSystem
+    public class SetHeroTurnSystem : IInitializeSystem
     {
         private readonly IGroup<GameEntity> _heroes;
-        private bool _set;
 
         public SetHeroTurnSystem(GameContext game)
         {
             _heroes = game.GetGroup(GameMatcher.Hero);
         }
 
-        public void Execute()
+        public void Initialize()
         {
-            if (_set)
-                return;
-
             foreach (GameEntity hero in _heroes)
             {
                 if (hero.isHeroTurn)
@@ -28,9 +24,6 @@ namespace Code.Features.Turn.Systems
                     hero.ReplaceCardsPlacedThisTurn(0);
                 else
                     hero.AddCardsPlacedThisTurn(0);
-                
-                _set = true;
-                break;
             }
         }
     }
