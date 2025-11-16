@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace Code.Features.Turn.Systems
 {
+    //TODO REFACTOR THIS
     public class ProcessTurnTransitionSystem : IExecuteSystem
     {
         private readonly IGroup<GameEntity> _heroes;
@@ -18,7 +19,7 @@ namespace Code.Features.Turn.Systems
         private readonly GameConfig _gameConfig;
         private readonly IGameStateMachine _gameStateMachine;
         private readonly ITimerService _timerService;
-        private List<GameEntity> _buffer = new(2);
+        private readonly List<GameEntity> _buffer = new(2);
 
         public ProcessTurnTransitionSystem(
             GameContext game, 

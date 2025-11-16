@@ -6,10 +6,6 @@ namespace Code.Features.Turn.Systems
 {
     public class TransitionToNextTurnSystem : IInitializeSystem
     {
-        public TransitionToNextTurnSystem(GameContext game)
-        {
-        }
-
         public void Initialize()
         {
             CreateEntity.Request()

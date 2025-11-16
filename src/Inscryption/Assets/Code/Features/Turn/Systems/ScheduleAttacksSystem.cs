@@ -10,7 +10,6 @@ namespace Code.Features.Turn.Systems
 {
     public class ScheduleAttacksSystem : IInitializeSystem
     {
-        private readonly GameContext _game;
         private readonly ITimerService _timerService;
         private readonly GameConfig _gameConfig;
         private readonly IGroup<GameEntity> _heroes;
@@ -22,7 +21,6 @@ namespace Code.Features.Turn.Systems
             ITimerService timerService,
             IConfigService configService)
         {
-            _game = game;
             _timerService = timerService;
             _gameConfig = configService.GetConfig<GameConfig>();
             _heroes = game.GetGroup(GameMatcher.Hero);

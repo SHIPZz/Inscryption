@@ -13,8 +13,8 @@ namespace Code.Features.Turn
             Add(systemFactory.Create<InputFeature>());
             Add(systemFactory.Create<CardFeature>());
             Add(systemFactory.Create<MovementFeature>());
-            Add(systemFactory.Create<TransitionToAttackSystem>());
             Add(systemFactory.Create<ProcessEndTurnRequestSystem>());
+            Add(systemFactory.Create<TransitionToAttackSystem>());
         }
     }
 }

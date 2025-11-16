@@ -3,11 +3,10 @@ using Entitas;
 
 namespace Code.Features.Turn.Systems
 {
-    public class ClearCurrentPlayerTurnSystem : IExecuteSystem
+    public class ClearCurrentPlayerTurnSystem : IInitializeSystem
     {
         private readonly IGroup<GameEntity> _heroes;
         private readonly IGroup<GameEntity> _enemies;
-        private bool _cleared;
 
         public ClearCurrentPlayerTurnSystem(GameContext game)
         {
@@ -15,17 +14,13 @@ namespace Code.Features.Turn.Systems
             _enemies = game.GetGroup(GameMatcher.Enemy);
         }
 
-        public void Execute()
+        public void Initialize()
         {
-            if (_cleared)
-                return;
-
             GameEntity currentPlayer = TurnExtensions.GetCurrentPlayer(_heroes, _enemies);
 
             if (currentPlayer == null)
                 return;
 
-            _cleared = true;
             if (currentPlayer.isHero)
                 currentPlayer.isHeroTurn = false;
             else
